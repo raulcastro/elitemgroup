@@ -32,27 +32,14 @@ class Layout_View
 	private $data;
 	
 	/**
-	 * @property string $title title that will be printed in <title></title>
-	 */
-	private $title;
-	
-	/**
-	 * @property string $section the section of the application, 
-	 * it can be 'dashboard', 'members, ... 
-	 * 
-	 */
-	private $section;
-	
-	/**
 	 * get's the data *ARRAY* and the title of the document
 	 * 
 	 * @param array $data Is a big array with the whole info of the document 
 	 * @param string $title The title that will be printed in <title></title>
 	 */
-	public function __construct($data, $title)
+	public function __construct($data)
 	{
 		$this->data = $data;
-		$this->title = $title;
 	}    
 	
 	/**
@@ -60,13 +47,12 @@ class Layout_View
 	 * 
 	 * Prints the content of the whole website
 	 * 
-	 * @param int $section the section that define what will be printed
+	 * @param int $this->data['section'] the section that define what will be printed
 	 * 
 	 */
 	
-	public function printHTMLPage($section)
+	public function printHTMLPage()
     {
-    	$this->section = $section;
     ?>
 	<!DOCTYPE html>
 	<html class='no-js' lang='<?php echo $this->data['appInfo']['lang']; ?>'>
@@ -77,138 +63,78 @@ class Layout_View
     		<meta name="viewport" content="width=device-width, initial-scale=1">
 			<link rel="shortcut icon" href="favicon.ico" />
 			<link rel="icon" type="image/gif" href="favicon.ico" />
-			<title><?php echo $this->title; ?> - <?php echo $this->data['appInfo']['title']; ?></title>
+			<title><?php echo $this->data['title']; ?> - <?php echo $this->data['appInfo']['title']; ?></title>
 			<meta name="keywords" content="<?php echo $this->data['appInfo']['keywords']; ?>" />
 			<meta name="description" content="<?php echo $this->data['appInfo']['description']; ?>" />
 			<meta property="og:type" content="website" /> 
 			<meta property="og:url" content="<?php echo $this->data['appInfo']['url']; ?>" />
 			<meta property="og:site_name" content="<?php echo $this->data['appInfo']['siteName']; ?> />
 			<link rel='canonical' href="<?php echo $this->data['appInfo']['url']; ?>" />
-			<?php echo self::getCommonDocuments(); ?>			
+			<?php echo self::getCommonStyleDocuments(); ?>			
 			<?php 
-			switch ($section) 
+			switch ($this->data['section']) 
 			{
-				case 'sign-in':
- 					echo self :: getSignInHead();
+				case 'log-in':
+ 					echo self :: getLogInHead();
 				break;
 
 				case 'dashboard':
 					# code...
 				break;
-			
-				case 'members':
-					# code...
-				break;
-
-				case 'add-member':
-					echo self :: getMembersHead();
-				break;
-				
-				case 'reservations':
-					echo self :: getReservationsHead();
-				break;
-
-				case 'rooms':
-					echo self :: getRoomsHead();
-				break;
-				
-				case 'rooms-month':
-					echo self :: getRoomsMonthHead();
-				break;
-
-				case 'calendar':
-					echo self :: getCalendarHead();
-				break;
-				
-				case 'agencies':
-					echo self :: getAgenciesHead();
-				break;
-
-				case 'tasks':
-					echo self :: getTasksHead();
-				break;
-				
-				case 'reports':
-					echo self :: getReportsHead();
-				break;
 			}
 			?>
 		</head>
-		<body id="<?php echo $section; ?>">
+		<body id="<?php echo $this->data['section']; ?>" class="hold-transition <?php echo $this->data['template-class']; ?> fixed  skin-blue sidebar-mini">
 			<?php 
- 			echo self :: getHeader();
- 
-			if ($section != 'sign-in' && $section != 'sign-out')
+			if ($this->data['section'] != 'log-in' && $this->data['section'] != 'log-out')
 			{
 			?>
-			<div class="container-fluid">
-				<div class="row">
-					<?php echo self::getSidebar(); ?>
-					<div class="col-sm-11 col-sm-offset-1 main">
-						<h1 class="page-header"><?php echo $this->title; ?></h1>
+			<div class="wrapper">
+				<?php echo self :: getHeader(); ?>
+				<?php echo self :: getSidebar(); ?>
+				<!-- Content Wrapper. Contains page content -->
+		        <div class="content-wrapper">
+		            <!-- Content Header (Page header) -->
+		            <section class="content-header">
+		                <h1><?php echo $this->data['title']; ?><small>Optional description</small></h1>
+		                <ol class="breadcrumb">
+		                    <li><a href="#"><i class="fa fa-dashboard"></i>Dashboard</a></li>
+		                    <!-- <li class="active">Here</li> -->
+		                </ol>
+		            </section>
+		            <!-- Main content -->
+            		<section class="content">
 						<?php 
-						echo self :: getDashboardIcons();
-						switch ($section) {
+						switch ($this->data['section']) {
 
 							case 'dashboard':
-								echo self :: getRecentMembers();
+								echo self::getDashboardIcons();
+								echo self::getRecentMembers();
 							break;
 
 							case 'members':
-								echo self :: getAllMembers();
+								echo self::getAllMembers();
 							break;
 
-							case 'add-member':
-								echo self :: getAddMember();
-							break;
-							
-							case 'reservations':
-								echo self :: getReservations();
-							break;
-							
-							case 'rooms':
-								echo self :: getRooms();
-							break;
-							
-							case 'rooms-month':
-								echo self :: getRoomsMonth();
-							break;
-
-							case 'calendar':
-								echo self :: getCalendar();
-							break;
-							
-							case 'agencies':
-								echo self :: getAgencies();
-							break;
-
-							case 'tasks':
-								echo self :: getAllTasks();
-							break;
-							
-							case 'reports':
-								echo self :: getReports();
-							break;
-							
 							default :
 								# code...
 							break;
 						}
 						?>
-					</div>
+					</section>
 				</div>
 			</div>
 			<?php
 			}
 			else
 			{
-				switch ($section) 
+				switch ($this->data['section']) 
 				{
-					case 'sign-in':
-						echo self :: getSignInContent();
+					case 'log-in':
+						echo self :: getLogInContent();
 					break;
 				
-					case 'sign-out':
+					case 'log-out':
 						echo self :: getSignOutContent();
 					break;
 					
@@ -217,7 +143,14 @@ class Layout_View
 				}
 			}
 			
-// 			echo self::getFooter();
+			echo self::getFooter();
+			echo self::getCommonScriptDocuments();
+			switch ($this->data['section'])
+			{
+				case 'log-in':
+					echo self :: getLogInScripts();
+				break;
+			}
 			?>
 		</body>
 	</html>
@@ -229,23 +162,51 @@ class Layout_View
      * 
      * @return string $documents css & js files used in all the files
      */
-    public function getCommonDocuments()
+    public function getCommonStyleDocuments()
     {
     	ob_start();
     	?>
-    	<script src="/js/jquery-2.1.3.min.js"></script>
-    	<!-- Bootstrap -->
-	    <link href="/css/bootstrap.min.css" rel="stylesheet">
-	    <script src="/js/bootstrap.min.js"></script>
+    	<!-- Bootstrap 3.3.5 -->
+	    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+	    <!-- Font Awesome -->
+	    <link rel="stylesheet" href="/dist/font-awesome-4.5.0/css/font-awesome.min.css">
+	    <!-- Ionicons -->
+	    <!-- <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> -->
+	    <!-- Theme style -->
+	    <link rel="stylesheet" href="/dist/css/AdminLTE.min.css">
+	    <!-- iCheck -->
+	    <link rel="stylesheet" href="/plugins/iCheck/square/blue.css">
 	
-	    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	    <!--[if lt IE 9]>
-	      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-	      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+	        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	    <![endif]-->
+	    <link rel="stylesheet" href="/dist/css/skins/skin-blue.min.css">
        	<link href="/css/style.css" media="screen" rel="stylesheet" type="text/css" />
-    	<script src="/js/scripts.js"></script>
+    	
+       	<?php 
+       	$documents = ob_get_contents();
+       	ob_end_clean();
+       	return $documents; 
+    }
+    
+    /**
+     * returns the common css and js that are in all the web documents
+     * 
+     * @return string $documents css & js files used in all the files
+     */
+    public function getCommonScriptDocuments()
+    {
+    	ob_start();
+    	?>
+    	<!-- jQuery 2.1.4 -->
+    	<script src="/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+    	<!-- Bootstrap 3.3.5 -->
+    	<script src="/bootstrap/js/bootstrap.min.js"></script>
+    	<!-- AdminLTE App -->
+    	<script src="/dist/js/app.min.js"></script>
        	<?php 
        	$documents = ob_get_contents();
        	ob_end_clean();
@@ -266,33 +227,156 @@ class Layout_View
     	ob_start();
     	$active='class="active"';
     	?>  		
-    	<header class="navigation navbar navbar-fixed-top main-menu-holder">
-			<?php 
-			if ($this->section == 'sign-in')
-			{
-				?>
-			<nav class="nav navbar-nav navbar-fixed-top">
-				<ul class="nav navbar-nav main-menu">
-					<li class="active"><a href="/">Sign In</a></li>
-					<li><a href="/">Sign Up</a></li>
-				</ul>
-			</nav>
-				<?php 
-			}
-			else
-			{
-				?>
-			<nav id='nav navbar-nav navbar-fixed-top'>
-				<ul class="nav navbar-nav main-menu">
-					<li><a <?php if ($_GET['section'] == 1) echo $active; ?> href="/dashboard/"><b><?php echo $this->data['userInfo']['name']; ?></b></a></li>
-					<!-- <li><a <?php if ($_GET['section'] == 5) echo $active; ?> href="#">Settings</a></li> -->					
-					<li><a <?php if ($_GET['section'] == 10) echo $active; ?> href="/sign-out/" class="sign-out">Log Out</a></li>
-				</ul>
-			</nav>
-				<?php 
-			}
-			?>
-		</header>
+		<!-- Main Header -->
+        <header class="main-header">
+
+            <!-- Logo -->
+            <a href="index2.html" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b><?php echo $this->data['appInfo']['title']; ?></b></span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><?php echo $this->data['appInfo']['title']; ?></span>
+            </a>
+
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <!-- Messages: style can be found in dropdown.less-->
+                        <li class="dropdown messages-menu">
+                            <!-- Menu toggle button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-envelope-o"></i>
+                                <span class="label label-success">4</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">You have 4 messages</li>
+                                <li>
+                                    <!-- inner menu: contains the messages -->
+                                    <ul class="menu">
+                                        <li>
+                                            <!-- start message -->
+                                            <a href="#">
+                                                <div class="pull-left">
+                                                    <!-- User Image -->
+                                                    <img src="/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                                </div>
+                                                <!-- Message title and timestamp -->
+                                                <h4>Owner Room 2
+                            						<small><i class="fa fa-clock-o"></i> 5 mins</small>
+												</h4>
+                                                <!-- The message -->
+                                                <p>Pending payment</p>
+                                            </a>
+                                        </li>
+                                        <!-- end message -->
+                                    </ul>
+                                    <!-- /.menu -->
+                                </li>
+                                <li class="footer"><a href="#">See All Messages</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- /.messages-menu -->
+
+                        <!-- Notifications Menu -->
+                        <li class="dropdown notifications-menu">
+                            <!-- Menu toggle button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-bell-o"></i>
+                                <span class="label label-warning">10</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">You have 10 notifications</li>
+                                <li>
+                                    <!-- Inner Menu: contains the notifications -->
+                                    <ul class="menu">
+                                        <li>
+                                            <!-- start notification -->
+                                            <a href="#">
+                                                <i class="fa fa-users text-aqua"></i> 5 new incidents today
+                                            </a>
+                                        </li>
+                                        <!-- end notification -->
+                                    </ul>
+                                </li>
+                                <li class="footer"><a href="#">View all</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Tasks Menu -->
+                        <li class="dropdown tasks-menu">
+                            <!-- Menu Toggle Button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-flag-o"></i>
+                                <span class="label label-danger">9</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="header">You have 9 tasks</li>
+                                <li>
+                                    <!-- Inner menu: contains the tasks -->
+                                    <ul class="menu">
+                                        <li>
+                                            <!-- Task item -->
+                                            <a href="#">
+                                                <!-- Task title and progress text -->
+                                                <h3>Collect Payment<small class="pull-right">20%</small></h3>
+                                                <!-- The progress bar -->
+                                                <div class="progress xs">
+                                                    <!-- Change the css width attribute to simulate progress -->
+                                                    <div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+                                                        <span class="sr-only">20% Complete</span>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <!-- end task item -->
+                                    </ul>
+                                </li>
+                                <li class="footer">
+                                    <a href="#">View all tasks</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- User Account Menu -->
+                        <li class="dropdown user user-menu">
+                            <!-- Menu Toggle Button -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <!-- The user image in the navbar-->
+                                <img src="/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                                <!-- hidden-xs hides the username on small devices so only the image appears. -->
+                                <span class="hidden-xs"><?php echo $this->data['userInfo']['name']; ?></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- The user image in the menu -->
+                                <li class="user-header">
+                                    <img src="/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                    <p>
+                                        <?php echo $this->data['userInfo']['name']; ?> - Administrator
+                                        <small>Member since Nov. 2012</small>
+                                    </p>
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-right">
+                                        <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+							<a href="#" ><i class="fa fa-gears"></i></a>
+						</li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+		
     	<?php
     	$header = ob_get_contents();
     	ob_end_clean();
@@ -310,12 +394,25 @@ class Layout_View
      * 
      * @return string
      */
-    public function getSignInHead()
+    public function getLogInHead()
     {
     	ob_start();
     	?>
     	<script type="text/javascript">
 		</script>
+    	<?php
+    	$signIn = ob_get_contents();
+    	ob_end_clean();
+    	return $signIn;
+    }
+    
+    public function getLogInScripts()
+    {
+    	ob_start();
+    	?>
+    	<script type="text/javascript">
+		</script>
+		<script src="/js/log-in.js"></script>
     	<?php
     	$signIn = ob_get_contents();
     	ob_end_clean();
@@ -332,47 +429,47 @@ class Layout_View
      * 
      * @return string
      */
-    public function getSignInContent()
+    public function getLogInContent()
     {
     	ob_start();
     	?>
-    	<div class="login-box" id="sign-in">
-			<div class="col-md-4 col-md-offset-4">
-	    		<div class="panel panel-default">
-				  	<div class="panel-heading">
-				    	<h3 class="panel-title">Please sign in</h3>
-				 	</div>
-				  	<div class="panel-body">
-				    	<form accept-charset="UTF-8" role="form" method='post' 
-								action="<?php echo $_SERVER['REQUEST_URI']; ?>" 
-								id="slick-login">
-		                    <fieldset>
-					    	  	<div class="form-group">
-					    		    <input class="form-control" 
-					    		    		placeholder="E-mail" 
-					    		    		type="text" 
-					    		    		name='loginUser'>
-					    		</div>
-					    		<div class="form-group">
-					    			<input class="form-control" 
-					    					placeholder="Password" 
-					    					type="password" 
-					    					value="" 
-					    					name='loginPassword'>
-					    		</div>
-					    		<div class="checkbox">
-					    	    	<label>
-					    	    		<input name="remember" type="checkbox" value="Remember Me"> Remember Me
-					    	    	</label>
-					    	    </div>
-					    	    <input type="hidden" name="submitButton" value="1">
-					    		<input class="btn btn-lg btn-success btn-block" type="submit" value="Login" id="login">
-					    	</fieldset>
-				      	</form>
-				    </div>
-				</div>
-			</div>
-		</div>
+		<div class="login-box">
+	        <div class="login-logo">
+	            <a href="/"><b><?php echo $this->data['appInfo']['siteName']; ?></b></a>
+	        </div>
+	        <!-- /.login-logo -->
+	        <div class="login-box-body">
+	            <p class="login-box-msg">Sign in to start your session</p>
+	            <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" id="logInForm">
+	                <div class="form-group has-feedback">
+	                    <input type="email" class="form-control" placeholder="Email" name='loginUser'>
+	                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+	                </div>
+	                <div class="form-group has-feedback">
+	                    <input type="password" class="form-control" placeholder="Password" name='loginPassword'>
+	                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+	                </div>
+	                <div class="row">
+	                    <div class="col-xs-8">
+	                        <!-- <div class="checkbox icheck">
+	                            <label>
+	                                <input type="checkbox"> Remember Me
+	                            </label>
+	                        </div>
+	                       	 -->
+	                    </div>
+	                    <!-- /.col -->
+	                    <div class="col-xs-4">
+	                    	<input type="hidden" name="submitButton" value="1">
+	                        <button type="submit" class="btn btn-primary btn-block btn-flat" id="logins">Log In</button>
+	                    </div>
+	                    <!-- /.col -->
+	                </div>
+	            </form>
+	        </div>
+	        <!-- /.login-box-body -->
+	    </div>
+	    <!-- /.login-box -->
         <?php
         $wideBody = ob_get_contents();
         ob_end_clean();
@@ -422,25 +519,59 @@ class Layout_View
    		ob_start();
    		$active = 'class="active"';
    		?>
-   		<div class="col-sm-1 col-md-1 sidebar">
-			<ul class="nav nav-sidebar">
-				<li <?php if ($_GET['section'] == 1) echo $active; ?>><a href="/dashboard/">Dashboard</a></li>
-				<li <?php if ($_GET['section'] == 12) echo $active; ?>><a href="/reservations/">New Reservation</a></li>
-			</ul>
-			
-			<ul class="nav nav-sidebar">
-				<?php 
-   				if ($this->data['userInfo']['type'] == 1)
-   				{
-   					?>
-				<li <?php if ($_GET['section'] == 16) echo $active; ?>><a href="/reports/">Reports</a></li>
-				<?php 
-				}
-				?>
-				<li <?php if ($_GET['section'] == 13) echo $active; ?>><a href="/rooms/">Rooms</a></li>
-				<li <?php if ($_GET['section'] == 5) echo $active; ?>><a href="/agencies/">Agencies</a></li>
-			</ul>
-		</div>
+   		<!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+
+                <!-- Sidebar user panel (optional) -->
+                <div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                    </div>
+                    <div class="pull-left info">
+                        <p><?php echo $this->data['userInfo']['name']; ?></p>
+                        <!-- Status -->
+                        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                    </div>
+                </div>
+
+                <!-- Sidebar Menu -->
+                <ul class="sidebar-menu">
+                    <li class="header">MAIN NAVIGATION</li>
+                    <li class="active"><a href="/dashboard/"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+                    <li>
+						<a href="mailbox/mailbox.html">
+							<i class="fa fa-envelope"></i> <span>Messages</span>
+							<small class="label pull-right bg-yellow">12</small>
+						</a>
+					</li>
+                    <li><a href="#"><i class="fa fa-tasks"></i> <span>Tasks</span></a></li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-users"></i>
+                            <span>Owners</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="pages/charts/chartjs.html"><i class="fa fa-circle-o"></i> Add owner</a></li>
+                            <li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i> View all owners</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#"><i class="fa fa-home"></i> <span>Rooms</span></a></li>
+                    <li><a href="#"><i class="fa fa-bolt"></i> <span>Incidents</span></a></li>
+                    <li>
+						<a href="mailbox/mailbox.html">
+							<i class="fa fa-money"></i> <span>Payments</span>
+							<small class="label pull-right bg-red">12</small>
+						</a>
+					</li>
+                </ul>
+                <!-- /.sidebar-menu -->
+            </section>
+            <!-- /.sidebar -->
+        </aside>
    		<?php
    		$sideBar = ob_get_contents();
    		ob_end_clean();
@@ -456,33 +587,49 @@ class Layout_View
    	{
    		ob_start();
    		?>
-   		<div class="row placeholders dashboard-icons">
-			<div class="col-xs-6 col-sm-3 placeholder">
-				<a href="/guests/">
-					<i class="glyphicon glyphicon-th"></i>
-					<h4>Guests</h4>
-					<span class="text-muted">
-					<?php 
-					if ($this->data['recentMembers'] > 0)
-						echo $this->data['recentMembers'];
-					else 
-						echo 'No';
-					?>
-					 recent guests
-					</span>
-				</a>
-			</div>
-			<div class="col-xs-6 col-sm-3 placeholder">
-				<a href="/tasks/">
-					<i class="glyphicon glyphicon-th-list"></i>
-					<h4>Tasks</h4>
-					<span class="text-muted">
-						<strong><?php echo $this->data['taskInfo']['today']; ?></strong> tasks for today, 
-						<strong><?php echo $this->data['taskInfo']['pending']; ?></strong> pending
-					</span>
-				</a>
-			</div>
-		</div>
+		<div class="row">
+			<div class="col-md-3 col-sm-6 col-xs-12">
+				<div class="info-box">
+                	<span class="info-box-icon bg-aqua"><i class="fa fa-users"></i></span>
+                	<div class="info-box-content">
+						<span class="info-box-text">Owners</span>
+						<span class="info-box-number"><?php echo $this->data['totalMembers']; ?></span>
+					</div><!-- /.info-box-content -->
+				</div><!-- /.info-box -->
+			</div><!-- /.col -->
+			
+			<div class="col-md-3 col-sm-6 col-xs-12">
+				<div class="info-box">
+                	<span class="info-box-icon bg-green"><i class="fa fa-tasks"></i></span>
+                	<div class="info-box-content">
+						<span class="info-box-text">Tasks</span>
+						<span class="info-box-number"><?php echo $this->data['taskInfo']['today']; ?></span>
+						<span class="progress-description"><?php echo $this->data['taskInfo']['pending']; ?> pending</span>
+					</div><!-- /.info-box-content -->
+				</div><!-- /.info-box -->
+			</div><!-- /.col -->
+			
+			<div class="col-md-3 col-sm-6 col-xs-12">
+				<div class="info-box">
+                	<span class="info-box-icon bg-yellow"><i class="fa fa-envelope-o"></i></span>
+                	<div class="info-box-content">
+						<span class="info-box-text">Owners</span>
+						<span class="info-box-number">4</span>
+					</div><!-- /.info-box-content -->
+				</div><!-- /.info-box -->
+			</div><!-- /.col -->
+			
+			<div class="col-md-3 col-sm-6 col-xs-12">
+				<div class="info-box">
+                	<span class="info-box-icon bg-red"><i class="fa fa-money"></i></span>
+                	<div class="info-box-content">
+						<span class="info-box-text">Payments</span>
+						<span class="info-box-number">2</span>
+					</div><!-- /.info-box-content -->
+				</div><!-- /.info-box -->
+			</div><!-- /.col -->
+
+          <!-- =========================================================== -->
    		<?php
    		$dashboardIcons = ob_get_contents();
    		ob_end_clean();
@@ -501,7 +648,7 @@ class Layout_View
    	{
    		ob_start();
    		?>
-   		<h2 class="sub-header">Recent Guests</h2>
+   		<h2 class="sub-header">Recent Owners</h2>
 		<div class="table-responsive">
 			<table class="table table-striped">
 				<thead>
@@ -2522,20 +2669,15 @@ class Layout_View
     {
     	ob_start();
     	?>
-		<footer>
-			<nav class="row navbar col-lg-8">
-				<ul class='nav navbar-nav main-menu'>
-					<li><a href="../contact-us/">Contact</a></li>
-					<li><a href="#">API &amp; Hacks</a></li>
-					<li><a href="#">FAQ</a></li>
-					<li><a href="#">Privacy Policy</a></li>
-					<li><a href="#">Terms of Service</a></li>
-				</ul>
-			</nav>
-			<div class="row col-lg-4">
-				<p>Copyright &copy; <?php echo date('Y'); ?> <?php echo $this->data['appInfo']['siteName']; ?>. All rights reserved.</p>
-			<div>
-		</footer>
+		<!-- Main Footer -->
+        <footer class="main-footer">
+            <!-- To the right -->
+            <div class="pull-right hidden-xs">
+                Anything you want
+            </div>
+            <!-- Default to the left -->
+            <strong>Copyright &copy; 2016 <a href="#"><?php echo $this->data['appInfo']['siteName']; ?></a>.</strong> All rights reserved.
+        </footer>
     	<?php
     	$footer = ob_get_contents();
     	ob_end_clean();

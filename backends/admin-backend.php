@@ -82,7 +82,7 @@ class generalBackend
 		$data['taskInfo']['today'] 		= $this->model->getTotalTodayTasksByMemberId();
 		$data['taskInfo']['pending'] 	= $this->model->getTotalPendingTasksByMemberId();
 		$data['taskInfo']['future'] 	= $this->model->getTotalFutureTasksByMemberId();
-		$data['recentMembers'] 			= $this->model->getRecentMembers();
+		$data['totalMembers'] 			= $this->model->getTotalMembers();
 		
 		switch ($section) 
 		{

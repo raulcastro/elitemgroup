@@ -678,10 +678,10 @@ class Layout_Model
 		}
 	}
 	
-	public function getRecentMembers()
+	public function getTotalMembers()
 	{
 		try {
-			$query = 'SELECT COUNT(*) FROM members WHERE date = CURDATE() AND user_id = '.$_SESSION['userId'];
+			$query = 'SELECT COUNT(*) FROM members';
 			return $this->db->getValue($query);
 		} catch (Exception $e) {
 			return false;
