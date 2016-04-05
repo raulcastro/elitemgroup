@@ -89,6 +89,13 @@ switch ($_POST['opt'])
 		}
 	break;
 	
+	case 8:
+		if ($model->addMemberRoom($_POST))
+		{
+			echo 1;
+		}
+	break;
+	
 	default:
 	break;
 }

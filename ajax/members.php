@@ -19,51 +19,19 @@ switch ($_POST['opt'])
 			echo 0;
 		
 		break;
-		if ($memberId > 0)
-		{
-			if ($updateMember = $model->updateMember($_POST))
-				echo str_pad($updateMember, 4, 0, STR_PAD_LEFT);
-			else 
-				echo 0;
-		} 
-		else 
-		{
-			
-		}	
+		
 	break;
 	
-// 	E-mails
 	case 2:
-		if ($_POST['memberId'] && $_POST['emailVal'])
-		{
-			if ($_POST['emailId'] > 0)
-			{
-				$model->updateMemberEmail($_POST);
-			}
-			else 
-			{
-				$model->addMemberEmail($_POST);
-			}
-		}
-	break;
-	
-	// 	Phones
-	case 3:
-		if ($_POST['memberId'] && $_POST['phoneVal'])
-		{
-			if ($_POST['phoneId'] > 0)
-			{
-				$model->updateMemberPhone($_POST);
-			}
-			else 
-			{
-				$model->addMemberPhone($_POST);
-			}
-		}
+		if ($updateMember = $model->updateMember($_POST))
+			echo str_pad($updateMember, 4, 0, STR_PAD_LEFT);
+		else
+			echo 0;
 	break;
 	
 	// Add History
 	case 4:
+		var_dump($_POST);
 		if ($_POST['memberId'])
 		{
 			if ($model->addHistory($_POST))

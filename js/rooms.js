@@ -31,6 +31,13 @@ $(function(){
 			return false;
 		});
 	}
+	
+	if ( $('#addMemberRoom').length ) { 
+		$('#addMemberRoom').click(function(){
+			addMemberRoom();
+			return false;
+		});
+	}
 });
 
 function addRoom()
@@ -251,6 +258,38 @@ function getRoomInventory(roomId)
 	        	if (info != '0')
 	        	{
 	        		$('#inventoryBox').html(info);
+	        	}
+	        	else
+				{
+				}
+	        }
+	    });
+	}
+}
+
+function addMemberRoom()
+{
+	var memberId = $('#memberId').val();
+	var roomId	 = $('#roomList').val();
+	
+	if (roomId)
+	{
+		$.ajax({
+	    type: "POST",
+	    url: "/ajax/rooms.php",
+	    data: {
+	    	memberId:		memberId,
+	    	roomId: 		roomId,
+	    	opt:			'8'
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		pathArray 		= $(location).attr('href').split( '/' );
+	            	newURL 			= pathArray[0]+'//'+pathArray[2]+'/'+pathArray[3]+'/'+pathArray[4]+'/'+pathArray[5]+'-'+Math.floor((Math.random() * 100) + 1)+'/#utilitiesBox';
+	            	window.location = newURL;
 	        	}
 	        	else
 				{

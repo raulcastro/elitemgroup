@@ -134,6 +134,7 @@ class Layout_Model
 		}
 	}
 	
+	
 	/**
 	 * Get the last 10 members added
 	 * 
@@ -234,21 +235,23 @@ class Layout_Model
 					SET name 	= ?, 
 					last_name 	= ?, 
 					address 	= ?, 
-					city 		= ?, 
-					state 		= ?, 
-					country 	= ?, 
+					phone_one	= ?, 
+					phone_two	= ?, 
+					email_one 	= ?,
+					email_two 	= ?, 
 					notes 		= ?
 					WHERE member_id = ?';
 			
 			$prep = $this->db->prepare($query);
 			
-			$prep->bind_param('sssssssi',
-					$data['memberName'],
-					$data['memberLastName'],
+			$prep->bind_param('ssssssssi',
+					$data['memberFirst'],
+					$data['memberLast'],
 					$data['memberAddress'],
-					$data['city'],
-					$data['mState'],
-					$data['country'],
+					$data['phoneOne'],
+					$data['phoneTwo'],
+					$data['emailOne'],
+					$data['emailTwo'],
 					$data['notes'],
 					$data['memberId']
 					);
@@ -1528,6 +1531,33 @@ class Layout_Model
 					LEFT JOIN inventory_categories ic ON ic.category_id = ri.category_id
 					LEFT JOIN inventory i ON i.inventory_id = ri.inventory_id 
 					WHERE ri.room_id = '.$roomId;
+			
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function addMemberRoom($data)
+	{
+		try {
+			$query = 'INSERT INTO member_rooms(member_id, room_id) VALUES(?, ?)';
+			$prep = $this->db->prepare($query);
+			$prep->bind_param('ii', $data['memberId'], $data['roomId']);
+			return $prep->execute();
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function getRoomsByMember($memberId)
+	{
+		try {
+			$query = 'SELECT r.room_id, r.room, r.description, rt.room_type
+					FROM member_rooms mr
+					LEFT JOIN rooms r ON r.room_id = mr.room_id
+					LEFT JOIN room_types rt ON rt.room_type_id = r.room_type_id
+					WHERE mr.member_id = '.$memberId;
 			
 			return $this->db->getArray($query);
 		} catch (Exception $e) {

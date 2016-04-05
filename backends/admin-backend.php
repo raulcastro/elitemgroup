@@ -150,6 +150,12 @@ class generalBackend
 				$memberTasksArray		= $this->model->getMemberTaskByMemberId($memberId);
 				$data['memberTasks'] 	= $memberTasksArray; 
 				
+				$roomsArray = $this->model->getAllRooms();
+				$data['rooms'] = $roomsArray;
+				
+				$memberRooms = $this->model->getRoomsByMember($memberId);
+				$data['memberRooms'] = $memberRooms;
+				
 // 				Reservations
 				$memberReservationsArray 	= $this->model->getMemberReservationsByMemberId($memberId);
 				
@@ -165,96 +171,15 @@ class generalBackend
 					$paidStaying		= $this->model->getReservationStayingCostPaid($reservation['reservation_id']);
 					$pendingStaying		= $this->model->getReservationStayingPending($reservation['reservation_id']);
 					
-					// List of available rooms of for the current range of date
-					$reservationDate 	= array('checkIn' => $reservation['check_in'], 'checkOut' => $reservation['check_out']);
-					$availableRooms 	= $this->model->searchRooms($reservationDate);
-					
-					$reservationInfo = array(
-							'reservation_id'	=> $reservation['reservation_id'],
-							'room_id' 			=> $reservation['room_id'],
-							'date'				=> $reservation['date'],
-							'check_in' 			=> $reservation['check_in'],
-							'check_in_mask'		=> $reservation['check_in_mask'],
-							'check_out' 		=> $reservation['check_out'],
-							'check_out_mask'	=> $reservation['check_out_mask'],
-							'room' 				=> $reservation['room'],
-							'room_type' 		=> $reservation['room_type'],
-							'adults' 			=> $reservation['adults'],
-							'children' 			=> $reservation['children'],
-							'agency' 			=> $reservation['agency'],
-							'agency_id'			=> $reservation['agency_id'],
-							'external_id' 		=> $reservation['external_id'],
-							'status' 			=> $reservation['status'],
-							'n_days'			=> $reservation['n_days'],
-							'grandTotal' 		=> $grandTotal,
-							'paid' 				=> $paid,
-							'unpaid' 			=> $unpaid,
-							'staying_total'		=> $grandTotalStaying,
-							'staying_paid'		=> $paidStaying,
-							'staying_pending'	=> $pendingStaying,
-							'availableRooms'	=> $availableRooms
-					);
 					
 					$payments['payments'] = $this->model->getPaymentsByReservationId($reservation['reservation_id']);
 					array_push($reservationInfo, $payments);
 					array_push($data['memberReservations'], $reservationInfo);
 				}
 				
-				// 				Cancelations
-				$memberReservationsArray 	= $this->model->getMemberCancelationsByMemberId($memberId);
-				
-				foreach ($memberReservationsArray as $reservation)
-				{
-					$grandTotal = $this->model->getReservationGrandTotalByReservationId($reservation['reservation_id']);
-					$paid 		= $this->model->getReservationPaidByReservationId($reservation['reservation_id']);
-					$unpaid 	= $this->model->getReservationUnpaidByReservationId($reservation['reservation_id']);
-						
-					$cancelationInfo = array(
-							'reservation_id'	=> $reservation['reservation_id'],
-							'room_id' 		=> $reservation['room_id'],
-							'date'			=> $reservation['date'],
-							'check_in' 		=> $reservation['check_in'],
-							'check_in_mask'	=> $reservation['check_in_mask'],
-							'check_out' 	=> $reservation['check_out'],
-							'check_out_mask'=> $reservation['check_out_mask'],
-							'room' 			=> $reservation['room'],
-							'room_type' 	=> $reservation['room_type'],
-							'adults' 		=> $reservation['adults'],
-							'children' 		=> $reservation['children'],
-							'agency' 		=> $reservation['agency'],
-							'external_id' 	=> $reservation['external_id'],
-							'status' 		=> 5,
-							'grandTotal' 	=> $grandTotal,
-							'paid' 			=> $paid,
-							'unpaid' 		=> $unpaid
-					);
-					
-					$payments['payments'] = $this->model->getPaymentsByReservationId($reservation['reservation_id']);
-					array_push($cancelationInfo, $payments);
-					
-					array_push($data['memberReservations'], $cancelationInfo);
-				}
-				
-// 				/Cancelations
-				
 // 				Agencies
 				$agenciesArray 		= $this->model->getAgencies();
 				$data['agencies'] 	= $agenciesArray;
-				
-// 				Rooms
-				$roomsArray 	= $this->model->getAllRooms();
-				$data['rooms'] 	= array();
-				foreach ($roomsArray as $room)
-				{
-					$roomInfo = array(
-							'room_id'	=> $room['room_id'],
-							'room' 		=> $room['room'],
-							'abbr' 		=> $room['abbr']
-					);
-				
-					array_push($data['rooms'], $roomInfo);
-				}
-				
 			break;
 			
 // 			Reservations

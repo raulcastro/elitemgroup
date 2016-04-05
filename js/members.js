@@ -7,6 +7,13 @@ $(function(){
 		});
 	}
 	
+	if ( $('#updateMember').length ) { 
+		$('#updateMember').click(function(){
+			updateMember();
+			return false;
+		});
+	}
+	
 	$('#progressSaveMember').hide();
 	$('#memberComplete').hide();
 	
@@ -54,78 +61,54 @@ function saveMember()
 	        	}
 	        	else
 				{
-					alert('Errr..');
 				}
 	        }
 	    });
 	}
 }
 
-function saveMemberEmails()
+function updateMember()
 {
-	emailId 	= 0;
-	emailVal 	= '';
-	memberId 	= $('#member-id').val();
+	var memberId		= $('#memberId').val();
+	var memberFirst 	= $('#memberFirst').val(); 
+	var memberLast		= $('#memberLast').val();
+	var memberAddress	= $('#memberAddress').val();
+	var notes		 	= $('#notes').val();
+	var phoneOne		= $('#phoneOne').val();
+	var phoneTwo		= $('#phoneTwo').val();
+	var emailOne		= $('#emailOne').val();
+	var emailTwo		= $('#emailTwo').val();
 	
-	$('.memberEmail').each(function()
+	if (memberFirst)
 	{
-		emailId 	= 0;
-		if ($(this).attr('eid') && $(this).val())
-		{
-			emailId		= $(this).attr('eid');
-			emailVal	= $(this).val();
-			
-			$.ajax({
-		        type:   'POST',
-		        url:    '/ajax/members.php',
-		        data:{  memberId: 	memberId,
-		        	emailId: 		emailId,
-		        	emailVal: 		emailVal,
-		            opt: 			2
-		             },
-		        success:
-		        function(xml)
-		        {
-		            if (0 != xml)
-		            {
-		            	
-		            }
-		        }
-		    });
-		}
-	});
+		$.ajax({
+	    type: "POST",
+	    url: "/ajax/members.php",
+	    data: {
+	    	memberId:		memberId,
+	    	memberFirst: 	memberFirst,
+	    	memberLast: 	memberLast, 
+	    	memberAddress: 	memberAddress,
+	    	phoneOne:		phoneOne,
+	    	phoneTwo:		phoneTwo,
+	    	emailOne:		emailOne,
+	    	emailTwo:		emailTwo,
+	    	notes:			notes,
+	    	opt:			'2'
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		alert('Info updated!');
+	        	}
+	        	else
+				{
+				}
+	        }
+	    });
+	}
 }
 
-function saveMemberPhones()
-{
-	phoneVal 	= '';
-	memberId 	= $('#member-id').val();
-	
-	
-	$('.memberPhone').each(function()
-	{
-		phoneId		= $(this).attr('pid');
-		phoneVal	= $(this).val();
-	
-		if ($(this).val())
-		{
-			$.ajax({
-				type:   'POST',
-				url:    '/ajax/members.php',
-		        data:{  memberId: 	memberId,
-		        	phoneId: 		phoneId,
-		        	phoneVal: 		phoneVal,
-		            opt: 			3
-		             },
-		        success:
-		        function(xml)
-		        {
-		            if (0 != xml)
-		            {
-		            	
-		            }
-		        }
-		    });
-		}
-	});
-}
+

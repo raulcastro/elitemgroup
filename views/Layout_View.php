@@ -105,6 +105,10 @@ class Layout_View
 				case 'room':
 					echo self::getRoomHead();
 				break;
+				
+				case 'tasks':
+					echo self::getTasksHead();
+				break;
 			}
 			?>
 		</head>
@@ -167,6 +171,10 @@ class Layout_View
 							case 'room':
 								echo self::getRoomContent();
 							break;
+							
+							case 'tasks':
+								echo self :: getAllTasks();
+							break;
 
 							default :
 								# code...
@@ -226,6 +234,10 @@ class Layout_View
 				
 				case 'room':
 					echo self::getRoomScripts();
+				break;
+				
+				case 'tasks':
+					echo self::getTasksScripts();
 				break;
 			}
 			?>
@@ -626,7 +638,7 @@ class Layout_View
 							<small class="label pull-right bg-yellow">12</small>
 						</a>
 					</li>
-                    <li><a href="#"><i class="fa fa-tasks"></i> <span>Tasks</span></a></li>
+                    <li><a href="/tasks/"><i class="fa fa-tasks"></i> <span>Tasks</span></a></li>
                     <li class="treeview">
                         <a href="#">
                             <i class="fa fa-users"></i>
@@ -1762,16 +1774,16 @@ class Layout_View
    		ob_start();
    		?>
    		<div class="col-sm-12 history-member-panel">
-			<div class="row text-right">
-				<a href="javascript:void(0);" class="btn btn-info btn-xs display-add-history">add history</a>
+			<div class="text-right">
+				<a href="javascript:void(0);" class="btn btn-info btn-sm display-add-history">Add history</a>
 			</div>
 			
-			<div class="row history-member-box">
+			<div class="history-member-box">
 				<textarea rows="2" cols="" class="form-control" placeholder="history" id="history-entry"></textarea>
-				<a href="javascript:void(0);" class="btn btn-info btn-xs" id="add-history">save</a>
+				<a href="javascript:void(0);" class="btn btn-info btn-xs" id="add-history">Add</a>
 			</div>
 			
-			<div class="row history-content">
+			<div class="history-content">
 				<ul class="history-list">
 					<?php
 					if ($this->data['memberHistory'])
@@ -1812,11 +1824,11 @@ class Layout_View
    		ob_start();
    		?>
    		<div class="col-sm-12 task-member-panel">
-			<div class="row text-right">
-				<a href="javascript:void(0);" class="btn btn-info btn-xs display-add-task">add task</a>
+			<div class="text-right">
+				<a href="javascript:void(0);" class="btn btn-info btn-sm display-add-task">Add task</a>
 			</div>
 			
-			<div class="row task-member-box">
+			<div class="task-member-box">
 				<div class="create-task-box" id="create-task-box">
 					<div class="top">
 						<?php 
@@ -1889,7 +1901,8 @@ class Layout_View
 					</div><!--  /top -->
 					<div class="middle">
 						<textarea rows="" cols="" id="task_content" class="form-control" placeholder="new task"></textarea>
-						<a href="javascript:void(0);" class="btn btn-info btn-xs" id="add-task">save</a>
+						<a href="javascript:void(0);" class="btn btn-info btn-xs" id="add-task">Add</a>
+						<div class="clearfix"></div>
 					</div>
 				</div>
 			</div>
@@ -2064,6 +2077,19 @@ class Layout_View
     {
     	ob_start();
     	?>
+       	<script src=""></script>
+        <script>
+    	</script>
+        <?php
+        $signIn = ob_get_contents();
+        ob_end_clean();
+        return $signIn;
+    }
+    
+    public function getTasksScripts()
+    {
+    	ob_start();
+    	?>
        	<script src="/js/tasks.js"></script>
         <script>
     	</script>
@@ -2158,40 +2184,42 @@ class Layout_View
    	{
    		ob_start();
    		?>
-		<div class="col-sm-12 task-member-panel">
-			<div class="row main-menu-tasks text-center">
-				<ul class="nav nav-pills">
-					<li>
-						<a href="#" class="text-danger" id="get-pending-tasks">
-							Pending
-							<?php if ($this->data['taskInfo']['pending'] > 0) {?><span class="badge"><?php echo $this->data['taskInfo']['pending']; ?></span><?php } ?>
-						</a>
-					</li>
-					<li>
-						<a href="#" class="text-primary" id="get-today-tasks">
-							Today 
-							<?php if ($this->data['taskInfo']['today'] > 0) {?><span class="badge"><?php echo $this->data['taskInfo']['today']; ?></span><?php } ?>
-						</a>
-					</li>
-					<li>
-						<a href="#" class="text-warning" id="get-future-tasks">
-							Future 
-							<?php if ($this->data['taskInfo']['future'] > 0) {?><span class="badge"><?php echo $this->data['taskInfo']['future']; ?></span><?php } ?>
-						</a>
-					</li>
-					<li>
-						<a href="#" class="text-success" id="get-completed-tasks">
-							Completed
-						</a>
-					</li>
-				</ul>
-			</div>
-			<div class="row task-content">
-				<ul class="task-list">
-				<?php 
-				echo $this->listTasks($this->data['memberTasks']);
-				?>
-				</ul>
+   		<div class="row">
+			<div class="col-sm-12 task-member-panel">
+				<div class="main-menu-tasks text-center">
+					<ul class="nav nav-pills">
+						<li>
+							<a href="#" class="text-red" id="get-pending-tasks">
+								Pending
+								<?php if ($this->data['taskInfo']['pending'] > 0) {?><span class="badge"><?php echo $this->data['taskInfo']['pending']; ?></span><?php } ?>
+							</a>
+						</li>
+						<li>
+							<a href="#" class="text-aqua" id="get-today-tasks">
+								Today 
+								<?php if ($this->data['taskInfo']['today'] > 0) {?><span class="badge"><?php echo $this->data['taskInfo']['today']; ?></span><?php } ?>
+							</a>
+						</li>
+						<li>
+							<a href="#" class="text-yellow" id="get-future-tasks">
+								Future 
+								<?php if ($this->data['taskInfo']['future'] > 0) {?><span class="badge"><?php echo $this->data['taskInfo']['future']; ?></span><?php } ?>
+							</a>
+						</li>
+						<li>
+							<a href="#" class="text-green" id="get-completed-tasks">
+								Completed
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="row task-content">
+					<ul class="task-list">
+					<?php 
+					echo $this->listTasks($this->data['memberTasks']);
+					?>
+					</ul>
+				</div>
 			</div>
 		</div>
    		<?php
@@ -2713,12 +2741,123 @@ class Layout_View
      	return $content;
     }
     
+    public function getRoomPanel()
+    {
+    	ob_start();
+    	?>
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label  class="col-sm-2 control-label">Rooms</label>
+					<div class="col-sm-10">
+						<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="roomList">
+							<?php 
+							foreach ($this->data['rooms'] as $room)
+							{
+								?>
+							<option value="<?php echo $room['room_id']; ?>"><?php echo $room['room']; ?></option>
+								<?php
+							}
+							?>
+						</select>
+					</div>
+				</div><!-- /.form-group -->
+			</div><!-- /.col -->
+			
+			<div class="col-md-6 text-right">
+				<div class="form-group">
+					<button type="submit" class="btn btn-info pull-left btn-sm" id="addMemberRoom">Add room</button>
+				</div>
+			</div>
+		</div>
+		
+		<h2 class="page-header">Rooms</h2>
+		
+		<div class="row">
+			<div class="col-md-12">
+				<div class="box box-solid">
+					<div class="box-body">
+						<div class="box-group" id="accordion">
+							<!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
+							<?php 
+							foreach ($this->data['memberRooms'] as $room)
+							{
+								echo self::getRoomMemberItem($room);
+							}
+							?>
+						</div>
+					</div><!-- /.box-body -->
+				</div><!-- /.box -->
+			</div><!-- /.col -->
+		</div><!-- /.row -->
+        <?php
+        $content = ob_get_contents();
+        ob_end_clean();
+        return $content;
+    }
+    
+    public function getRoomMemberItem($room)
+    {
+    	ob_start();
+    	?>
+		<div class="panel box box-success">
+			<div class="box-header with-border">
+				<h5 class="box-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $room['room_id']; ?>" class="roomList">
+						<?php echo $room['room'].' / '.$room['room_type']; ?>
+					</a>
+				</h5>
+			</div>
+			<div id="collapse<?php echo $room['room_id']; ?>" class="panel-collapse collapse">
+				<div class="box-body">
+				<?php echo $room['description']; ?>
+				<br>
+				<br>
+				
+				<div class="row">
+            <div class="col-md-12">
+              <!-- Custom Tabs -->
+              <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#tab_1" data-toggle="tab">Payments</a></li>
+                  <li><a href="#tab_2" data-toggle="tab">Incidents</a></li>
+                  <li><a href="#tab_3" data-toggle="tab">Galleries</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active" id="tab_1">
+                    <b>How to use:</b>
+                    <p>Exactly like the original bootstrap tabs except you should use
+                      the custom wrapper <code>.nav-tabs-custom</code> to achieve this style.</p>
+                  </div><!-- /.tab-pane -->
+                  <div class="tab-pane" id="tab_2">
+                    The European languages are members of the same family. Their separate existence is a myth.
+                  </div><!-- /.tab-pane -->
+                  <div class="tab-pane" id="tab_3">
+                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                  </div><!-- /.tab-pane -->
+                </div><!-- /.tab-content -->
+              </div><!-- nav-tabs-custom -->
+            </div><!-- /.col -->
+
+          </div>
+				
+				
+				</div>
+			</div>
+		</div>
+        <?php
+        $content = ob_get_contents();
+        ob_end_clean();
+        return $content;
+    }
+    
     public function getMemberHead()
     {
     	ob_start();
     	?>
-    	<script type="text/javascript">
-		</script>
+    	<link rel="stylesheet" href="/plugins/datepicker/datepicker3.css">
+    	<!-- Select2 -->
+    	<link rel="stylesheet" href="/plugins/select2/select2.min.css">
     	<?php
     	$head = ob_get_contents();
     	ob_end_clean();
@@ -2735,14 +2874,21 @@ class Layout_View
 	    <script src="/plugins/input-mask/jquery.inputmask.extensions.js"></script>
 	    <!-- SlimScroll 1.3.0 -->
     	<script src="/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    	<script src="/plugins/datepicker/bootstrap-datepicker.js"></script>
+    	<script src="/plugins/select2/select2.full.min.js"></script>
     	
     	<script type="text/javascript">
     	$(function () {
             //Money Euro
             $("[data-mask]").inputmask();
+            $("#task-date").datepicker();
+            $(".select2").select2();
     	});
 		</script>
 		<script src="/js/members.js"></script>
+		<script src="/js/history.js"></script>
+		<script src="/js/tasks.js"></script>
+		<script src="/js/rooms.js"></script>
     	<?php
     	$scripts = ob_get_contents();
     	ob_end_clean();
@@ -2762,6 +2908,7 @@ class Layout_View
 					<div class="box-body">
 						<div class="form-group">
 							<label for="exampleInputEmail1">First name</label>
+							<input type="hidden" id="memberId" value="<?php echo $this->data['memberInfo']['member_id']; ?>">
 							<input type="text" class="form-control" id="memberFirst" placeholder="First Name" value="<?php echo $this->data['memberInfo']['name']; ?>" >
 						</div>
 						
@@ -2845,7 +2992,7 @@ class Layout_View
 	                      		<span class="sr-only">20% Complete</span>
 	                    	</div>
 	                  	</div>
-	                    <button type="submit" class="btn btn-info pull-right" id="memberSave">Update info</button>
+	                    <button type="submit" class="btn btn-info pull-right" id="updateMember">Update info</button>
 	                    <a href="" class="btn btn-success pull-right" id="memberComplete">Complete Owner</a>
                   	</div>
 				</div>
@@ -2871,14 +3018,21 @@ class Layout_View
 						<li class="pull-left header"><i class="fa fa-th"></i>Admin Owner</li>
 					</ul>
 					<div class="tab-content">
-						<div class="tab-pane active" id="tab_1-1">
-							<b>How to use:</b>
+						<div class="tab-pane active" id="tab_3-2">
+							<?php echo $this->getRoomPanel(); ?>
 						</div><!-- /.tab-pane -->
 						<div class="tab-pane" id="tab_2-2">
-							languages.
+							<div class="row">
+								<?php echo $this->getHistoryPanel(); ?>
+							</div>
 						</div><!-- /.tab-pane -->
 						<div class="tab-pane" id="tab_3-2">
 							Lorem 
+						</div><!-- /.tab-pane -->
+						<div class="tab-pane" id="tab_1-1">
+							<div class="row">
+								<?php echo $this->getTaskPanel(); ?>
+							</div>
 						</div><!-- /.tab-pane -->
 					</div><!-- /.tab-content -->
 				</div><!-- nav-tabs-custom -->
@@ -3001,7 +3155,7 @@ class Layout_View
     	ob_start();
     	?>
     	<!-- Select2 -->
-    <link rel="stylesheet" href="/plugins/select2/select2.min.css">
+    	<link rel="stylesheet" href="/plugins/select2/select2.min.css">
     	<?php
     	$head = ob_get_contents();
     	ob_end_clean();
