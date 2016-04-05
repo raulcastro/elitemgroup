@@ -86,10 +86,21 @@ class generalBackend
 		
 		switch ($section) 
 		{
-			case 'companies':
-				// 		get All companies
-				$companiesArray 	= $this->model->getCompanies();
-				$data['companies'] 	= $companiesArray;
+			case 'settings':
+				// 		get All room types
+				$infoArray 	= $this->model->getRoomTypes();
+				$data['types'] 	= $infoArray;
+				
+				$infoArray = $this->model->getAllInventoryCategories();
+				$data['categories'] = $infoArray;
+			break;
+			
+			case 'inventory-category':
+				$infoSection = $this->model->getInVentoryCategoryById($_GET['categoryId']);
+				$data['category'] = $infoSection;
+				
+				$inventoryArray = $this->model->getInventoryByCategory($_GET['categoryId']);
+				$data['inventoryArray'] = $inventoryArray;
 			break;
 			
 			case 'members':
@@ -98,21 +109,38 @@ class generalBackend
 				$data['members'] 	= $membersArray;
 			break;
 			
-			case 'member-info':
-				// 		get all countries
-				$countriesArray 		= $this->model->getAllCountries();
-				$data['countries'] 		= $countriesArray;
+			case 'rooms':
+				$infoArray 	= $this->model->getRoomTypes();
+				$data['types'] 	= $infoArray;
+				
+				$roomsArray = $this->model->getAllRooms();
+				$data['rooms'] = $roomsArray;
+			break;
+			
+			case 'room':
+				$infoArray 	= $this->model->getRoomTypes();
+				$data['types'] 	= $infoArray;
+			
+				$roomsArray = $this->model->getAllRooms();
+				$data['rooms'] = $roomsArray;
+				
+				$roomInfo = $this->model->getRoomById($_GET['roomId']);
+				$data['room'] = $roomInfo;
+				
+				$arrayCategories = $this->model->getAllInventoryCategories();
+				$data['categories'] = $arrayCategories;
+				
+				$arrayLastInventory = $this->model->getLastInventoryList();
+				$data['inventory'] = $arrayLastInventory; 
+				
+				$inventoryArray = $this->model->getRoomInventoryByRoom($_GET['roomId']);
+				$data['roomInventory'] = $inventoryArray;
+			break;
+			
+			case 'member':
 				
 				$memberInfoRow 			= $this->model->getMemberByMemberId($memberId);
 				$data['memberInfo'] 	= $memberInfoRow;
-				
-// 				Emails
-				$memberEmailsArray  	= $this->model->getMemberEmailsById($memberId);
-				$data['memberEmails'] 	= $memberEmailsArray;
-				
-// 				Phones
-				$memberPhonesArray		= $this->model->getMemberPhonesById($memberId);
-				$data['memberPhones'] 	= $this->model->getMemberPhonesById($memberId);
 				
 // 				History
 				$memberHistoryArray 	= $this->model->getMemberHistoryById($memberId);

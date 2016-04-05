@@ -8,12 +8,13 @@
 	require_once $root.'backends/admin-backend.php';
 	require_once $root.'/'.'views/Layout_View.php';
 	
-	$data 	= $backend->loadBackend();
-	
-	$data['title'] 			= 'Dashboard';
-	$data['section'] 		= 'dashboard';
+	$data 	= $backend->loadBackend('inventory-category');
+
+	$data['title'] 			= $data['category']['category'];
+	$data['section'] 		= 'inventory-category';
+	$data['icon'] 			= 'fa-gears';
 	$data['template-class'] = '';
-	$data['icon']			= 'fa-dashboard';
+	
 	
 	$view 	= new Layout_View($data);
 	

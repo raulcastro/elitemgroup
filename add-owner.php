@@ -8,12 +8,13 @@
 	require_once $root.'backends/admin-backend.php';
 	require_once $root.'/'.'views/Layout_View.php';
 	
-	$data 	= $backend->loadBackend();
+	$data 	= $backend->loadBackend('add-owner');
 	
-	$data['title'] 			= 'Dashboard';
-	$data['section'] 		= 'dashboard';
+	$data['title'] 			= 'Add owner';
+	$data['section'] 		= 'add-owner';
+	$data['icon'] 			= 'fa-user-plus';
 	$data['template-class'] = '';
-	$data['icon']			= 'fa-dashboard';
+	
 	
 	$view 	= new Layout_View($data);
 	

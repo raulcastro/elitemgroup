@@ -93,6 +93,47 @@ class Layout_Model
 		}
 	}
 	
+	public function addMember($data)
+	{
+		try {
+			$query = 'INSERT INTO members
+					(
+					name, 
+					last_name, 
+					address, 
+					phone_one, 
+					phone_two, 
+					email_one, 
+					email_two, 
+					notes, 
+					user_id,
+					date
+					) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE())';
+			
+			$prep = $this->db->prepare($query);
+			
+			$prep->bind_param('ssssssssi', 
+					$data['memberFirst'],
+					$data['memberLast'],
+					$data['memberAddress'],
+					$data['phoneOne'],
+					$data['phoneTwo'],
+					$data['emailOne'],
+					$data['emailTwo'],
+					$data['notes'],
+					$_SESSION['userId']);
+			
+			if ($prep->execute())
+				return $prep->insert_id;
+			else 
+				printf("Errormessage: %s\n", $prep->error);
+			
+		} catch (Exception $e) {
+			
+			return false;
+		}
+	}
+	
 	/**
 	 * Get the last 10 members added
 	 * 
@@ -116,11 +157,10 @@ class Layout_Model
 					m.user_id, 
 					m.name, 
 					m.last_name, 
-					m.address, 
-					m.city, 
-					m.state, 
-					m.country, 
 					m.active,
+					m.phone_one,
+					m.email_one,
+					m.date,
 					d.name AS user_name
 					FROM members m
 					LEFT JOIN user_detail d ON m.user_id = d.user_id
@@ -136,6 +176,16 @@ class Layout_Model
 		}
 	}
 
+	public function getTotalMembers()
+	{
+		try {
+			$query = 'SELECT COUNT(*) FROM members WHERE active = 1';
+			return $this->db->getValue($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
 	/**
 	 * Get all the members 
 	 * 
@@ -147,100 +197,32 @@ class Layout_Model
 	{
 		try {
 			$filter = '';
-				
+			
 			if ($_SESSION['loginType'] != 1)
 			{
 				$filter = 'WHERE m.user_id = '.$_SESSION['userId'];
 			}
-				
-			$query = 'SELECT lpad(m.member_id, 4, 0) AS member_id, 
+			
+			$query = 'SELECT 
+					lpad(m.member_id, 4, 0) AS member_id, 
 					m.user_id, 
 					m.name, 
 					m.last_name, 
-					m.address, 
-					m.city, 
-					m.state, 
-					m.country, 
 					m.active,
+					m.phone_one,
+					m.email_one,
+					m.date,
 					d.name AS user_name
 					FROM members m
 					LEFT JOIN user_detail d ON m.user_id = d.user_id
 					'.$filter.'
 					 ORDER BY m.member_id DESC
+					LIMIT 0, 20
 					';
-				
+
 			return $this->db->getArray($query);
-				
+			
 		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * getAllCountries
-	 * 
-	 * get all the countries from the DB
-	 * 
-	 * @return Array if success, false on failed
-	 */
-	public function getAllCountries()
-	{
-		try {
-			$query = 'SELECT Name, Code FROM Country;';
-	
-			return $this->db->getArray($query);
-		}
-		catch (Exception $e)
-		{
-			return false;
-		}
-	}
-	
-	/**
-	 * getAllStates
-	 * 
-	 * get all the states by a country
-	 * @param int $country
-	 * @return array of info if success, false on fail
-	 */
-	public function getAllStatesByCountry($country)
-	{
-		try
-		{
-			$query = 'SELECT District, CountryCode 
-					FROM City 
-					WHERE CountryCode = "'.$country.'" 
-					GROUP BY District;';
-	
-			return $this->db->getArray($query);
-		}
-		catch (Exception $e)
-		{
-			return false;
-		}
-	}
-	
-	/**
-	 * getCitiesByEstate
-	 * 
-	 * get the cities by state id
-	 * 
-	 * @param string $code
-	 * @return array of info if success, false on fail
-	 */
-	public function getCitiesByEstate($code)
-	{
-		try
-		{
-			$query = 'SELECT Name, CountryCode 
-					FROM City 
-					WHERE District = "'.$code.'" 
-					ORDER BY Name;';
-	
-			return $this->db->getArray($query);
-		}
-		catch (Exception $e)
-		{
 			return false;
 		}
 	}
@@ -283,121 +265,21 @@ class Layout_Model
 		}
 	}
 	
-	public function addMemberEmail($data)
-	{
-		try
-		{	
-			$query = 'INSERT INTO member_emails (member_id, email, active) 
-					VALUES(?, ?, 1)';
-	
-			$prep = $this->db->prepare($query);
-			 
-			$prep->bind_param('is',
-					$data['memberId'],
-					$data['emailVal']);
-			 
-			return $prep->execute();
-		}
-		catch (Exception $e)
-		{
-			return false;
-		}
-	}
-	
-	public function updateMemberEmail($data)
-	{
-		try {
-			$query = 'UPDATE member_emails 
-					SET email = ? 
-					WHERE email_id = ?';
-			
-			$prep = $this->db->prepare($query);
-			
-			$prep->bind_param('si', $data['emailVal'], $data['emailId']);
-			
-			return $prep->execute();
-			
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	public function addMemberPhone($data)
-	{
-		try
-		{
-			$query = 'INSERT INTO member_phones(member_id, phone, active) 
-					VALUES(?, ?, 1)';
-	
-			$prep = $this->db->prepare($query);
-			 
-			$prep->bind_param('is',
-					$data['memberId'],
-					$data['phoneVal']);
-			 
-			return $prep->execute();
-		}
-		catch (Exception $e)
-		{
-			return false;
-		}
-	}
-	
-	public function updateMemberPhone($data)
-	{
-		try {
-			$query = 'UPDATE member_phones 
-					SET phone = ? 
-					WHERE phone_id = ?';
-			
-			$prep = $this->db->prepare($query);
-			$prep->bind_param('si', 
-					$data['phoneVal'], 
-					$data['phoneId']);
-			
-			return $prep->execute();
-			
-		} catch (Exception $e) {
-			printf("Errormessage: %s\n", $prep->error);
-		}
-	}
 	
 	public function getMemberByMemberId($memberId)
 	{
 		try {
-			$query = 'SELECT m.*, c.Name as country, c.Code as country_code
+			$query = 'SELECT m.*
 					FROM members m
-					LEFT JOIN Country c ON m.country = c.Code
 					WHERE m.member_id = 
 					'.$memberId;
+			echo $query;
 			return $this->db->getRow($query);
 		} catch (Exception $e) {
 			return false;
 		}
 	}
 	
-	public function getMemberEmailsById($memberId)
-	{
-		try {
-			$query = 'SELECT * 
-					FROM member_emails 
-					WHERE member_id = '.$memberId;
-			
-			return $this->db->getArray($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	public function getMemberPhonesById($memberId)
-	{
-		try {
-			$query = 'SELECT * FROM member_phones WHERE member_id = '.$memberId;
-			return $this->db->getArray($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
 	
 	public function getMemberHistoryById($memberId)
 	{
@@ -678,10 +560,10 @@ class Layout_Model
 		}
 	}
 	
-	public function getTotalMembers()
+	public function getRecentMembers()
 	{
 		try {
-			$query = 'SELECT COUNT(*) FROM members';
+			$query = 'SELECT COUNT(*) FROM members WHERE date = CURDATE() AND user_id = '.$_SESSION['userId'];
 			return $this->db->getValue($query);
 		} catch (Exception $e) {
 			return false;
@@ -848,6 +730,10 @@ class Layout_Model
 			{
 				return $prep->insert_id;
 			}
+			else
+			{
+				printf("Errormessage: %s\n", $prep->error);
+			}
 		} catch (Exception $e) {
 			return false;
 		}
@@ -1001,55 +887,6 @@ class Layout_Model
 					WHERE s.member_id = '.$memberId.' ORDER BY s.reservation_id DESC';
 	
 			return $this->db->getArray($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * getAllRooms
-	 * 
-	 * Returns the collection of rooms on table rooms
-	 * it works for the section 'Rooms'
-	 * 
-	 * @return multitype:unknown |boolean
-	 */
-	
-	public function getAllRooms()
-	{
-		try {
-			$query = 'SELECT r.*, rt.room_type, rt.abbr
-					FROM rooms r
-					LEFT JOIN room_types rt ON rt.room_type_id = r.room_type_id 
-					ORDER BY r.room_order ASC
-					';
-			return $this->db->getArray($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * getSingleRoomById
-	 *
-	 * Return the info a single room by a given room id
-	 *
-	 * @return multitype:unknown |boolean
-	 */
-	
-	public function getSingleRoomById($roomId)
-	{
-		try {
-			$roomId = (int) $roomId;
-			$query = 'SELECT 
-					r.*, 
-					rt.room_type, 
-					rt.abbr
-					FROM rooms r
-					LEFT JOIN room_types rt ON rt.room_type_id = r.room_type_id
-					WHERE r.room_id = '.$roomId.'
-					';
-			return $this->db->getRow($query);
 		} catch (Exception $e) {
 			return false;
 		}
@@ -1452,6 +1289,251 @@ class Layout_Model
 		}
 	}
 	
+	public function getRoomTypes()
+	{
+		try {
+			$query = 'SELECT * FROM room_types';
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	
+	public function getAllInventoryCategories()
+	{
+		try {
+			$query = 'SELECT * FROM inventory_categories ORDER BY category_id DESC';
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function addInventoryCategories($data)
+	{
+		try {
+			$query = 'INSERT INTO inventory_categories(category, description) VALUES(?, ?)';
+			$prep = $this->db->prepare($query);
+			
+			$prep->bind_param('ss', $data['categoryName'], $data['categoryDescription']);
+			
+			if ($prep->execute())
+			{
+				return $prep->insert_id;
+			}
+			else 
+			{
+				printf("Errormessage: %s\n", $prep->error);
+			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function getInVentoryCategoryById($id)
+	{
+		try {
+			$query = 'SELECT * FROM inventory_categories WHERE category_id = '.$id;
+			return $this->db->getRow($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function updateInventoryCategory($data)
+	{
+		try {
+			$query = 'UPDATE inventory_categories SET category = ?, description = ? WHERE category_id = '.$data['categoryId'];
+			$prep = $this->db->prepare($query);
+			$prep->bind_param('ss', $data['categoryName'], $data['categoryDescription']);
+			return $prep->execute();
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function addInventory($data)
+	{
+		try {
+			$query 	= 'INSERT INTO inventory(category_id, inventory, description) VALUES(?, ?, ?)';
+			$prep 	= $this->db->prepare($query);
+				
+			$prep->bind_param('iss', $data['categoryId'], $data['inventoryName'], $data['inventoryDescription']);
+				
+			if ($prep->execute())
+			{
+				return $prep->insert_id;
+			}
+			else
+			{
+				printf("Errormessage: %s\n", $prep->error);
+			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function getInventoryByCategory($id)
+	{
+		try {
+			$id = (int) $id;
+			$query = 'SELECT * FROM inventory WHERE category_id = '.$id;
+			
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function addRoom($data)
+	{
+		try {
+			$query = 'INSERT INTO rooms(room_type_id, room, description) VALUES(?, ?, ?)';
+			$prep = $this->db->prepare($query);
+			$prep->bind_param('iss', $data['roomType'], $data['roomName'], $data['roomDescription']);
+			if ($prep->execute())
+			{
+				return $prep->insert_id;
+			}
+			else
+			{
+				printf("Errormessage: %s\n", $prep->error);
+			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * getAllRooms
+	 *
+	 * Returns the collection of rooms on table rooms
+	 * it works for the section 'Rooms'
+	 *
+	 * @return multitype:unknown |boolean
+	 */
+	
+	public function getAllRooms()
+	{
+		try {
+			$query = 'SELECT r.*, rt.room_type, rt.abbr
+					FROM rooms r
+					LEFT JOIN room_types rt ON rt.room_type_id = r.room_type_id
+					ORDER BY r.room_id DESC
+					';
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * getSingleRoomById
+	 *
+	 * Return the info a single room by a given room id
+	 *
+	 * @return multitype:unknown |boolean
+	 */
+	
+	public function getRoomById($roomId)
+	{
+		try {
+			$roomId = (int) $roomId;
+			$query = 'SELECT
+					r.*,
+					rt.room_type,
+					rt.abbr
+					FROM rooms r
+					LEFT JOIN room_types rt ON rt.room_type_id = r.room_type_id
+					WHERE r.room_id = '.$roomId.'
+					';
+			return $this->db->getRow($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function updateRoom($data)
+	{
+		try {
+			$query = 'UPDATE rooms SET room_type_id = ?, room = ?, description = ? WHERE room_id = ?';
+			$prep = $this->db->prepare($query);
+			$prep->bind_param('issi',$data['roomType'], $data['roomName'], $data['roomDescription'], $data['roomId']);
+			
+			if ($prep->execute())
+			{
+				return true;
+			}
+			else
+			{
+				printf("Errormessage: %s\n", $prep->error);
+			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function getLastInventoryList()
+	{
+		try {
+			$query = 'SELECT category_id FROM inventory_categories ORDER BY category_id DESC LIMIT 1';
+			$last =  $this->db->getValue($query);
+			
+			$query = 'SELECT * FROM inventory WHERE category_id = '.$last;
+			return $this->db->getArray($query);
+			
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function getInvetoryByCategory($category)
+	{
+		try {
+			$query = 'SELECT * FROM inventory WHERE category_id = '.$category;
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function addRoomInventory($data)
+	{
+		try {
+			$query = 'INSERT INTO rooms_inventory(room_id, category_id, inventory_id) VALUES(?, ?, ?)';
+			
+			$prep = $this->db->prepare($query);
+			
+			$prep->bind_param('iii',$data['roomId'], $data['categoryId'], $data['inventoryId']);
+				
+			if ($prep->execute())
+			{
+				return true;
+			}
+			else
+			{
+				printf("Errormessage: %s\n", $prep->error);
+			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function getRoomInventoryByRoom($roomId)
+	{
+		try {
+			$query = 'SELECT ic.category, i.inventory
+					FROM rooms_inventory ri
+					LEFT JOIN inventory_categories ic ON ic.category_id = ri.category_id
+					LEFT JOIN inventory i ON i.inventory_id = ri.inventory_id 
+					WHERE ri.room_id = '.$roomId;
+			
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
 }
 
 
