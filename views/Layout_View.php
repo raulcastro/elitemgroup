@@ -2813,35 +2813,163 @@ class Layout_View
 				<?php echo $room['description']; ?>
 				<br>
 				<br>
-				
-				<div class="row">
-            <div class="col-md-12">
-              <!-- Custom Tabs -->
-              <div class="nav-tabs-custom">
-                <ul class="nav nav-tabs">
-                  <li class="active"><a href="#tab_1" data-toggle="tab">Payments</a></li>
-                  <li><a href="#tab_2" data-toggle="tab">Incidents</a></li>
-                  <li><a href="#tab_3" data-toggle="tab">Galleries</a></li>
-                </ul>
-                <div class="tab-content">
-                  <div class="tab-pane active" id="tab_1">
-                    <b>How to use:</b>
-                    <p>Exactly like the original bootstrap tabs except you should use
-                      the custom wrapper <code>.nav-tabs-custom</code> to achieve this style.</p>
-                  </div><!-- /.tab-pane -->
-                  <div class="tab-pane" id="tab_2">
-                    The European languages are members of the same family. Their separate existence is a myth.
-                  </div><!-- /.tab-pane -->
-                  <div class="tab-pane" id="tab_3">
-                    Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                  </div><!-- /.tab-pane -->
-                </div><!-- /.tab-content -->
-              </div><!-- nav-tabs-custom -->
-            </div><!-- /.col -->
-
-          </div>
-				
-				
+					<div class="row">
+						<div class="col-md-12">
+							<!-- Custom Tabs -->
+							<div class="nav-tabs-custom">
+								<ul class="nav nav-tabs">
+									<li class="active"><a href="#tab_1" data-toggle="tab">Payments</a></li>
+									<li><a href="#tab_2" data-toggle="tab">Incidents</a></li>
+									<li><a href="#tab_3" data-toggle="tab">Galleries</a></li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane active" id="tab_1">
+										<div class="row">
+											<div class="col-sm-3">
+												<button data-target="#payment-modal" type="submit" class="btn btn-info pull-left btn-sm" data-toggle="modal" >Add payment</button>
+											</div>
+											<div class="col-sm-3">
+												<h3>Total: $100</h3>
+											</div>
+											<div class="col-sm-3">
+												<h3>Pending: $40</h3>
+											</div>
+										</div>
+										<div class="vertical-spacer"></div>
+										<div class="row">
+											<div class="col-md-3 col-sm-6 col-xs-12">
+												<div class="info-box bg-green">
+													<span class="info-box-icon payment-item"><i class="fa fa-dollar"></i></span>
+													<div class="info-box-content">
+														<span class="info-box-text">Pool</span>
+														<span class="info-box-number">$10</span>
+														<div class="progress">
+															<div class="progress-bar" style="width: 95%"></div>
+														</div>
+														<span class="progress-description">
+															95% remaining
+														</span>
+													</div><!-- /.info-box-content -->
+												</div><!-- /.info-box -->
+											</div>
+										
+											<div class="col-md-3 col-sm-6 col-xs-12">
+												<div class="info-box bg-aqua">
+													<span class="info-box-icon payment-item"><i class="fa fa-dollar"></i></span>
+													<div class="info-box-content">
+														<span class="info-box-text">Luz</span>
+														<span class="info-box-number">$50</span>
+														<div class="progress">
+															<div class="progress-bar" style="width: 70%"></div>
+														</div>
+														<span class="progress-description">
+															70% remaining
+														</span>
+													</div><!-- /.info-box-content -->
+												</div><!-- /.info-box -->
+											</div>
+											
+											<div class="col-md-3 col-sm-6 col-xs-12">
+												<div class="info-box bg-orange">
+													<span class="info-box-icon payment-item"><i class="fa fa-dollar"></i></span>
+													<div class="info-box-content">
+														<span class="info-box-text">Agua</span>
+														<span class="info-box-number">$50</span>
+														<div class="progress">
+															<div class="progress-bar" style="width: 50%"></div>
+														</div>
+														<span class="progress-description">
+															50% remaining
+														</span>
+													</div><!-- /.info-box-content -->
+												</div><!-- /.info-box -->
+											</div>
+											
+											<div class="col-md-3 col-sm-6 col-xs-12">
+												<div class="info-box bg-red">
+													<span class="info-box-icon payment-item"><i class="fa fa-dollar"></i></span>
+													<div class="info-box-content">
+														<span class="info-box-text">Maintenance</span>
+														<span class="info-box-number">$10</span>
+														<div class="progress">
+															<div class="progress-bar" style="width: 5%"></div>
+														</div>
+														<span class="progress-description">
+															95% remaining
+														</span>
+													</div><!-- /.info-box-content -->
+												</div><!-- /.info-box -->
+											</div>
+											
+										</div>
+										
+										
+										<!-- Modal  -->
+										<div class="example-modal" >
+											<div class="modal" id="payment-modal">
+												<div class="modal-dialog modal-lg">
+													<div class="modal-content">
+														<div class="modal-header">
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+															<h4 class="modal-title">Add payment</h4>
+														</div>
+														<div class="modal-body">
+															<div class="row">
+																<div class="col-sm-3">
+																	<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="">
+																		<option>Category</option>
+																		<option value="<?php echo $room['room_id']; ?>"><?php echo $room['room']; ?></option>
+																	</select>
+																</div>
+																
+																<div class="col-sm-3">
+																	<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="">
+																		<option>Inventory</option>
+																		<option value="<?php echo $room['room_id']; ?>"><?php echo $room['room']; ?></option>
+																	</select>
+																</div>
+																
+																<div class="col-sm-3">
+																	<div class="form-group">
+																		<label for="" class="col-sm-4 control-label">Date</label>
+																		<div class="col-sm-8">
+																			<input type="text" class="form-control" id="paymentDate" placeholder="">
+																		</div>
+																	</div>
+																</div>
+																
+																<div class="col-sm-3">
+																	<div class="form-group">
+																		<label for="" class="col-sm-4 control-label">Ammount</label>
+																		<div class="col-sm-8">
+																			<input type="text" class="form-control" id="" placeholder="Room type">
+																		</div>
+																	</div>
+																</div>
+															</div>
+															
+															
+														</div>
+														<div class="modal-footer">
+															<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+															<button type="button" class="btn btn-primary">Save changes</button>
+														</div>
+													</div><!-- /.modal-content -->
+												</div><!-- /.modal-dialog -->
+											</div><!-- /.modal -->
+										</div><!-- /.example-modal -->
+										
+									</div><!-- /.tab-pane -->
+									<div class="tab-pane" id="tab_2">
+										Incidents
+									</div><!-- /.tab-pane -->
+									<div class="tab-pane" id="tab_3">
+										Galleries
+									</div><!-- /.tab-pane -->
+								</div><!-- /.tab-content -->
+							</div><!-- nav-tabs-custom -->
+						</div><!-- /.col -->
+					</div>
 				</div>
 			</div>
 		</div>
@@ -2882,6 +3010,7 @@ class Layout_View
             //Money Euro
             $("[data-mask]").inputmask();
             $("#task-date").datepicker();
+            $('#paymentDate').datepicker();
             $(".select2").select2();
     	});
 		</script>
