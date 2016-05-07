@@ -28,6 +28,33 @@ $(function(){
 		});
 	}
 	
+	var memberId = 0;
+	
+	if ( $('#memberId').length ) { 
+		var memberId = $('#memberId').val();
+	}
+	
+	if ( $('#uploadAvatar').length ) { 
+		$("#uploadAvatar").uploadFile({
+			url:		"/ajax/media.php",
+			fileName:	"myfile",
+			multiple: 	true,
+			doneStr:	"uploaded!",
+			formData: {
+					memberId: memberId,
+					opt: 1 
+				},
+			onSuccess:function(files, data, xhr)
+			{
+				obj 			= JSON.parse(data);
+				avatar		 	= obj.fileName;
+				lastIdGallery 	= obj.lastId;
+				$('#iconImg').attr('src', '/images/owners-profile/avatar/'+avatar);
+				$('#userAvatarImg').attr('src', '/images/owners-profile/avatar/'+avatar);
+			}
+		});
+	}
+	
 	$('#progressSaveMember').hide();
 	$('#memberComplete').hide();
 	

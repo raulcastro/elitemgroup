@@ -11,7 +11,7 @@
 	$data 	= $backend->loadBackend('members');
 	
 	$data['title'] 			= 'All owners';
-	$data['section'] 		= 'owners';
+	$data['section'] 		= 'members';
 	$data['icon'] 			= 'fa-user';
 	$data['template-class'] = '';
 	

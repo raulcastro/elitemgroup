@@ -22,6 +22,16 @@
 	display: none;
 }
 
+.avatar-user-change {
+    float: left;
+}
+
+.avatar-user-change img{
+	width: 65px;
+    height: auto;
+    float: left;
+}
+
  .history-member-panel {
  	margin-top: 20px;
  	min-height: 200px;

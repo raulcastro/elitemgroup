@@ -744,14 +744,6 @@ class Layout_View
 				<div class="box">
 					<div class="box-header">
 						<h3 class="box-title">Recent Owners</h3>
-						<!-- <div class="box-tools">
-							<div class="input-group" style="width: 150px;">
-								<input type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
-								<div class="input-group-btn">
-									<button class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
-								</div>
-							</div>
-						</div> -->
 					</div><!-- /.box-header -->
 					<div class="box-body table-responsive no-padding">
 	                  <table class="table table-hover">
@@ -832,67 +824,77 @@ class Layout_View
    	{
    		ob_start();
    		?>
-   		<div class="table-responsive">
-   			<table class="table table-striped">
-   				<thead>
-   					<tr>
-   						<th>Member ID</th>
-   						<th>Name</th>
-   						<?php 
-   						if ($_SESSION['loginType'] == 1)
-   						{
-   							?>
-   							<th>Added by</th>
-   							<?php 
-   						} else {
-   							?>
-   							<th>Address</th>
-   							 <?php 
-   						}
-   						?>
-   						<th>City</th>
-   						<th>State</th>
-   						<th>Country</th>
-   					</tr>
-   				</thead>
-   				<tbody>
-   					<?php 
-   					foreach ($this->data['members'] as $member)
-   					{
-   					?>
-   					<tr>
-   						<td>
-   							<a href="/<?php echo $member['member_id']; ?>/<?php echo Tools::slugify($member['name'].' '.$member['last_name']); ?>/">
-   							<?php echo $member['member_id']; ?>
-   							</a>
-   						</td>
-   						<td>
-   							<a href="/<?php echo $member['member_id']; ?>/<?php echo Tools::slugify($member['name'].' '.$member['last_name']); ?>/" class="member-link">
-   								<?php echo $member['name'].' '.$member['last_name']; ?>
-   							</a>
-   						</td>
-   						<?php 
-   						if ($_SESSION['loginType'] == 1)
-   						{
-   							?>
-   							<td><?php echo $member['user_name']; ?></td>
-   							<?php 
-   							} else {
-   							?>
-   							<td><?php echo $member['address']; ?></td>
-   							 <?php 
-   							}
-   						?>
-   						<td><?php echo $member['city']; ?></td>
-   						<td><?php echo $member['state']; ?></td>
-   						<td><?php echo $member['country']; ?></td>
-   					</tr>
-   						<?php
-   					}
-   					?>
-   				</tbody>
-   			</table>
-   		</div>
+   		<div class="row">
+			<div class="col-xs-12">
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title">Recent Owners</h3>
+					</div><!-- /.box-header -->
+					<div class="box-body table-responsive no-padding">
+	                  <table class="table table-hover">
+	                    <tr>
+	                      <th>Member ID</th>
+							<th>Name</th>
+							<th>Phone</th>
+							<th>Email</th>
+							<?php 
+							if ($_SESSION['loginType'] == 1)
+							{
+							?>
+								<th>Added by</th>
+							<?php 
+							} 
+							else 
+							{
+							?>
+								<th>Address</th>
+							<?php 
+							}
+							?>
+							<th>Date</th>
+	                    </tr>
+	                    <?php 
+						foreach ($this->data['members'] as $member)
+						{
+							?>
+						<tr>
+							<td>
+								<a href="/owner/<?php echo $member['member_id']; ?>/<?php echo Tools::slugify($member['name'].' '.$member['last_name']); ?>/">
+									<?php echo $member['member_id']; ?>
+								</a>
+							</td>
+							<td>
+								<a href="/owner/<?php echo $member['member_id']; ?>/<?php echo Tools::slugify($member['name'].' '.$member['last_name']); ?>/" class="member-link">
+									<?php echo $member['name'].' '.$member['last_name']; ?>
+								</a>
+							</td>
+							<td><?php echo $member['phone_one']; ?></td>
+							<td><?php echo $member['email_one']; ?></td>
+							<?php 
+							if ($_SESSION['loginType'] == 1)
+							{
+								?>
+								<td><?php echo $member['user_name']; ?></td>
+								<?php 
+							} 
+							else 
+							{
+								?>
+								<td><?php echo $member['address']; ?></td>
+								 <?php 
+							}
+							?>
+							<td><?php echo Tools::formatMYSQLToFront($member['date']); ?></td>
+						</tr>
+							<?php
+						}
+						?>
+	                  </table>
+                	</div><!-- /.box-body -->
+				</div><!-- /.box -->
+			</div>
+		</div>
+   		
    	   	<?php
    	   	$membersRecent = ob_get_contents();
    	   	ob_end_clean();
@@ -985,467 +987,11 @@ class Layout_View
 		return $signIn;
 	}
 	
-	/**
-	 * The box of the reservation search engine that is displayed under the member profile
-	 * @return string
-	 */
-	public function getMemberReservations()
-   	{
-   		ob_start();
-   		?>
-   		<div class="row">
-   			<?php echo $this->getReservationPanel(); ?>
-   		</div>
-   		<div class="row memberReservations" id="memberReservations">
-   		<?php
-   		if ($this->data['memberReservations'])
-   			foreach ($this->data['memberReservations'] as $reservation)
-   			{
-   				echo $this->getMemberReservationItem($reservation);
-   			}
-   		?>
-   		</div>
-   		<?php
-   		$memberReservation = ob_get_contents();
-   		ob_end_clean();
-   		return $memberReservation;
-   	}
 
-   	/**
-   	 * Display a list of available rooms
-   	 * 
-   	 * This is called via <strong>AJAX</strong>, is a list of available rooms, depending on the check-in check-out date
-   	 *  
-   	 * @param array $rooms list of rooms in an array 
-   	 * @return string
-   	 */
-   	
-   	public static function getRoomsList($rooms)
-	{
-		ob_start();
-		if ($rooms)
-		{
-			?>
-			<ul class="roomTypeList">
-			<?php
-			$roomType = 0;
-			$c = 0;
-			foreach ($rooms as $room)
-			{
-				if ($c == 0 && $roomType != $room['room_type_id']) 
-				{
-					?>
-				<li class="row">
-					<ul class="roomList">
-					<?php
-					$roomType = $room['room_type_id'];
-				}
-				?>
-						<li class="row bg-success">
-							<div class="title col-sm-8">
-								<strong><?php echo $room['room']; ?></strong>
-								 - <?php echo $room['room_type']; ?>
-							</div>
-							<div class="operator col-sm-4">
-								<a href="javascript:void (0);" rn="<?php echo $room['room']; ?>" ri="<?php echo $room['room_id']; ?>">book now</a>
-							</div>
-						</li>
-				<?php
-				if ($roomType != $room['room_type_id'] )
-				{
-					?>
-					</ul>
-				</li>
-				<li class="row">
-					
-					<ul class="roomList">	
-					<?php
-					$roomType = $room['room_type_id'];
-				}
-				$c++;
-			}
-			?>
-			</ul>
-			<?php
-		}
-		$roomList = ob_get_contents();
-		ob_end_clean();
-		return $roomList;
-	}
-
-	/**
-	 * The controls for check a room availability
-	 * 
-	 * Is where we choose check-in, check-out, number of people and so
-	 * 
-	 * @todo work a bit more with the datepicker
-	 * 
-	 * @return string
-	 */
-   	public function getReservationPanel()
-	{
-		ob_start();
-		?>
-		<div class="col-sm-12 reservation-member-panel">
-			<div class="reservationBox" id="reservationBox">
-				<div class="searchReservation row">
-					<div class="col-sm-3">
-						<label>Check In</label>
-						<input type="text" class="checkIn" id="checkIn" />
-					</div>
-					<div class="col-sm-3">
-						<label>Check Out</label>
-						<input type="text" class="checkOut" id="checkOut" />
-					</div>
-					<div class="col-sm-2">
-						<label>Adults</label>
-						<select id="reservationAdults">
-							<option value="1">1</option>
-							<option value="2">2</option>
-							<option value="3">3</option>
-							<option value="4">4</option>
-							<option value="5">5</option>
-							<option value="6">6</option>
-							<option value="7">7</option>
-							<option value="8">8</option>
-							<option value="9">9</option>
-							<option value="10">10</option>
-							<option value="11">11</option>
-							<option value="12">12</option>
-						</select>
-					</div>
-					<div class="col-sm-2">
-						<label>Children</label>
-						<select id="reservationChildren">
-							<option value="0">0</option>
-							<option value="1">1</option>
-							<option value="2">2</option>
-							<option value="3">3</option>
-							<option value="4">4</option>
-							<option value="5">5</option>
-						</select>
-					</div>
-					<div class="col-sm-2">
-						<a href="javascript:void(0);" class="btn btn-info btn-xs" id="searchReservation">search</a>
-					</div>
-				</div>
-				<div class="row">
-					<div class="reservationResults row col-sm-6" id="reservationResults">
-					</div>
-					<div class="row col-sm-6">
-						<?php echo $this->getRightSideReservations(); ?>
-					</div>
-				</div>
-			</div>
-		</div>
-		<?php
-		$reservationPanel = ob_get_contents();
-		ob_end_clean();
-		return $reservationPanel;
-	}
 	
-	/**
-	 * extra info after choose a room
-	 * 
-	 * Extra info for the reservation
-	 * <strong>This can create a new member</strong>
-	 * 
-	 * @return string
-	 */
-	public function getRightSideReservations()
-	{
-		ob_start();
-		?>
-		<div class="row rightSideReservations" id="rightSideReservations">
-			<p class="bg-success text-center roomName"><strong id="roomName"></strong></p>
-			<p class="text-success text-center">from <span id="checkInReservation"></span> to <span id="checkOutReservation"></span></p>
-			<p class="text-info text-center"><strong> <span id="totalDays"></span> nights</strong> </p>
-			<div class="forms">
-				
-				<input type="hidden" id="roomId" value='0' />
-				<?php 
-				if (!$this->data['memberInfo']['member_id'])
-				{
-					?>
-				<input type="hidden" id="memberId" value='0' />
-				<div class="row">
-					<div class="col-sm-3">
-						<label>Name</label>
-					</div>
-					<div class="col-sm-9">
-						<input type="text" id="member-name" />
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="col-sm-3">
-						<label>Last Name</label>
-					</div>
-					<div class="col-sm-9">
-						<input type="text" id="member-last-name" />
-					</div>
-				</div>
-					<?php
-				}
-				?>
-				
-				<div class="row">
-					<div class="col-sm-3">
-						<label>Agency</label>
-					</div>
-					<div class="col-sm-9">
-						<select id="agencyList">
-						<?php
-						foreach ($this->data['agencies'] as $agency)
-						{
-							?>
-							<option value="<?php echo $agency['agency_id']; ?>"><?php echo $agency['agency']; ?></option>
-							<?php
-						}
-						?>
-						</select>
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="col-sm-3">
-						<label>External ID</label>
-					</div>
-					<div class="col-sm-9">
-						<input type="text" id="externalId" />
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="col-sm-3">
-						<label>Price per Night</label>
-					</div>
-					<div class="col-sm-9">
-						<input type="text" id="pricePerNight" />
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="col-sm-3">
-						<label>Total</label>
-					</div>
-					<div class="col-sm-9">
-						<input type="text" id="totalReservation" readonly="readonly" />
-					</div>
-				</div>
-				
-				<?php 
-				if (!$this->data['memberInfo']['member_id'])
-				{
-					?>
-				<div class="row text-center">
-					<a href="javascript:void(0);" class="btn btn-info btn-xs" id="bookRoom">Book Now</a>
-				</div>
-				
-				<div class="row text-center">
-					<a href="javascript:void(0);" class="text-success" id="completeProfileBtn">Complete Profile</a>
-				</div>
-					<?php
-				}
-				else 
-				{
-					?>
-				<div class="row text-center">
-					<a href="javascript:void(0);" class="btn btn-info btn-xs" id="bookRoomMember">Book Now</a>
-				</div>
-					<?php
-				}
-				?>
-				
-				<div class="row text-center text-info" id="loadingText">
-					<i>Loading ...</i>
-				</div>
-			</div>
-		</div>
-		<?php
-		$rightSideReservations = ob_get_contents();
-		ob_end_clean();
-		return $rightSideReservations;
-	}
+	
 
-	/**
-   	 * getMemberReservationItem
-   	 * 
-   	 * print the reservation belongs to a member
-   	 * 
-   	 * @param array $data array with the reservation info
-   	 * @return string html of the reservation item
-   	 */
-   	public function getMemberReservationItem($data)
-   	{
-   		ob_start();
-   		$class = '';
-   		if ($data['status'] == '5')
-   			$class = 'canceled-reservation';
-   		?>
-   		<div class="col-sm-12 reservation-item <?php echo $class; ?>" id="reservation-item-<?php echo $data['reservation_id']; ?>">
-   			
-   			<div class="row bg-primary title">
-   				<div class="col-sm-1">Date</div>
-   				<div class="col-sm-1">Room</div>
-   				<div class="col-sm-2">Check-In</div>
-   				<div class="col-sm-2">Check-Out</div>
-   				<div class="col-sm-1"></div>
-   				<div class="col-sm-1"></div>
-   			</div>
-   				
-   			<div class="row info">
-<!--    				Current info about rooms -->
-   				<input type="hidden" id="currentRoomId-<?php echo $data['reservation_id']; ?>" value="<?php echo $data['room_id']; ?>" />
-   				<input type="hidden" id="currentCheckIn-<?php echo $data['reservation_id']; ?>" value="<?php echo Tools::formatMySQLtoJS($data['check_in']); ?>" />
-   				<input type="hidden" id="currentCheckOut-<?php echo $data['reservation_id']; ?>" value="<?php echo Tools::formatMySQLtoJS($data['check_out']); ?>" />
-   				
-   				<div class="col-sm-1"><?php echo Tools::formatMYSQLToFront($data['date']); ?></div>
-   				<div class="col-sm-1"><strong><?php echo $data['room']; ?></strong></div>
-   				<div class="col-sm-2"><strong><input type="text" id="dateBoxCheckIn-<?php echo $data['reservation_id']; ?>" value="<?php echo Tools::formatMYSQLToJS($data['check_in']); ?>"> </strong></div>
-   				<div class="col-sm-2"><strong><input type="text" id="dateBoxCheckOut-<?php echo $data['reservation_id']; ?>" value="<?php echo Tools::formatMYSQLToJS($data['check_out']); ?>"> </strong></div>
-   				<div class="col-sm-1">
-   					<select id="availableRoomsSelect-<?php echo $data['reservation_id']; ?>"  disabled="true">
-   						<option selected><?php echo $data['room']; ?></option>
-   						<?php 
-   						foreach ($data['availableRooms'] as $room)
-   						{
-   							?>
-   							<option value="<?php echo $room['room_id']; ?>"><?php echo $room['room']; ?></option>
-   							<?php
-   						}
-   						?>
-   					</select>
-   				</div>
-   				<div class="col-sm-1 room-aux room-aux-<?php echo $data['reservation_id']; ?>">No. Days: <strong id="totalNightsRes-<?php echo $data['reservation_id']; ?>"></strong></div>
-   				<div class="col-sm-2 room-aux room-aux-<?php echo $data['reservation_id']; ?>"><input type="text" class="priceCalculator" placeholder="cost per night" value="0" id="newCostPerNight-<?php echo $data['reservation_id']; ?>" resId="<?php echo $data['reservation_id']; ?>"/></div>
-   				<div class="col-sm-1 room-aux room-aux-<?php echo $data['reservation_id']; ?>">Total: <strong id="newTotalStaying-<?php echo $data['reservation_id']; ?>" ></strong></div>
-   				<div class="col-sm-1 room-aux room-aux-<?php echo $data['reservation_id']; ?>">
-   					<button type="button" class="updateRoom btn btn-default btn-xs btn-info" res-id="<?php echo $data['reservation_id']; ?>">Update room</button>
-   				</div>
-   				
-   			</div>
-   				
-   			<div class="row extra">
-   				<div class="col-sm-2">Room Type: <strong><?php echo $data['room_type']; ?></strong></div>
-   				<div class="col-sm-2">Reservation ID: <strong><?php echo $data['reservation_id']; ?></strong></div>
-   				<div class="col-sm-2">Adults: <strong><?php echo $data['adults']; ?></strong></div>
-   				<div class="col-sm-2">Children: <strong><?php echo $data['children']; ?></strong></div>
-   				<div class="col-sm-2">No. of nights: <strong><?php echo $data['n_days']; ?></strong></div>
-   			</div>
-   			
-   			<div class="row extra">
-   				<div class="col-sm-4">
-   					Agency: 
-   					<?php 
-   					if ($this->data['userInfo']['type'] == 1)
-   					{
-   						?>
-   					<select id="agencyListReservation-<?php echo $data['reservation_id']; ?>">
-						<?php
-						foreach ($this->data['agencies'] as $agency)
-						{
-							$selected = '';
-							if ($agency['agency'] == $data['agency'])
-								$selected = 'selected';
-							?>
-						<option value="<?php echo $agency['agency_id']; ?>" <?php echo $selected; ?>><?php echo $agency['agency']; ?></option>
-							<?php
-						}
-						?>
-					</select>
-   						<?php
-   					}
-   					else
-   					{
-   						?>
-   					<strong><?php echo $data['agency']; ?></strong>
-   					<input type="hidden" id="agencyListReservation-<?php echo $data['reservation_id']; ?>" value="<?php echo $data['agency_id']; ?>">
-   						<?php 
-   					}
-   					?>
-   				</div>
-   				<div class="col-sm-4">External Id: <strong><?php echo $data['external_id']; ?></strong></div>
-   			</div>
-   			
-   			<div class="row extra">
-   				<input type="hidden" value="0" id="res-option-<?php echo $data['reservation_id']; ?>">
-   				<div class="title-options">
-   					Set Reservation as:
-   				</div>
-   				
-   				<div class="reservation-options">
-   					<div class="option pending <?php if ($data['status'] == '1') echo 'checked'; ?>" opt-res="1" single-res="<?php echo $data['reservation_id']; ?>">Pending</div>
-   					<div class="option canceled <?php if ($data['status'] == '5') echo 'checked'; ?>" opt-res="5" single-res="<?php echo $data['reservation_id']; ?>">Canceled</div>
-   					<div class="option confirmed <?php if ($data['status'] == '2') echo 'checked'; ?>" opt-res="2" single-res="<?php echo $data['reservation_id']; ?>">Confirmed</div>
-   					<div class="option checked-in <?php if ($data['status'] == '3') echo 'checked'; ?>" opt-res="3" single-res="<?php echo $data['reservation_id']; ?>">Checked-In</div>
-   					<div class="option checked-out <?php if ($data['status'] == '4') echo 'checked'; ?>" opt-res="4" single-res="<?php echo $data['reservation_id']; ?>">Checked-Out</div>
-   				</div>
-   			</div>
-   			
-   			<div class="row-extra">
-   				<div class="col-sm-4">
-   					<h5>Grand Total <strong> $ <span id="payment-grand-total-<?php echo $data['reservation_id']; ?>"><?php echo $data['grandTotal']; ?></span></strong></h5>
-   				</div>
-   				<div class="col-sm-4">
-   					<h5>Paid: <strong> <span id="payment-paid-total-<?php echo $data['reservation_id']; ?>">$ <?php echo $data['paid']; ?></span></strong></h5>
-   				</div>
-   				<div class="col-sm-4">
-   					<h5 class="pending-highlight">Pending: <strong> <span id="payment-pending-total-<?php echo $data['reservation_id']; ?>">$ <?php echo $data['unpaid']; ?></span></strong></h5>
-   				</div>
-   			</div>
-   			
-   			<div class="row-extra">
-   				<div class="col-sm-4">Staying cost total: <strong id="payment-staying-total-<?php echo $data['reservation_id']; ?>">$ <?php echo $data['staying_total']; ?> </strong></div>
-   				<div class="col-sm-4">Staying cost paid: <strong id="payment-staying-paid-<?php echo $data['reservation_id']; ?>"> $ <?php echo $data['staying_paid']; ?></strong></div>
-   				<div class="col-sm-4">Staying cost pending: <strong id="payment-staying-pending-<?php echo $data['reservation_id']; ?>"> $ <?php echo $data['staying_pending']; ?></strong></div>
-   			</div>
-   			
-   			<div class="clearfix"></div>
-   			
-   			<div class="row-extra payment-items" id="payment-items-<?php echo $data['reservation_id']; ?>" >
-   			<?php 
-   			if ($data[0]['payments'])
-   				echo Layout_View::getPaymentItems($data[0]['payments']);
-   			?>
-   			</div>
-   			<br>
-   			<?php 
-   			if ($data['status'] < 4)
-   			{
-   			?>
-   			<div class="row-extra payment-extra" id="">
-   				<div class="row">
-	   				<div class="col-sm-3">
-	   					<input type="text" placeholder="description" id="extra-pay-des-<?php echo $data['reservation_id']; ?>" />
-	   				</div>
-	   				<div class="col-sm-2">
-	   					$ <input type="text" class="input-cost" placeholder="cost" id="extra-pay-cost-<?php echo $data['reservation_id']; ?>" />
-	   				</div>
-	   				<div class="col-sm-2">
-	   					<input type="checkbox" name="staying" value="staying" id="extra-pay-staying-<?php echo $data['reservation_id']; ?>"> Staying cost
-	   				</div>
-	   				<div class="col-sm-1">
-	   					<button type="button" class="btn btn-info btn-xs add-extra-pay" res-id="<?php echo $data['reservation_id']; ?>" >ADD</button>
-	   				</div>
-   				</div>
-   			</div>
-   			
-   			<div class="row extra save-single-res">
-   				<a href="javascript:void(0);" 
-   					class="btn btn-info btn-xs save-single-res-a" 
-   					single-res="<?php echo $data['reservation_id']; ?>">save</a>
-   			</div>
-   			<?php 
-   			}
-   			?>
-   			
-   		</div>
-   		<?php
-   		$item = ob_get_contents();
-   		ob_end_clean();
-   		return $item;
-   	}
+	
    	
    	/**
    	 * display a single payment item
@@ -2770,6 +2316,8 @@ class Layout_View
             $(".select2").select2();
     	});
 		</script>
+		<link href="/css/uploadfile.css" rel="stylesheet">
+		<script src="/js/jquery.uploadfile.min.js"></script>
 		<script src="/js/members.js"></script>
 		<script src="/js/history.js"></script>
 		<script src="/js/tasks.js"></script>
@@ -2783,7 +2331,49 @@ class Layout_View
     public function getMemberContent()
     {
     	ob_start();
+    	
+    	$img = "/images/default/128x128-user.png";
+
+    	if ($this->data['memberInfo']['avatar'])
+    	{
+    		$img = "/images/owners-profile/avatar/".$this->data['memberInfo']['avatar'];
+    	}
     	?>
+    	<!-- Modal  -->
+		<div class="example-modal" >
+			<div class="modal" id="avatarModal">
+				<div class="modal-dialog modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Change user avatar</h4>
+						</div>
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-sm-12">
+									<div class="col-sm-4">
+										<img alt="" height="100" id="iconImg" src="<?php echo $img; ?>" />
+									</div>
+									<div class="col-sm-3">
+										<h5><b>Avatar</b> 128 * 128px</h5>
+									</div>
+								</div>
+								<div class="col-sm-12">
+									<div class="col-sm-6" id="uploadAvatar">
+										Browse
+									</div>
+								</div>
+							</div>
+							<br>
+							<div class="clearfix"></div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+		</div><!-- /.example-modal -->
     	<div class="row">
 			<div class="col-md-12">
 				<!-- Widget: user widget style 1 -->
@@ -2792,7 +2382,9 @@ class Layout_View
 					<!-- Add the bg color to the header using any of the bg-* classes -->
 					<div class="widget-user-header bg-aqua-active">
 						<div class="widget-user-image">
-							<img class="img-circle" src="/images/default/128x128-user.png" alt="User Avatar">
+							<a href="#" class="avatar-user-change" data-toggle="modal" data-target="#avatarModal" data-keyboard="true">
+								<img class="img-circle" id="userAvatarImg" src="<?php echo $img; ?>" alt="User Avatar">
+							</a>
 						</div><!-- /.widget-user-image -->
 						<h3 class="widget-user-username"><strong><?php echo $this->data['memberInfo']['name'].' '.$this->data['memberInfo']['last_name']; ?></strong></h3>
 						<h5 class="widget-user-desc"><strong><?php echo $this->data['memberInfo']['condo']; ?></strong></h5>
@@ -2939,7 +2531,6 @@ class Layout_View
 							<div class="col-sm-offset-6 col-sm-2"></div>
 							<div class="col-sm-2"><button type="submit" class="btn btn-info pull-right btn-sm" id="updateMember">Update info</button></div>
 							<div class="col-sm-2"><button type="submit" class="btn btn-danger pull-right btn-sm" id="cancelEditUser">Cancel</button></div>
-							
 						</div>
 	                    
 	                    

@@ -220,9 +220,7 @@ class Layout_Model
 					LEFT JOIN user_detail d ON m.user_id = d.user_id
 					'.$filter.'
 					 ORDER BY m.member_id DESC
-					LIMIT 0, 20
 					';
-
 			return $this->db->getArray($query);
 			
 		} catch (Exception $e) {
@@ -272,6 +270,17 @@ class Layout_Model
 		}
 	}
 	
+	public function updateMemberAvatar($file, $memberId)
+	{
+		try {
+			$query = 'UPDATE members SET avatar = ? WHERE member_id = ?';
+			$prep = $this->db->prepare($query);
+			$prep->bind_param('si', $file, $memberId);
+			return $prep->execute();
+		} catch (Exception $e) {
+			return false;
+		}
+	}
 	
 	public function getMemberByMemberId($memberId)
 	{
