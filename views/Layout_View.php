@@ -2209,52 +2209,55 @@ class Layout_View
 										<!-- Modal  -->
 										<div class="example-modal" >
 											<div class="modal" id="payment-modal">
-												<div class="modal-dialog modal-lg">
+												<div class="modal-dialog modal-dialog">
 													<div class="modal-content">
 														<div class="modal-header">
 															<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 															<h4 class="modal-title">Add payment</h4>
 														</div>
 														<div class="modal-body">
-															<div class="row">
-																<div class="col-sm-3">
+															<div class="row segment-user-payment">
+																<div class="col-sm-6">
 																	<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="">
 																		<option>Category</option>
 																		<option value="<?php echo $room['room_id']; ?>"><?php echo $room['room']; ?></option>
 																	</select>
 																</div>
 																
-																<div class="col-sm-3">
+																<div class="col-sm-6">
 																	<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="">
 																		<option>Inventory</option>
 																		<option value="<?php echo $room['room_id']; ?>"><?php echo $room['room']; ?></option>
 																	</select>
 																</div>
-																
-																<div class="col-sm-3">
-																	<div class="form-group">
-																		<label for="" class="col-sm-4 control-label">Date</label>
-																		<div class="col-sm-8">
-																			<input type="text" class="form-control" id="paymentDate" placeholder="">
-																		</div>
+															</div>
+															
+															<div class="row segment-user-payment">
+																<div class="col-sm-6">
+																	<div class="input-group">
+																		<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+																		<input type="text" class="form-control" placeholder="Amount">
 																	</div>
 																</div>
 																
-																<div class="col-sm-3">
-																	<div class="form-group">
-																		<label for="" class="col-sm-4 control-label">Ammount</label>
-																		<div class="col-sm-8">
-																			<input type="text" class="form-control" id="" placeholder="Room type">
-																		</div>
+																<div class="col-sm-6">
+																	<div class="input-group">
+																		<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+																		<input type="text" class="form-control" placeholder="Amount due date" id="paymentDate">
 																	</div>
 																</div>
 															</div>
-															
-															
+															<div class="row segment-user-payment">
+																<div class="col-sm-12">
+																<div class="form-group">
+                      <textarea class="form-control" rows="3" placeholder="Payment description"></textarea>
+                    </div>
+																</div>
+															</div>
 														</div>
 														<div class="modal-footer">
 															<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-															<button type="button" class="btn btn-primary">Save changes</button>
+															<button type="button" class="btn btn-info btn-sm">Save</button>
 														</div>
 													</div><!-- /.modal-content -->
 												</div><!-- /.modal-dialog -->

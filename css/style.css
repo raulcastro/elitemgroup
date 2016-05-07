@@ -32,6 +32,7 @@
     float: left;
 }
 
+/********** User - History ***********/
  .history-member-panel {
  	margin-top: 20px;
  	min-height: 200px;
@@ -83,6 +84,7 @@
 	color: #222222;
 }
 
+/********** User - Task ***********/
 
 .task-member-panel {
  	margin-top: 20px;
@@ -213,6 +215,11 @@
 	margin-left: 20px;
 }
 
+/********** User - Payments ***********/
+
+.segment-user-payment {
+	margin-bottom: 20px;
+}
 
 /****** Main Task Menu ********/
 

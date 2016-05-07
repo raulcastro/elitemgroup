@@ -12,6 +12,7 @@ databases/
 img-up/
 #Framework/Connection_Data.php
 files/
+images/owners-profile/
 
 
 LICENSE
