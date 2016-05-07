@@ -17,7 +17,6 @@ switch ($_POST['opt'])
 			echo str_pad($newMember, 4, 0, STR_PAD_LEFT);
 		else
 			echo 0;
-		
 		break;
 		
 	break;

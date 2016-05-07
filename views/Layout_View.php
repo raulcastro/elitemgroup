@@ -262,7 +262,7 @@ class Layout_View
 	    <!-- Ionicons -->
 	    <!-- <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> -->
 	    <!-- Theme style -->
-	    <link rel="stylesheet" href="/dist/css/AdminLTE.min.css">
+	    <link rel="stylesheet" href="/dist/css/AdminLTE.css">
 	    <!-- iCheck -->
 	    <link rel="stylesheet" href="/plugins/iCheck/square/blue.css">
 	
@@ -984,255 +984,6 @@ class Layout_View
 		ob_end_clean();
 		return $signIn;
 	}
-	
-	/**
-	 * Show the member profiles
-	 * 
-	 * <s>In this section you had the abilitie of add a new member</s>
-	 * It is the main interface where to show the member profile
-	 * 
-	 * @todo rename this method with better descriptive name
-	 * 
-	 * @return string
-	 */
-   	
-   	public function getAddMember()
-   	{
-   		ob_start();
-   		if ($this->data['memberInfo']['member_id'])
-   		{
-   			$memberId = $this->data['memberInfo']['member_id'];
-   			$memberId = str_pad($memberId, 4, '0', STR_PAD_LEFT);
-   		}
-   		?>
-		<div class="row">
-			<div class="col-md-6">
-				<form class="form-horizontal" role="form">
-					<fieldset>
-						<!-- Text input-->
-						<div class="form-group">
-							<label class="col-sm-2 control-label" for="textinput"><b>Guest#</b></label>
-							<div class="col-sm-10">
-								<input type="text" value="<?php echo $memberId; ?>" class="form-control" id="member-id" readonly="readonly">
-							</div>
-						</div>
-					
-						<!-- Text input-->
-						<div class="form-group">
-							<label class="col-sm-2 control-label" for="textinput">Name</label>
-							<div class="col-sm-10">
-								<input type="text" placeholder="Name" class="form-control" id="member-name" value="<?php echo $this->data['memberInfo']['name']; ?>">
-							</div>
-						</div>
-						
-						<!-- Text input-->
-						<div class="form-group">
-							<label class="col-sm-2 control-label" for="textinput">Last Name</label>
-							<div class="col-sm-10">
-								<input type="text" placeholder="Last Name" class="form-control" id="member-last-name" value="<?php echo $this->data['memberInfo']['last_name']; ?>">
-							</div>
-						</div>
-						
-						<!-- Text input-->
-						<div class="form-group">
-							<label class="col-sm-2 control-label" for="textinput">Address</label>
-							<div class="col-sm-10">
-								<input type="text" placeholder="Address" class="form-control" id="member-address" value="<?php echo $this->data['memberInfo']['address']; ?>">
-							</div>
-						</div>
-						
-						<!-- Text input-->
-						<div class="form-group">
-							<label class="col-sm-2 control-label" for="textinput">Country</label>
-							<div class="col-sm-10">
-								<select id="country_list" onchange="selCountry(this);" class="form-control">
-									<option value="0">Select Country</option>
-									<?php
-									
-									foreach ($this->data['countries'] as $cl)
-									{
-										$selected = '';
-										
-										if ($cl['Code'] == $this->data['memberInfo']['country_code'])
-											$selected = 'selected';
-										?>
-									<option value="<?php echo $cl['Code']; ?>" <?php echo $selected; ?>><?php echo $cl['Name']; ?></option>
-										<?php	
-									}
-									?>
-								</select>
-							</div>
-						</div>
-						<input type="hidden" id="country" value="<?php echo $this->data['memberInfo']['country_code']; ?>" />
-						
-						<!-- Text input-->
-						<div class="form-group">
-							<label class="col-sm-2 control-label" for="textinput">State</label>
-							<div class="col-sm-10">
-								<select id="state_list" onchange="selState(this);" class="form-control">
-									<option value="0">Select State</option>
-									<?php 
-									if ($this->data['memberInfo']['state'])
-									{
-										?>
-									<option selected><?php echo $this->data['memberInfo']['state']; ?></option>
-										<?php
-									}
-									?>
-								</select>
-							</div>
-						</div>
-						<input type="hidden" id="mState" value="<?php echo $this->data['memberInfo']['state']; ?>" />
-						
-						<!-- Text input-->
-						<div class="form-group">
-							<label class="col-sm-2 control-label" for="textinput">City</label>
-							<div class="col-sm-10">
-								<select id="city_list" onchange="selCity(this);" class="form-control">
-									<option value="0">Select City</option>
-									<?php 
-									if ($this->data['memberInfo']['city'])
-									{
-										?>
-									<option selected><?php echo $this->data['memberInfo']['city']; ?></option>
-										<?php
-									}
-									?>
-								</select>
-							</div>
-						</div>
-						<input type="hidden" id="city" value="<?php echo $this->data['memberInfo']['city']; ?>" />
-					</fieldset>
-				</form>
-			</div><!-- /.col-lg-12 -->
-			
-			<div class="col-md-6">
-				<form class="form-horizontal" role="form">
-					<fieldset>
-						<!-- Text input-->
-						<div id="memberEmails">
-							<div class="form-group">
-								<label class="col-sm-2 control-label" for="textinput">Email</label>
-								<div class="col-sm-9">
-									<input type="text" placeholder="Email" class="form-control memberEmail" eid="0">
-								</div>
-								<a href="javascript:void(0);" id="addEmailField" class="text-success col-sm-1 control-label">
-									<i class="glyphicon glyphicon-plus"></i>
-								</a>
-							</div>
-							<?php 
-							if ($this->data['memberEmails'])
-							{
-								foreach ($this->data['memberEmails'] as $email)
-								{
-								?>
-							<div class="form-group">
-								<label class="col-sm-2 control-label" for="textinput">Email</label>
-								<div class="col-sm-9">
-									<input type="text" placeholder="Email" class="form-control memberEmail" eid="<?php echo $email['email_id']; ?>" value="<?php echo $email['email']; ?>">
-								</div>
-							</div>	
-								<?php
-								}
-							}
-							?>
-						</div>
-
-						<!-- Text input-->
-						<div id="memberPhones">
-							<div class="form-group">
-								<label class="col-sm-2 control-label" for="textinput">Phone</label>
-								<div class="col-sm-9">
-									<input type="text" placeholder="Phone" class="form-control memberPhone" pid="0">
-								</div>
-								<a href="javascript:void(0);" class="text-success col-sm-1 control-label" id="addPhoneField" >
-									<i class="glyphicon glyphicon-plus"></i>
-								</a>
-							</div>
-							<?php 
-							if ($this->data['memberPhones'])
-							{
-								foreach ($this->data['memberPhones'] as $phone)
-								{
-								?>
-							<div class="form-group">
-								<label class="col-sm-2 control-label" for="textinput">Phone</label>
-								<div class="col-sm-9">
-									<input type="text" placeholder="Phone" class="form-control memberPhone" pid="<?php echo $phone['phone_id']; ?>" value="<?php echo $phone['phone']; ?>">
-								</div>
-							</div>	
-								<?php
-								}
-							}
-							?>
-						</div>
-					</fieldset>
-					
-					<fieldset>
-						<!-- Form Name -->
-						<legend>Notes</legend>
-						<!-- Textarea input-->
-						<div class="form-group">
-							<div class="col-sm-10 col-sm-offset-2">
-								<textarea rows="6" cols="" class="form-control" placeholder="notes" id="notes"><?php echo $this->data['memberInfo']['notes']; ?></textarea>
-							</div>
-						</div>
-						
-						<div class="form-group">
-							<div class="col-sm-offset-2 col-sm-10">
-							<div class="pull-right">
-								<button type="submit" class="btn btn-primary" id="memberSave">Save</button>
-							</div>
-							</div>
-						</div>
-					</fieldset>
-				</form>
-			</div><!-- /.col-lg-12 -->
-		</div><!-- /.row -->
-
-		<div class="row">
-			<div class="alert alert-success alert-autocloseable-success">
-        		<i class="glyphicon glyphicon-ok"></i> The info was sucessfully updated
-			</div>
-		</div>
-
-		<div class="row utilities" id="utilitiesBox">
-			<div class="col-md-12">
-	
-				<div class="tabbable-panel">
-					<div class="tabbable-line">
-						<ul class="nav nav-tabs ">
-							<li class="active">
-								<a href="#tab_default_1" data-toggle="tab">Reservations</a>
-							</li>
-							<li class="">
-								<a href="#tab_default_2" data-toggle="tab">History </a>
-							</li>
-							<li>
-								<a href="#tab_default_3" data-toggle="tab">Tasks</a>
-							</li>
-						</ul>
-						<div class="tab-content">
-							<div class="tab-pane active" id="tab_default_1">
-								<?php echo $this->getMemberReservations(); ?>
-							</div>
-							<div class="tab-pane" id="tab_default_2">
-								<?php echo $this->getHistoryPanel(); ?>
-							</div>
-							<div class="tab-pane" id="tab_default_3">
-								<?php echo $this->getTaskPanel(); ?>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<?php
-		$membersRecent = ob_get_contents();
-		ob_end_clean();
-		return $membersRecent;
-	}
-   	
 	
 	/**
 	 * The box of the reservation search engine that is displayed under the member profile
@@ -2713,6 +2464,11 @@ class Layout_View
 				<div class="box box-info">
 					<div class="box-body">
 						<div class="form-group">
+							<label for="exampleInputEmail1">Condo </label>
+							<input type="text" class="form-control" id="memberCondo" placeholder="Condo">
+						</div>
+					
+						<div class="form-group">
 							<label for="exampleInputEmail1">Address</label>
 							<textarea class="form-control" id="memberAddress" rows="3" placeholder="Address ..."></textarea>
 						</div>
@@ -3028,12 +2784,70 @@ class Layout_View
     {
     	ob_start();
     	?>
-		<div class="row">
+    	<div class="row">
+			<div class="col-md-12">
+				<!-- Widget: user widget style 1 -->
+				<div class="box box-widget widget-user-2">
+				
+					<!-- Add the bg color to the header using any of the bg-* classes -->
+					<div class="widget-user-header bg-aqua-active">
+						<div class="widget-user-image">
+							<img class="img-circle" src="/images/default/128x128-user.png" alt="User Avatar">
+						</div><!-- /.widget-user-image -->
+						<h3 class="widget-user-username"><strong><?php echo $this->data['memberInfo']['name'].' '.$this->data['memberInfo']['last_name']; ?></strong></h3>
+						<h5 class="widget-user-desc"><strong><?php echo $this->data['memberInfo']['condo']; ?></strong></h5>
+						<button type="submit" class="btn btn-primary btn-xs pull-right" id="showEditUser">Update info</button>
+						<div class="clearfix"></div>
+					</div>
+					<div class="box-footer">
+						<div class="row">
+							<?php if ($this->data['memberInfo']['phone_one']) {?>
+							<div class="col-sm-3 border-right">
+								<div class="description-block">
+									<h5 class="description-header"><i class="fa fa-fw fa-phone"></i></h5>
+									<span class="description-text"><?php echo $this->data['memberInfo']['phone_one']; ?></span>
+								</div><!-- /.description-block -->
+							</div><!-- /.col -->
+							<?php } if ($this->data['memberInfo']['phone_two']) {?>
+							<div class="col-sm-3 border-right">
+								<div class="description-block">
+									<h5 class="description-header"><i class="fa fa-fw fa-phone"></i></h5>
+									<span class="description-text"><?php echo $this->data['memberInfo']['phone_two']; ?></span>
+								</div><!-- /.description-block -->
+							</div><!-- /.col -->
+							<?php } if ($this->data['memberInfo']['email_one']) {?>
+							<div class="col-sm-3">
+								<div class="description-block">
+									<h5 class="description-header"><i class="fa fa-fw fa-envelope-o"></i></h5>
+									<span class="description-text"><?php echo $this->data['memberInfo']['email_one']; ?></span>
+								</div><!-- /.description-block -->
+							</div><!-- /.col -->
+							<?php } if ($this->data['memberInfo']['email_two']) {?>                   
+							<div class="col-sm-3">
+								<div class="description-block">
+									<h5 class="description-header"><i class="fa fa-fw fa-envelope-o"></i></h5>
+									<span class="description-text"><?php echo $this->data['memberInfo']['email_two']; ?></span>
+								</div><!-- /.description-block -->
+							</div><!-- /.col -->
+							<?php } ?>
+						</div><!-- /.row -->
+					</div>
+					<div class="box-footer no-padding">
+						<ul class="nav nav-stacked user-info">
+							<?php if ($this->data['memberInfo']['address']) {?>
+							<li><span><i class="fa fa-fw fa-map-o"></i> <?php echo $this->data['memberInfo']['address']; ?></span></li>
+							<?php } ?>
+							<li><span><i class="fa fa-fw fa-sticky-note"></i><strong> <?php echo $this->data['memberInfo']['notes']; ?></strong></span></li>
+						</ul>
+					</div>
+				</div><!-- /.widget-user -->
+			</div>
+    		
+    	</div>
+    	
+		<div class="row edit-user-info">
 			<div class="col-md-6">
 				<div class="box box-info">
-					<div class="box-header">
-						<h3 class="box-title"><?php echo $this->data['memberInfo']['name'].' '.$this->data['memberInfo']['last_name']; ?></h3>
-					</div>
 					<div class="box-body">
 						<div class="form-group">
 							<label for="exampleInputEmail1">First name</label>
@@ -3105,6 +2919,11 @@ class Layout_View
 				<div class="box box-info">
 					<div class="box-body">
 						<div class="form-group">
+							<label for="exampleInputEmail1">Condo </label>
+							<input type="text" class="form-control" id="memberCondo" placeholder="Condo" value="<?php echo $this->data['memberInfo']['condo']; ?>">
+						</div>
+						
+						<div class="form-group">
 							<label for="exampleInputEmail1">Address</label>
 							<textarea class="form-control" id="memberAddress" rows="3" placeholder="Address ..."><?php echo $this->data['memberInfo']['address']; ?></textarea>
 						</div>
@@ -3116,13 +2935,14 @@ class Layout_View
 					</div>
 					
 					<div class="box-footer">
-						<div class="progress progress-sm active">
-	                    	<div class="progress-bar progress-bar-success progress-bar-striped" id="progressSaveMember" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-	                      		<span class="sr-only">20% Complete</span>
-	                    	</div>
-	                  	</div>
-	                    <button type="submit" class="btn btn-info pull-right" id="updateMember">Update info</button>
-	                    <a href="" class="btn btn-success pull-right" id="memberComplete">Complete Owner</a>
+						<div class="row">
+							<div class="col-sm-offset-6 col-sm-2"></div>
+							<div class="col-sm-2"><button type="submit" class="btn btn-info pull-right btn-sm" id="updateMember">Update info</button></div>
+							<div class="col-sm-2"><button type="submit" class="btn btn-danger pull-right btn-sm" id="cancelEditUser">Cancel</button></div>
+							
+						</div>
+	                    
+	                    
                   	</div>
 				</div>
 			</div>

@@ -14,6 +14,20 @@ $(function(){
 		});
 	}
 	
+	if ( $('#showEditUser').length ) { 
+		$('#showEditUser').click(function(){
+			$('.edit-user-info').show('slow');
+			return false;
+		});
+	}
+	
+	if ( $('#cancelEditUser').length ) { 
+		$('#cancelEditUser').click(function(){
+			$('.edit-user-info').hide('slow');
+			return false;
+		});
+	}
+	
 	$('#progressSaveMember').hide();
 	$('#memberComplete').hide();
 	
@@ -30,6 +44,7 @@ function saveMember()
 	var phoneTwo		= $('#phoneTwo').val();
 	var emailOne		= $('#emailOne').val();
 	var emailTwo		= $('#emailTwo').val();
+	var memberCondo		= $('#memberCondo').val();
 	
 	if (memberFirst)
 	{
@@ -47,6 +62,7 @@ function saveMember()
 	    	emailOne:		emailOne,
 	    	emailTwo:		emailTwo,
 	    	notes:			notes,
+	    	memberCondo:	memberCondo,
 	    	opt:			'1'
 	    },
 	    success:
@@ -78,6 +94,7 @@ function updateMember()
 	var phoneTwo		= $('#phoneTwo').val();
 	var emailOne		= $('#emailOne').val();
 	var emailTwo		= $('#emailTwo').val();
+	var memberCondo		= $('#memberCondo').val();
 	
 	if (memberFirst)
 	{
@@ -94,14 +111,17 @@ function updateMember()
 	    	emailOne:		emailOne,
 	    	emailTwo:		emailTwo,
 	    	notes:			notes,
+	    	memberCondo:	memberCondo,
 	    	opt:			'2'
 	    },
 	    success:
 	        function(info)
 	        {
-	        	if (info != '0')
+		    	if (info != '0')
 	        	{
-	        		alert('Info updated!');
+	        		pathArray 		= $(location).attr('href').split( '/' );
+	            	newURL 			= pathArray[0]+'//'+pathArray[2]+'/'+pathArray[3]+'/'+pathArray[4]+'/'+pathArray[5]+'-'+Math.floor((Math.random() * 100) + 1)+'/#';
+	            	window.location = newURL;
 	        	}
 	        	else
 				{

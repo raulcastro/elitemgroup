@@ -10,7 +10,7 @@
 	
 	$data 	= $backend->loadBackend('member', $_GET['memberId']);
 	
-	$data['title'] 			= 'Owner';
+	$data['title'] 			= 'Owner # '.str_pad($data['memberInfo']['member_id'], 4, 0, STR_PAD_LEFT);
 	$data['section'] 		= 'member';
 	$data['icon'] 			= 'fa-user';
 	$data['template-class'] = '';

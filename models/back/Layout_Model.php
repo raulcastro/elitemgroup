@@ -106,13 +106,14 @@ class Layout_Model
 					email_one, 
 					email_two, 
 					notes, 
+					condo,
 					user_id,
 					date
-					) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE())';
+					) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE())';
 			
 			$prep = $this->db->prepare($query);
 			
-			$prep->bind_param('ssssssssi', 
+			$prep->bind_param('sssssssssi', 
 					$data['memberFirst'],
 					$data['memberLast'],
 					$data['memberAddress'],
@@ -121,6 +122,7 @@ class Layout_Model
 					$data['emailOne'],
 					$data['emailTwo'],
 					$data['notes'],
+					$data['memberCondo'],
 					$_SESSION['userId']);
 			
 			if ($prep->execute())
@@ -239,12 +241,13 @@ class Layout_Model
 					phone_two	= ?, 
 					email_one 	= ?,
 					email_two 	= ?, 
-					notes 		= ?
+					notes 		= ?,
+					condo		= ?
 					WHERE member_id = ?';
 			
 			$prep = $this->db->prepare($query);
 			
-			$prep->bind_param('ssssssssi',
+			$prep->bind_param('sssssssssi',
 					$data['memberFirst'],
 					$data['memberLast'],
 					$data['memberAddress'],
@@ -253,6 +256,7 @@ class Layout_Model
 					$data['emailOne'],
 					$data['emailTwo'],
 					$data['notes'],
+					$data['memberCondo'],
 					$data['memberId']
 					);
 			

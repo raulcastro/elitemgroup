@@ -1,3 +1,27 @@
+/********** User - Basic data ***********/
+.user-info{
+	
+}
+
+.user-info li span {
+	border-radius: 0;
+    border-top: 0;
+    border-left: 3px solid transparent;
+    color: #444;
+    position: relative;
+    display: block;
+    padding: 10px 15px
+}
+
+.user-info li span:hover {
+	color: #444;
+    background: #f7f7f7;
+}
+
+.edit-user-info {
+	display: none;
+}
+
  .history-member-panel {
  	margin-top: 20px;
  	min-height: 200px;
