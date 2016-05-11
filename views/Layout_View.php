@@ -2074,7 +2074,7 @@ class Layout_View
 		</div>
 		
 		<h2 class="page-header">Rooms</h2>
-		
+		<input type="text" val="" id="currentRoom">
 		<div class="row">
 			<div class="col-md-12">
 				<div class="box box-solid">
@@ -2092,6 +2092,65 @@ class Layout_View
 				</div><!-- /.box -->
 			</div><!-- /.col -->
 		</div><!-- /.row -->
+		
+		<!------------------------------- Modals! ------------------------------->
+		<!-- Modal  -->
+		<div class="example-modal" >
+			<input type="hidden" value="" id="currentCategory">
+			<input type="hidden" value="" id="currentInventory">
+			<div class="modal" id="payment-modal">
+				<div class="modal-dialog modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Add payment</h4>
+						</div>
+						<div class="modal-body">
+							<div class="row segment-user-payment">
+								<div class="col-sm-6">
+									<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="categoryRoomList">
+										<option>Category</option>
+									</select>
+								</div>
+								
+								<div class="col-sm-6">
+									<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="inventoryRoomList">
+										<option>Inventory</option>
+									</select>
+								</div>
+							</div>
+							
+							<div class="row segment-user-payment">
+								<div class="col-sm-6">
+									<div class="input-group">
+										<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+										<input type="text" class="form-control" placeholder="Amount">
+									</div>
+								</div>
+								
+								<div class="col-sm-6">
+									<div class="input-group">
+										<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										<input type="text" class="form-control" placeholder="Amount due date" id="paymentDate">
+									</div>
+								</div>
+							</div>
+							<div class="row segment-user-payment">
+								<div class="col-sm-12">
+									<div class="form-group">
+										<textarea class="form-control" rows="3" placeholder="Payment description"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-info btn-sm" id="addPayment">Save</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+		</div><!-- /.example-modal -->
         <?php
         $content = ob_get_contents();
         ob_end_clean();
@@ -2105,7 +2164,7 @@ class Layout_View
 		<div class="panel box box-success">
 			<div class="box-header with-border">
 				<h5 class="box-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $room['room_id']; ?>" class="roomList">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $room['room_id']; ?>" class="roomList room-id" data-id="<?php echo $room['room_id']; ?>">
 						<?php echo $room['room'].' / '.$room['room_type']; ?>
 					</a>
 				</h5>
@@ -2154,115 +2213,8 @@ class Layout_View
 													</div><!-- /.info-box-content -->
 												</div><!-- /.info-box -->
 											</div>
-										
-											<div class="col-md-3 col-sm-6 col-xs-12">
-												<div class="info-box bg-aqua">
-													<span class="info-box-icon payment-item"><i class="fa fa-dollar"></i></span>
-													<div class="info-box-content">
-														<span class="info-box-text">Luz</span>
-														<span class="info-box-number">$50</span>
-														<div class="progress">
-															<div class="progress-bar" style="width: 70%"></div>
-														</div>
-														<span class="progress-description">
-															70% remaining
-														</span>
-													</div><!-- /.info-box-content -->
-												</div><!-- /.info-box -->
-											</div>
-											
-											<div class="col-md-3 col-sm-6 col-xs-12">
-												<div class="info-box bg-orange">
-													<span class="info-box-icon payment-item"><i class="fa fa-dollar"></i></span>
-													<div class="info-box-content">
-														<span class="info-box-text">Agua</span>
-														<span class="info-box-number">$50</span>
-														<div class="progress">
-															<div class="progress-bar" style="width: 50%"></div>
-														</div>
-														<span class="progress-description">
-															50% remaining
-														</span>
-													</div><!-- /.info-box-content -->
-												</div><!-- /.info-box -->
-											</div>
-											
-											<div class="col-md-3 col-sm-6 col-xs-12">
-												<div class="info-box bg-red">
-													<span class="info-box-icon payment-item"><i class="fa fa-dollar"></i></span>
-													<div class="info-box-content">
-														<span class="info-box-text">Maintenance</span>
-														<span class="info-box-number">$10</span>
-														<div class="progress">
-															<div class="progress-bar" style="width: 5%"></div>
-														</div>
-														<span class="progress-description">
-															95% remaining
-														</span>
-													</div><!-- /.info-box-content -->
-												</div><!-- /.info-box -->
-											</div>
 											
 										</div>
-										
-										
-										<!-- Modal  -->
-										<div class="example-modal" >
-											<div class="modal" id="payment-modal">
-												<div class="modal-dialog modal-dialog">
-													<div class="modal-content">
-														<div class="modal-header">
-															<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-															<h4 class="modal-title">Add payment</h4>
-														</div>
-														<div class="modal-body">
-															<div class="row segment-user-payment">
-																<div class="col-sm-6">
-																	<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="">
-																		<option>Category</option>
-																		<option value="<?php echo $room['room_id']; ?>"><?php echo $room['room']; ?></option>
-																	</select>
-																</div>
-																
-																<div class="col-sm-6">
-																	<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="">
-																		<option>Inventory</option>
-																		<option value="<?php echo $room['room_id']; ?>"><?php echo $room['room']; ?></option>
-																	</select>
-																</div>
-															</div>
-															
-															<div class="row segment-user-payment">
-																<div class="col-sm-6">
-																	<div class="input-group">
-																		<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
-																		<input type="text" class="form-control" placeholder="Amount">
-																	</div>
-																</div>
-																
-																<div class="col-sm-6">
-																	<div class="input-group">
-																		<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-																		<input type="text" class="form-control" placeholder="Amount due date" id="paymentDate">
-																	</div>
-																</div>
-															</div>
-															<div class="row segment-user-payment">
-																<div class="col-sm-12">
-																<div class="form-group">
-                      <textarea class="form-control" rows="3" placeholder="Payment description"></textarea>
-                    </div>
-																</div>
-															</div>
-														</div>
-														<div class="modal-footer">
-															<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-															<button type="button" class="btn btn-info btn-sm">Save</button>
-														</div>
-													</div><!-- /.modal-content -->
-												</div><!-- /.modal-dialog -->
-											</div><!-- /.modal -->
-										</div><!-- /.example-modal -->
 										
 									</div><!-- /.tab-pane -->
 									<div class="tab-pane" id="tab_2">

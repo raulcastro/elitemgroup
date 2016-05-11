@@ -85,6 +85,50 @@ switch ($_POST['opt'])
 		}
 	break;
 	
+	case 8:
+		
+		if ($categoryArray = $model->getCategoriesInventoryByRoom($_POST['roomId']))
+		{
+			?>
+			<option value="0">Category</option>
+			<?php
+			foreach ($categoryArray as $category)
+			{
+			?>
+			<option value="<?php echo $category['category_id']; ?>"><?php echo $category['category']; ?></option>
+			<?php
+			}
+		}
+		else 
+		{
+			?>
+			<option value="0">Category empty</option>
+			<?php 
+		}
+	break;
+	
+	case 9:
+		
+		if ($inventoryArray = $model->getInventoryByCategoryRoom($_POST['roomId'], $_POST['categoryId']))
+		{
+			?>
+			<option value="0">Inventory</option>
+			<?php
+			foreach ($inventoryArray as $inventory)
+			{
+			?>
+			<option value="<?php echo $inventory['inventory_id']; ?>"><?php echo $inventory['inventory']; ?></option>
+			<?php
+			}
+		}
+		else 
+		{
+			?>
+			<option value="0">Inventory empty</option>
+			<?php 
+		}
+	break;
+	
 	default:
 	break;
 }

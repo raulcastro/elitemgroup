@@ -28,6 +28,19 @@ $(function(){
 		});
 	}
 	
+	if ( $('.room-id').length ) { 
+		$('.room-id').click(function(){
+			loadRoomData(this);
+		});
+	}
+	
+	if ( $('#addPayment').length ) { 
+		$('#addPayment').click(function(){
+			addPayment();
+		});
+	}
+	
+	
 	var memberId = 0;
 	
 	if ( $('#memberId').length ) { 
@@ -158,4 +171,89 @@ function updateMember()
 	}
 }
 
+function loadRoomData(node)
+{
+//	$('#categoryRoomList').select2();
+//	$('#inventoryRoomList').select2();
+	
+	var currentRoom = $(node).attr('data-id');
+	$('#currentRoom').val(currentRoom);
+	getCategories();
+}
 
+function getCategories()
+{
+	
+	roomId = $('#currentRoom').val();
+	
+	$.ajax({
+    type: "POST",
+    url: "/ajax/members.php",
+    data: {
+    	roomId:	roomId,
+    	opt:	8
+    },
+    success:
+        function(info)
+        {
+        	if (info != '0')
+        	{
+        		$('#categoryRoomList option').remove();
+//        		$('#categoryRoomList').select2('destroy');
+        		$('#categoryRoomList').html(info);
+        		$('#categoryRoomList').select2();
+        		
+        		$('#categoryRoomList').on("change", function(){
+        			var categoryId = $('#categoryRoomList').val();
+        			$('#currentCategory').val(categoryId);
+        			updateInventoryOptionsRooms(categoryId);
+        		});
+        	}
+        	else
+			{
+			}
+        }
+    });
+}
+
+function updateInventoryOptionsRooms(categoryId)
+{
+	
+	roomId = $('#currentRoom').val();
+	
+	$.ajax({
+    type: "POST",
+    url: "/ajax/members.php",
+    data: {
+    	roomId:	roomId,
+    	categoryId: categoryId,
+    	opt:	9
+    },
+    success:
+        function(info)
+        {
+        	if (info != '0')
+        	{
+        		$('#inventoryRoomList option').remove();
+//        		$('#categoryRoomList').select2('destroy');
+        		$('#inventoryRoomList').html(info);
+        		$('#inventoryRoomList').select2();
+        		
+        		$('#inventoryRoomList').on("change", function(){
+        			var inventoryId = $('#inventoryRoomList').val();
+        			$('#currentInventory').val(inventoryId);
+        		});
+        	}
+        	else
+			{
+			}
+        }
+    });
+}
+
+function addPayment()
+{
+	var currentCategory = $('#currentCategory').val();
+	var currentInventory = $('#currentInventory').val();
+	
+}

@@ -1577,6 +1577,35 @@ class Layout_Model
 			return false;
 		}
 	}
+	
+	public function getCategoriesInventoryByRoom($roomId)
+	{
+		try {
+			$query = 'SELECT ri.category_id, ic.category 
+				FROM rooms_inventory ri 
+				LEFT JOIN inventory_categories ic ON ic.category_id = ri.category_id
+				WHERE ri.room_id = '.$roomId.'
+				GROUP BY ri.category_id';
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function getInventoryByCategoryRoom($roomId, $categoryId)
+	{
+		try {
+			$query = 'SELECT ri.inventory_id, i.inventory 
+				FROM rooms_inventory ri 
+				LEFT JOIN inventory i ON i.inventory_id = ri.inventory_id
+				WHERE ri.room_id = '.$roomId.' AND ri.category_id = '.$categoryId;
+			echo $query;
+			return $this->db->getArray($query);
+			
+		} catch (Exception $e) {
+			return false;
+		}
+	}
 }
 
 

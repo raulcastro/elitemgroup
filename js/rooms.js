@@ -97,11 +97,6 @@ function updateRoom()
 	        {
 	        	if (info != '0')
 	        	{
-//	        		var item = '<li><a href="/edit-room/'+info+'/">'+roomName+'</a></li>'
-//	        		$('#roomsBox').prepend(item);
-//	        		$('#roomName').val('');
-//	        		$('#roomType').val('');
-//	        		$('#roomDescription').val('');
 	        		alert('Room updated!');
 	        	}
 	        }
@@ -131,10 +126,6 @@ function updateCategory()
 	        {
 	        	if (info != '0')
 	        	{
-//	        		var item = '<li><a href="/edit-inventory-category/'+info+'/">'+categoryName+'</a></li>'
-//	        		$('#categoryBox').prepend(item);
-//	        		$('#categoryName').val('');
-//	        		$('#categoryDescription').val('');
 	        		alert('Category updated!');
 	        	}
 	        	else
