@@ -34,13 +34,6 @@ $(function(){
 		});
 	}
 	
-	if ( $('#addPayment').length ) { 
-		$('#addPayment').click(function(){
-			addPayment();
-		});
-	}
-	
-	
 	var memberId = 0;
 	
 	if ( $('#memberId').length ) { 
@@ -179,11 +172,11 @@ function loadRoomData(node)
 	var currentRoom = $(node).attr('data-id');
 	$('#currentRoom').val(currentRoom);
 	getCategories();
+	getPayments();
 }
 
 function getCategories()
 {
-	
 	roomId = $('#currentRoom').val();
 	
 	$.ajax({
@@ -218,7 +211,6 @@ function getCategories()
 
 function updateInventoryOptionsRooms(categoryId)
 {
-	
 	roomId = $('#currentRoom').val();
 	
 	$.ajax({
@@ -251,9 +243,3 @@ function updateInventoryOptionsRooms(categoryId)
     });
 }
 
-function addPayment()
-{
-	var currentCategory = $('#currentCategory').val();
-	var currentInventory = $('#currentInventory').val();
-	
-}

@@ -221,6 +221,21 @@
 	margin-bottom: 20px;
 }
 
+.payment-item .info-box-icon a i{
+	color: #fff;
+}
+
+.payment-item .info-box-icon i{
+	margin-top: 34px;
+}
+
+.payment-item .info-box-icon {
+	height: 106px!important; 
+}
+
+.payment-options {
+	margin:0;padding:0;list-style:none
+}
 /****** Main Task Menu ********/
 
 .main-menu-tasks {
@@ -249,9 +264,7 @@
 
 .datepicker{z-index:1151 !important;}
 
-.payment-item {
-	padding-top:20px;
-}
+
 
 .vertical-spacer {
 	height: 40px;

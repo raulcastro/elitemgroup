@@ -60,8 +60,8 @@ class generalBackend
 				'youtube' 		=> $appInfoRow['youtube'],
 				'instagram'		=> $appInfoRow['instagram'],
 				'email'			=> $appInfoRow['email'],
-				'lang'			=> $appInfoRow['lang']
-				 
+				'lang'			=> $appInfoRow['lang'],
+				'phone'			=> $appInfoRow['phone']
 		);
 		
 		$data['appInfo'] = $appInfo;
@@ -156,30 +156,6 @@ class generalBackend
 				$memberRooms = $this->model->getRoomsByMember($memberId);
 				$data['memberRooms'] = $memberRooms;
 				
-// 				Reservations
-				$memberReservationsArray 	= $this->model->getMemberReservationsByMemberId($memberId);
-				
-				$data['memberReservations'] = array();
-				
-				foreach ($memberReservationsArray as $reservation)
-				{
-					$grandTotal = $this->model->getReservationGrandTotalByReservationId($reservation['reservation_id']);
-					$paid 		= $this->model->getReservationPaidByReservationId($reservation['reservation_id']);
-					$unpaid 	= $this->model->getReservationUnpaidByReservationId($reservation['reservation_id']);
-					
-					$grandTotalStaying 	= $this->model->getReservationStayingCostTotal($reservation['reservation_id']);
-					$paidStaying		= $this->model->getReservationStayingCostPaid($reservation['reservation_id']);
-					$pendingStaying		= $this->model->getReservationStayingPending($reservation['reservation_id']);
-					
-					
-					$payments['payments'] = $this->model->getPaymentsByReservationId($reservation['reservation_id']);
-					array_push($reservationInfo, $payments);
-					array_push($data['memberReservations'], $reservationInfo);
-				}
-				
-// 				Agencies
-				$agenciesArray 		= $this->model->getAgencies();
-				$data['agencies'] 	= $agenciesArray;
 			break;
 			
 // 			Reservations

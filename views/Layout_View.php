@@ -264,7 +264,8 @@ class Layout_View
 	    <!-- Theme style -->
 	    <link rel="stylesheet" href="/dist/css/AdminLTE.css">
 	    <!-- iCheck -->
-	    <link rel="stylesheet" href="/plugins/iCheck/square/blue.css">
+	    <!-- iCheck for checkboxes and radio inputs -->
+    	<link rel="stylesheet" href="/plugins/iCheck/all.css">
 	
 	    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -1692,7 +1693,7 @@ class Layout_View
 								<div class="col-sm-6">
 									<div class="input-group">
 										<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
-										<input type="text" class="form-control" placeholder="Amount">
+										<input type="text" class="form-control" placeholder="Amount" id="paymentAmount">
 									</div>
 								</div>
 								
@@ -1706,14 +1707,143 @@ class Layout_View
 							<div class="row segment-user-payment">
 								<div class="col-sm-12">
 									<div class="form-group">
-										<textarea class="form-control" rows="3" placeholder="Payment description"></textarea>
+										<textarea class="form-control" rows="3" placeholder="Payment description" id="paymentDescription"></textarea>
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-							<button type="button" class="btn btn-info btn-sm" id="addPayment">Save</button>
+							<!-- <button type="button" class="btn btn-info btn-sm" id="addPayment">Save</button>-->
+							<a href="#" class="btn btn-info btn-sm" id="addPayment">Save</a>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+		</div>
+		
+		<!-- /.example-modal --><!------------------------------- Modals! ------------------------------->
+		<!-- Modal  -->
+		<div class="example-modal" >
+			<div class="modal" id="singlePayment">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Payment</h4>
+						</div>
+						<div class="modal-body">
+							
+							
+							
+							<section class="invoice">
+          <!-- title row -->
+          <div class="row">
+            <div class="col-xs-12">
+              <h2 class="page-header">
+                <i class="fa fa-globe"></i> <?php echo $this->data['appInfo']['siteName']; ?>
+                <small class="pull-right">Date: <span id="dateAdded"></span></small>
+              </h2>
+            </div><!-- /.col -->
+          </div>
+          <!-- info row -->
+          <div class="row invoice-info">
+            <div class="col-sm-4 invoice-col">
+              From
+              <address>
+                <strong><?php echo $this->data['appInfo']['siteName']; ?></strong><br>
+                Phone: <?php echo $this->data['appInfo']['phone']; ?><br>
+                Email: <?php echo $this->data['appInfo']['email']; ?>
+              </address>
+            </div><!-- /.col -->
+            <div class="col-sm-4 invoice-col">
+              To
+              <address>
+                <strong><?php echo $this->data['memberInfo']['name'].' '.$this->data['memberInfo']['last_name']; ?></strong><br>
+                <?php echo $this->data['memberInfo']['address']; ?><br>
+                Phone: <?php echo $this->data['memberInfo']['phone_one']; ?><br>
+                Email: <?php echo $this->data['memberInfo']['email_one']; ?>
+              </address>
+            </div><!-- /.col -->
+            <div class="col-sm-4 invoice-col">
+              <b>Invoice #<span id="paymentNo"></span></b><br>
+              <b>Payment Due:</b> <span id="singlePaymentDueDate"></</span>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+
+          <!-- Table row -->
+          <div class="row">
+            <div class="col-xs-12 table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Room</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td id="singlePaymentId"></td>
+                    <td id="singlePaymentInventory"></td>
+                    <td id="singlePaymentCategory"></td>
+                    <td id="singlePaymentDescription"></td>
+                    <td id="singlePaymentAmount"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+
+          <div class="row">
+            <!-- accepted payments column -->
+            <div class="col-xs-6">
+              <p class="lead">Set payment as: </p>
+              <div >
+              	
+              	<div class="form-group">
+					
+					<ul class="payment-options">
+                <li>
+                  <input tabindex="7" type="radio" id="minimal-radio-1" name="minimal-radio">
+                  <label for="minimal-radio-1"> Pending</label>
+                </li>
+                <li>
+                  <input tabindex="8" type="radio" id="minimal-radio-2" name="minimal-radio" checked>
+                  <label for="minimal-radio-2"> Paid</label>
+                </li>
+              </ul>
+                  </div>
+              	
+              	
+              	
+              </div>
+            </div><!-- /.col -->
+            
+            <div class="col-xs-6">
+              <p class="lead">Documents</p>
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                  <tr>
+                    <td>Document 1</td>
+                  </tr>
+                </tbody></table>
+              </div>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+
+        </section>
+							
+							
+							
+							
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+							<button class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit Payment</button>
 						</div>
 					</div><!-- /.modal-content -->
 				</div><!-- /.modal-dialog -->
@@ -1765,22 +1895,8 @@ class Layout_View
 											</div>
 										</div>
 										<div class="vertical-spacer"></div>
-										<div class="row">
-											<div class="col-md-3 col-sm-6 col-xs-12">
-												<div class="info-box bg-green">
-													<span class="info-box-icon payment-item"><i class="fa fa-dollar"></i></span>
-													<div class="info-box-content">
-														<span class="info-box-text">Pool</span>
-														<span class="info-box-number">$10</span>
-														<div class="progress">
-															<div class="progress-bar" style="width: 95%"></div>
-														</div>
-														<span class="progress-description">
-															95% remaining
-														</span>
-													</div><!-- /.info-box-content -->
-												</div><!-- /.info-box -->
-											</div>
+										<div class="row" id="paymentsBox-<?php echo $room['room_id']; ?>">
+											
 											
 										</div>
 										
@@ -1829,6 +1945,7 @@ class Layout_View
     	<script src="/plugins/slimScroll/jquery.slimscroll.min.js"></script>
     	<script src="/plugins/datepicker/bootstrap-datepicker.js"></script>
     	<script src="/plugins/select2/select2.full.min.js"></script>
+    	<script src="/plugins/iCheck/icheck.min.js"></script>
     	
     	<script type="text/javascript">
     	$(function () {
@@ -1837,6 +1954,12 @@ class Layout_View
             $("#task-date").datepicker();
             $('#paymentDate').datepicker();
             $(".select2").select2();
+
+          //iCheck for checkbox and radio inputs
+            $('input[type="radio"]').iCheck({
+                radioClass: 'iradio_minimal-blue',
+                increaseArea: '20%' // optional
+            });
     	});
 		</script>
 		<link href="/css/uploadfile.css" rel="stylesheet">

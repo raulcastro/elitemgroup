@@ -289,7 +289,6 @@ class Layout_Model
 					FROM members m
 					WHERE m.member_id = 
 					'.$memberId;
-			echo $query;
 			return $this->db->getRow($query);
 		} catch (Exception $e) {
 			return false;
@@ -755,70 +754,7 @@ class Layout_Model
 		}
 	}
 	
-	/**
-	 * addReservation
-	 * 
-	 * add a new reservation with a room id, check-in and checkout and other parameters
-	 * 
-	 * @param array $data
-	 * @return true on success | false on fail
-	 */
-	public function addReservation($data)
-	{
-		$checkIn 		= Tools::formatToMYSQL($data['checkIn']);
-		$checkInDate	= date($checkIn);
-		$checkInDate	= date('Y-m-d', strtotime('+1 day', strtotime($checkInDate)));
-		
-		$checkOut 		= Tools::formatToMYSQL($data['checkOut']);
-		$checkOutDate 	= date($checkOut);
-		$checkOutDate 	= date('Y-m-d', strtotime('-1 day', strtotime($checkOutDate)));
-		
-		try {
-			$query = 'INSERT INTO
-					reservations(
-						member_id,
-						room_id,
-						check_in,
-						check_out,
-						date,
-						price,
-						status,
-						adults,
-						children,
-						agency,
-						price_per_night,
-						external_id)
-					VALUES(?, ?, ?, ?, CURDATE(), ?, 1, ?, ?, ?, ?, ?)';
 
-			$prep = $this->db->prepare($query);
-			
-			$prep->bind_param('iissiiiiis',
-					$data['memberId'],
-					$data['roomId'],
-					$checkIn,
-					$checkOut,
-					$data['price'],
-					$data['reservationAdults'],
-					$data['reservationChildren'],
-					$data['agency'],
-					$data['pricePerNight'],
-					$data['externalId']
-					);
-			
-			if ($prep->execute())
-			{
-// 				$info = array('reservationId' => $prep->insert_id, 'description' => "Staying cost", 'cost' => $data['price']);
-// 				$this->addPayment($info);
-				return $prep->insert_id;
-				
-			}
-			
-// 			return $this->db->run($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
 	/**
 	 * getMemberReservationByMemberId
 	 * 
@@ -946,43 +882,7 @@ class Layout_Model
 			return false;
 		}
 	}
-	
-	/**
-	 * addPayment
-	 * 
-	 * add a payment item to an reservation
-	 * 
-	 * @param array $data
-	 * @return boolean
-	 */
-	public function addPayment($data)
-	{
-		try {
-			$query = 'INSERT INTO 
-					payments(
-						reservation_id, 
-						description, 
-						cost, 
-						staying)
-					VALUES(?, ?, ?, ?);';
-	
-			$prep = $this->db->prepare($query);
-	
-			$prep->bind_param('isii',
-					$data['reservationId'],
-					$data['description'],
-					$data['cost'],
-					$data['staying']);
-			
-			return $prep->execute();
-// 			if ($prep->execute())
-// 			{
-// 				return $prep->insert_id;
-// 			}
-		} catch (Exception $e) {
-			return false;
-		}
-	}
+
 	
 	/**
 	 * getPaymentsByReservationId
@@ -1599,13 +1499,99 @@ class Layout_Model
 				FROM rooms_inventory ri 
 				LEFT JOIN inventory i ON i.inventory_id = ri.inventory_id
 				WHERE ri.room_id = '.$roomId.' AND ri.category_id = '.$categoryId;
-			echo $query;
 			return $this->db->getArray($query);
 			
 		} catch (Exception $e) {
 			return false;
 		}
 	}
+	
+	public function addPayment($data)
+	{
+		try {
+			$query = 'INSERT INTO payments(
+					user_id, 
+					member_id, 
+					room_id, 
+					category_id, 
+					inventory_id, 
+					due_date, 
+					time, 
+					amount, 
+					description)
+					VALUES('.$_SESSION['userId'].', ?, ?, ?, ?, ?, CURTIME(), ?, ?)';
+			
+			$prep = $this->db->prepare($query);
+			
+			$prep->bind_param('iiiisds', 
+					$data['memberId'],
+					$data['currentRoom'],
+					$data['currentCategory'],
+					$data['currentInventory'],
+					Tools::formatToMYSQL($data['paymentDate']),
+					$data['paymentAmount'],
+					$data['paymentDescription']
+			);
+			
+			return $prep->execute();
+
+			// 			Pretty good piece of code!
+// 						if(!$prep->execute())
+// 						{
+// 							printf("Errormessage: %s\n", $prep->error);
+// 						}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function getPaymentsByRoom($data)
+	{
+		try {
+			$query = 'SELECT 
+					p.payment_id, 
+					p.amount, 
+					p.due_date, 
+					DATEDIFF(p.due_date, CURDATE()) AS days, 
+					ic.category, 
+					i.inventory  
+					FROM payments p
+					LEFT JOIN inventory_categories ic ON ic.category_id = p.category_id
+					LEFT JOIN inventory i ON i.inventory_id = p.inventory_id
+					WHERE p.member_id = '.$data['memberId'].'
+					AND p.room_id = '.$data['currentRoom'].'
+					ORDER BY p.due_date ASC		
+					';
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function getPaymentsByPaymentId($data)
+	{
+		try {
+			$query = 'SELECT
+					p.payment_id,
+					p.amount,
+					p.due_date,
+					p.time,
+					p.description,
+					DATEDIFF(p.due_date, CURDATE()) AS days,
+					ic.category,
+					i.inventory
+					FROM payments p
+					LEFT JOIN inventory_categories ic ON ic.category_id = p.category_id
+					LEFT JOIN inventory i ON i.inventory_id = p.inventory_id
+					WHERE p.payment_id = '.$data['paymentId'].'
+					';
+// 			echo $query;
+			return $this->db->getRow($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
 }
 
 
