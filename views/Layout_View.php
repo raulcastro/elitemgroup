@@ -1643,7 +1643,7 @@ class Layout_View
 		</div>
 		
 		<h2 class="page-header">Rooms</h2>
-		<input type="text" val="" id="currentRoom">
+		<input type="hidden" val="" id="currentRoom">
 		<div class="row">
 			<div class="col-md-12">
 				<div class="box box-solid">
