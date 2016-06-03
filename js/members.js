@@ -173,6 +173,7 @@ function loadRoomData(node)
 	$('#currentRoom').val(currentRoom);
 	getCategories();
 	getPayments();
+	calculatePayments();
 }
 
 function getCategories()

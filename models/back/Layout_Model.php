@@ -1215,7 +1215,6 @@ class Layout_Model
 		}
 	}
 	
-	
 	public function getAllInventoryCategories()
 	{
 		try {
@@ -1552,6 +1551,7 @@ class Layout_Model
 					p.payment_id, 
 					p.amount, 
 					p.due_date, 
+					p.status,
 					DATEDIFF(p.due_date, CURDATE()) AS days, 
 					ic.category, 
 					i.inventory  
@@ -1568,6 +1568,40 @@ class Layout_Model
 		}
 	}
 	
+	public function calculatePayments($data)
+	{
+		try {
+			$query = 'SELECT IFNULL((
+					SELECT 
+					SUM(p.amount)
+					FROM payments p
+					WHERE p.member_id = '.$data['memberId'].'
+					AND p.room_id = '.$data['currentRoom'].' 
+				), 0) AS total,
+				IFNULL((	
+					SELECT 
+					SUM(p.amount)
+					FROM payments p
+					WHERE p.member_id = '.$data['memberId'].'
+					AND p.room_id = '.$data['currentRoom'].'
+					AND p.status = 2
+				), 0) AS paid,
+				IFNULL(
+				(	
+					SELECT 
+					SUM(p.amount)
+					FROM payments p
+					WHERE p.member_id = '.$data['memberId'].'
+					AND p.room_id = '.$data['currentRoom'].'
+					AND p.status = 1
+				), 0) AS pending;';
+			
+			return $this->db->getRow($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
 	public function getPaymentsByPaymentId($data)
 	{
 		try {
@@ -1577,6 +1611,7 @@ class Layout_Model
 					p.due_date,
 					p.time,
 					p.description,
+					p.status,
 					DATEDIFF(p.due_date, CURDATE()) AS days,
 					ic.category,
 					i.inventory
@@ -1592,6 +1627,37 @@ class Layout_Model
 		}
 	}
 	
+	public function setPaymentAsPaid($paymentId)
+	{
+		try {
+			$paymentId = (int) $paymentId;
+			$query = 'UPDATE payments SET status = 2 WHERE payment_id = '.$paymentId;
+			return $this->db->run($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function addRoomTypes($data)
+	{
+		try {
+			$query = 'INSERT INTO room_types(room_type, description) VALUES(?, ?)';
+			$prep = $this->db->prepare($query);
+			
+			$prep->bind_param('ss', $data['roomTypeName'], $data['roomTypeDescription']);
+			
+			if ($prep->execute())
+			{
+				return $prep->insert_id;
+			}
+			else
+			{
+				printf("Errormessage: %s\n", $prep->error);
+			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
 }
 
 

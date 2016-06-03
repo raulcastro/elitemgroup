@@ -59,6 +59,10 @@ switch ($_POST['opt'])
 						$percent = ($days * 100) / 12;
 				}
 				
+				$status = '';
+				
+				if ($payment['status'] == 2)
+				 	$status = '/ PAID';
 				?>
 				<div class="col-md-3 col-sm-6 col-xs-12 payment-item">
 					<div class="info-box <?php echo $class; ?>">
@@ -70,7 +74,7 @@ switch ($_POST['opt'])
 						<div class="info-box-content">
 							<span class="info-box-text"><?php echo $payment['inventory']; ?></span>
 							<span class="info-box-text"><?php echo Tools::formatMYSQLToFront($payment['due_date']);  ?></span>
-							<span class="info-box-number">$<?php echo $payment['amount']; ?></span>
+							<span class="info-box-number">$<?php echo $payment['amount'].' '.$status; ?></span>
 							<div class="progress">
 								<div class="progress-bar" style="width: <?php echo $percent; ?>%"></div>
 							</div>
@@ -101,13 +105,37 @@ switch ($_POST['opt'])
 					'description'	=> $payment['description'],
 					'amount'		=> '$'.$payment['amount'],
 					'dateAdded'		=> Tools::formatMYSQLToFront($payment['time']),
-					'days'			=> $payment['days']
+					'days'			=> $payment['days'],
+					'status'		=> $payment['status']
 			 );
 			
 			echo htmlspecialchars(json_encode($data), ENT_NOQUOTES);
 		}
 	break;
 	
+	case 4: //Calculate payments
+		if ($totals = $model->calculatePayments($_POST))
+		{
+			$data = array(
+				'total' => $totals['total'],
+				'paid'	=> $totals['paid'],
+				'pending' => $totals['pending']
+			);
+			
+			echo htmlspecialchars(json_encode($data), ENT_NOQUOTES);
+		}
+	break;
+	
+	case 5:
+		if ($model->setPaymentAsPaid($_POST['paymentId']))
+		{
+			echo 1;
+		}
+		else
+		{
+			echo 0;
+		}
+	break;
 	
 	default:
 	break;

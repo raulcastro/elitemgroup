@@ -648,7 +648,7 @@ class Layout_View
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="/add-owner/"><i class="fa fa-circle-o"></i> Add owner</a></li>
-                            <li><a href="/owners/"><i class="fa fa-circle-o"></i> View all owners</a></li>
+                            <li><a href="/owners/"><i class="fa fa-circle-o"></i> Owners list</a></li>
                         </ul>
                     </li>
                     <li><a href="/rooms/"><i class="fa fa-home"></i> <span>Rooms</span></a></li>
@@ -705,7 +705,7 @@ class Layout_View
 				<div class="info-box">
                 	<span class="info-box-icon bg-yellow"><i class="fa fa-envelope-o"></i></span>
                 	<div class="info-box-content">
-						<span class="info-box-text">Owners</span>
+						<span class="info-box-text">Messages</span>
 						<span class="info-box-number">4</span>
 					</div><!-- /.info-box-content -->
 				</div><!-- /.info-box -->
@@ -1239,6 +1239,7 @@ class Layout_View
     	<script type="text/javascript">
 		</script>
 		<script src="/js/settings.js"></script>
+		<script src="/js/room-types.js"></script>
     	<?php
     	$scripts = ob_get_contents();
     	ob_end_clean();
@@ -1309,30 +1310,32 @@ class Layout_View
 								<div class="form-group">
 									<label for="inputEmail3" class="col-sm-2 control-label">Room Type</label>
 									<div class="col-sm-10">
-										<input type="text" class="form-control" id="" placeholder="Room type">
+										<input type="text" class="form-control" id="roomTypeName" placeholder="Room type">
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="inputPassword3" class="col-sm-2 control-label">Description</label>
 									<div class="col-sm-10">
-										<textarea class="form-control" rows="3" placeholder="Description ..."></textarea>
+										<textarea class="form-control" rows="3" id="roomTypeDescription" placeholder="Description ..."></textarea>
 									</div>
 								</div>
 							</div><!-- /.box-body -->
 							<div class="box-footer">
-								<button type="submit" class="btn btn-info btn-xs pull-right">Add</button>
+								<button type="submit" class="btn btn-info btn-xs pull-right" id="addRoomType">Add</button>
 							</div><!-- /.box-footer -->
 						</form>
 					</div><!-- /.box -->
 					<div class="box-footer no-padding">
-						<ul class="nav nav-stacked">
+						<ul class="nav nav-stacked" id="roomTypesBox">
+							<!-- This has the close icon, or delete icon -->
+							<!-- <li><a href="#"><?php echo $type['room_type']; ?><span class="pull-right badge bg-red"><i class="fa fa-close"></i></span></a></li> -->
 							<?php 
 							if ($this->data['types'])
 							{
 								foreach ($this->data['types'] as $type)
 								{
 									?>
-							<li><a href="#"><?php echo $type['room_type']; ?><span class="pull-right badge bg-red"><i class="fa fa-close"></i></span></a></li>
+							<li><a href="#"><?php echo $type['room_type']; ?></a></li>
 									<?php
 								}
 							}
@@ -1733,117 +1736,112 @@ class Layout_View
 							<h4 class="modal-title">Payment</h4>
 						</div>
 						<div class="modal-body">
-							
-							
-							
 							<section class="invoice">
-          <!-- title row -->
-          <div class="row">
-            <div class="col-xs-12">
-              <h2 class="page-header">
-                <i class="fa fa-globe"></i> <?php echo $this->data['appInfo']['siteName']; ?>
-                <small class="pull-right">Date: <span id="dateAdded"></span></small>
-              </h2>
-            </div><!-- /.col -->
-          </div>
-          <!-- info row -->
-          <div class="row invoice-info">
-            <div class="col-sm-4 invoice-col">
-              From
-              <address>
-                <strong><?php echo $this->data['appInfo']['siteName']; ?></strong><br>
-                Phone: <?php echo $this->data['appInfo']['phone']; ?><br>
-                Email: <?php echo $this->data['appInfo']['email']; ?>
-              </address>
-            </div><!-- /.col -->
-            <div class="col-sm-4 invoice-col">
-              To
-              <address>
-                <strong><?php echo $this->data['memberInfo']['name'].' '.$this->data['memberInfo']['last_name']; ?></strong><br>
-                <?php echo $this->data['memberInfo']['address']; ?><br>
-                Phone: <?php echo $this->data['memberInfo']['phone_one']; ?><br>
-                Email: <?php echo $this->data['memberInfo']['email_one']; ?>
-              </address>
-            </div><!-- /.col -->
-            <div class="col-sm-4 invoice-col">
-              <b>Invoice #<span id="paymentNo"></span></b><br>
-              <b>Payment Due:</b> <span id="singlePaymentDueDate"></</span>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-
-          <!-- Table row -->
-          <div class="row">
-            <div class="col-xs-12 table-responsive">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Order</th>
-                    <th>Room</th>
-                    <th>Category</th>
-                    <th>Description</th>
-                    <th>Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td id="singlePaymentId"></td>
-                    <td id="singlePaymentInventory"></td>
-                    <td id="singlePaymentCategory"></td>
-                    <td id="singlePaymentDescription"></td>
-                    <td id="singlePaymentAmount"></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-
-          <div class="row">
-            <!-- accepted payments column -->
-            <div class="col-xs-6">
-              <p class="lead">Set payment as: </p>
-              <div >
-              	
-              	<div class="form-group">
-					
-					<ul class="payment-options">
-                <li>
-                  <input tabindex="7" type="radio" id="minimal-radio-1" name="minimal-radio">
-                  <label for="minimal-radio-1"> Pending</label>
-                </li>
-                <li>
-                  <input tabindex="8" type="radio" id="minimal-radio-2" name="minimal-radio" checked>
-                  <label for="minimal-radio-2"> Paid</label>
-                </li>
-              </ul>
-                  </div>
-              	
-              	
-              	
-              </div>
-            </div><!-- /.col -->
-            
-            <div class="col-xs-6">
-              <p class="lead">Documents</p>
-              <div class="table-responsive">
-                <table class="table">
-                  <tbody>
-                  <tr>
-                    <td>Document 1</td>
-                  </tr>
-                </tbody></table>
-              </div>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-
-        </section>
+								<!-- title row -->
+								<div class="row">
+									<div class="col-xs-12">
+										<h2 class="page-header">
+											<i class="fa fa-globe"></i> <?php echo $this->data['appInfo']['siteName']; ?>
+											<small class="pull-right">Date: <span id="dateAdded"></span></small>
+										</h2>
+									</div><!-- /.col -->
+								</div>
+								<!-- info row -->
+								<div class="row invoice-info">
+									<div class="col-sm-4 invoice-col">
+										From
+										<address>
+											<strong><?php echo $this->data['appInfo']['siteName']; ?></strong><br>
+											Phone: <?php echo $this->data['appInfo']['phone']; ?><br>
+											Email: <?php echo $this->data['appInfo']['email']; ?>
+										</address>
+									</div><!-- /.col -->
+									<div class="col-sm-4 invoice-col">
+										To
+										<address>
+											<strong><?php echo $this->data['memberInfo']['name'].' '.$this->data['memberInfo']['last_name']; ?></strong><br>
+											<?php echo $this->data['memberInfo']['address']; ?><br>
+											Phone: <?php echo $this->data['memberInfo']['phone_one']; ?><br>
+											Email: <?php echo $this->data['memberInfo']['email_one']; ?>
+										</address>
+									</div><!-- /.col -->
+									<div class="col-sm-4 invoice-col">
+										<b>Invoice #<span id="paymentNo"></span></b><br>
+										<b>Payment Due:</b> <span id="singlePaymentDueDate"></</span>
+									</div><!-- /.col -->
+								</div><!-- /.row -->
+								
+								<!-- Table row -->
+								<div class="row">
+									<div class="col-xs-12 table-responsive">
+										<table class="table table-striped">
+											<thead>
+												<tr>
+													<th>Order</th>
+													<th>Room</th>
+													<th>Category</th>
+													<th>Description</th>
+													<th>Total</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td id="singlePaymentId"></td>
+													<td id="singlePaymentInventory"></td>
+													<td id="singlePaymentCategory"></td>
+													<td id="singlePaymentDescription"></td>
+													<td id="singlePaymentAmount"></td>
+												</tr>
+											</tbody>
+										</table>
+									</div><!-- /.col -->
+								</div><!-- /.row -->
+								
+								<div class="row">
+									<!-- accepted payments column -->
+									<div class="col-xs-6">
+										<div id="paymentOptionsPaid">
+											<h3>PAID</h3>
+										</div>
+										<div id="paymentOptionsBox">
+											<p class="lead">Set payment as: </p>
+											<div >
+												<div class="form-group">
+													<ul class="payment-options">
+														<li>
+															<input tabindex="7" type="radio" id="optionPaymentPending" name="minimal-radio">
+															<label for="minimal-radio-1"> Pending</label>
+														</li>
+														<li>
+															<input tabindex="8" type="radio" id="optionPaymentPaid" name="minimal-radio">
+															<label for="minimal-radio-2"> Paid</label>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+									</div><!-- /.col -->
+									            
+									<div class="col-xs-6">
+										<p class="lead">Documents</p>
+										<div class="table-responsive">
+											<table class="table">
+												<tbody>
+												<tr>
+													<td>Document 1</td>
+												</tr>
+												</tbody>
+											</table>
+										</div>
+									</div><!-- /.col -->
+								</div><!-- /.row -->
 							
-							
-							
-							
+							</section>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-							<button class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit Payment</button>
+							<input type="hidden" id="singlePaymentIdVal">
+							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>							
+							<button class="btn btn-success pull-right" id="updatPayment"><i class="fa fa-credit-card"></i> Submit Payment</button>
 						</div>
 					</div><!-- /.modal-content -->
 				</div><!-- /.modal-dialog -->
@@ -1888,10 +1886,13 @@ class Layout_View
 												<button data-target="#payment-modal" type="submit" class="btn btn-info pull-left btn-sm" data-toggle="modal" >Add payment</button>
 											</div>
 											<div class="col-sm-3">
-												<h3>Total: $100</h3>
+												<h3>Total: $<span id="paymentTotal"></span></h3>
 											</div>
 											<div class="col-sm-3">
-												<h3>Pending: $40</h3>
+												<h3>Paid: $<span id="paymentPaid"></span></h3>
+											</div>
+											<div class="col-sm-3">
+												<h3>Pending: $<span id="paymentPending"></span></h3>
 											</div>
 										</div>
 										<div class="vertical-spacer"></div>
@@ -2081,7 +2082,6 @@ class Layout_View
 					</div>
 				</div><!-- /.widget-user -->
 			</div>
-    		
     	</div>
     	
 		<div class="row edit-user-info">
