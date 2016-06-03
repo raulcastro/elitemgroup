@@ -1240,6 +1240,7 @@ class Layout_View
 		</script>
 		<script src="/js/settings.js"></script>
 		<script src="/js/room-types.js"></script>
+		<script src="/js/condos.js"></script>
     	<?php
     	$scripts = ob_get_contents();
     	ob_end_clean();
@@ -1336,6 +1337,54 @@ class Layout_View
 								{
 									?>
 							<li><a href="#"><?php echo $type['room_type']; ?></a></li>
+									<?php
+								}
+							}
+							?>
+						</ul>
+					</div>
+				</div><!-- /.widget-user -->
+			</div><!-- /.col -->
+        </div>
+        
+        <div class="row">
+			<div class="col-md-6">
+				<div class="box box-widget widget-user-2">
+					<div class="widget-user-header bg-blue">
+						<h3 class="widget-user-username">Condos</h3>
+					</div>
+					<!-- Horizontal Form -->
+              		<div class="box box-info">
+						<!-- form start -->
+						<form class="form-horizontal">
+							<div class="box-body">
+								<div class="form-group">
+									<label for="inputEmail3" class="col-sm-2 control-label">Condo</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="condoName" placeholder="Condo name ...">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="inputPassword3" class="col-sm-2 control-label">Description</label>
+									<div class="col-sm-10">
+										<textarea class="form-control" rows="3" id="condoDescription" placeholder="Description ..."></textarea>
+									</div>
+								</div>
+							</div><!-- /.box-body -->
+							<div class="box-footer">
+								<button type="submit" class="btn btn-info btn-xs pull-right" id="addCondo">Add</button>
+							</div><!-- /.box-footer -->
+						</form>
+					</div><!-- /.box -->
+					<div class="box-footer no-padding">
+						<ul class="nav nav-stacked" id="condoBox">
+							<?php 
+							if ($this->data['condos'])
+							{
+								foreach ($this->data['condos'] as $condo)
+								{
+									?>
+							<li><a href="#"><?php echo $condo['condo']; ?></a></li>
 									<?php
 								}
 							}

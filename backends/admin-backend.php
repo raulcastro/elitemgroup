@@ -93,6 +93,9 @@ class generalBackend
 				
 				$infoArray = $this->model->getAllInventoryCategories();
 				$data['categories'] = $infoArray;
+				
+				$infoArray = $this->model->getAllCondos();
+				$data['condos'] = $infoArray;
 			break;
 			
 			case 'inventory-category':

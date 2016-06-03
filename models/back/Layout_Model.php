@@ -1658,7 +1658,51 @@ class Layout_Model
 			return false;
 		}
 	}
+	
+	public function getAllCondos()
+	{
+		try {
+			$query = 'SELECT * FROM condos ORDER BY condo_id DESC';
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function addCondos($data)
+	{
+		try {
+			$query = 'INSERT INTO condos(condo, description) VALUES(?, ?)';
+			$prep=$this->db->prepare($query);
+			
+			$prep->bind_param('ss', $data['condoName'], $data['condoDescription']);
+			
+			if ($prep->execute())
+			{
+				return $prep->insert_id;
+			}
+			else
+			{
+				printf("Errormessage: %s\n", $prep->error);
+			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
