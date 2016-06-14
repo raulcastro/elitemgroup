@@ -40,7 +40,7 @@ class Layout_View
 	public function __construct($data)
 	{
 		$this->data = $data;
-	}    
+	}
 	
 	/**
 	 * function printHTMLPage
@@ -204,8 +204,8 @@ class Layout_View
 				}
 			}
 			
-			
 			echo self::getCommonScriptDocuments();
+			
 			switch ($this->data['section'])
 			{
 				case 'log-in':
@@ -1630,11 +1630,12 @@ class Layout_View
 			<div class="col-md-6">
 				<div class="box box-info">
 					<div class="box-body">
+					<!-- 
 						<div class="form-group">
 							<label for="exampleInputEmail1">Condo </label>
 							<input type="text" class="form-control" id="memberCondo" placeholder="Condo">
 						</div>
-					
+					 -->
 						<div class="form-group">
 							<label for="exampleInputEmail1">Address</label>
 							<textarea class="form-control" id="memberAddress" rows="3" placeholder="Address ..."></textarea>

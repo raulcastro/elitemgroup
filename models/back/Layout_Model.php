@@ -136,6 +136,47 @@ class Layout_Model
 		}
 	}
 	
+	public function updateMember($data)
+	{
+		try {
+			$query = 'UPDATE members
+					SET name 	= ?,
+					last_name 	= ?,
+					address 	= ?,
+					phone_one	= ?,
+					phone_two	= ?,
+					email_one 	= ?,
+					email_two 	= ?,
+					notes 		= ?,
+					condo		= ?
+					WHERE member_id = ?';
+				
+			$prep = $this->db->prepare($query);
+				
+			$prep->bind_param('sssssssssi',
+					$data['memberFirst'],
+					$data['memberLast'],
+					$data['memberAddress'],
+					$data['phoneOne'],
+					$data['phoneTwo'],
+					$data['emailOne'],
+					$data['emailTwo'],
+					$data['notes'],
+					$data['memberCondo'],
+					$data['memberId']
+					);
+				
+			if ($prep->execute())
+			{
+				return $data['memberId'];
+			}
+			else {
+				printf("Errormessage: %s\n", $prep->error);
+			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
 	
 	/**
 	 * Get the last 10 members added
@@ -228,43 +269,11 @@ class Layout_Model
 		}
 	}
 	
-	public function updateMember($data)
+	public function getRecentMembers()
 	{
 		try {
-			$query = 'UPDATE members 
-					SET name 	= ?, 
-					last_name 	= ?, 
-					address 	= ?, 
-					phone_one	= ?, 
-					phone_two	= ?, 
-					email_one 	= ?,
-					email_two 	= ?, 
-					notes 		= ?,
-					condo		= ?
-					WHERE member_id = ?';
-			
-			$prep = $this->db->prepare($query);
-			
-			$prep->bind_param('sssssssssi',
-					$data['memberFirst'],
-					$data['memberLast'],
-					$data['memberAddress'],
-					$data['phoneOne'],
-					$data['phoneTwo'],
-					$data['emailOne'],
-					$data['emailTwo'],
-					$data['notes'],
-					$data['memberCondo'],
-					$data['memberId']
-					);
-			
-			if ($prep->execute())
-			{
-				return $data['memberId'];
-			}
-			else {
-				printf("Errormessage: %s\n", $prep->error);
-			}
+			$query = 'SELECT COUNT(*) FROM members WHERE date = CURDATE() AND user_id = '.$_SESSION['userId'];
+			return $this->db->getValue($query);
 		} catch (Exception $e) {
 			return false;
 		}
@@ -294,7 +303,6 @@ class Layout_Model
 			return false;
 		}
 	}
-	
 	
 	public function getMemberHistoryById($memberId)
 	{
@@ -575,16 +583,6 @@ class Layout_Model
 		}
 	}
 	
-	public function getRecentMembers()
-	{
-		try {
-			$query = 'SELECT COUNT(*) FROM members WHERE date = CURDATE() AND user_id = '.$_SESSION['userId'];
-			return $this->db->getValue($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
 	public function completeTask($task_id)
 	{
 		try {
@@ -592,431 +590,6 @@ class Layout_Model
 			$query = 'UPDATE member_tasks SET status = 1, completed_by = '.$_SESSION['userId'].', completed_date = CURDATE()
 					WHERE task_id = '.$task_id;
 			return $this->db->run($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * addAgency
-	 *
-	 * add an agency on the agency table
-	 *
-	 * @param ustring $agency
-	 * @return true on success | false on fail
-	 */
-	public function addAgency($agency)
-	{
-		try {
-			$query = 'INSERT INTO agencies(agency)
-						VALUES(?);';
-	
-			$prep = $this->db->prepare($query);
-	
-			$prep->bind_param('s', $agency);
-				
-			return $prep->execute();
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * getAgencies
-	 *
-	 * returns an array of agencies
-	 *
-	 * @return multitype:array of agencies on success false on fail
-	 */
-	public function getAgencies()
-	{
-		try {
-			$query = 'SELECT * FROM agencies ORDER BY agency_id DESC';
-			return $this->db->getArray($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-		
-	public function getAllReservations()
-	{
-		try {
-			$query = 'SELECT s.reservation_id, 
-					s.check_in,
-					DATE_ADD(s.check_out, INTERVAL 1 DAY) AS check_out,
-					rt.room_type,
-					rt.abbr,
-					r.room,
-					m.name,
-					m.last_name
-					FROM reservations s
-					LEFT JOIN rooms r ON s.room_id = r.room_id
-					LEFT JOIN room_types rt ON rt.room_type_id = r.room_type_id
-					LEFT JOIN members m ON m.member_id = s.member_id
-					';
-			
-			return $this->db->getArray($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * searchRooms
-	 * 
-	 * Execute a search for available rooms depending on check-in & check-out
-	 * 
-	 * @param array $data
-	 * @return multitype:a list of available rooms | false on fail
-	 */
-	public function searchRooms($data)
-	{
-		$checkIn 	= Tools::formatToMYSQL($data['checkIn']);
-		$checkIn	= date($checkIn);
-		
-		$checkOut 	= Tools::formatToMYSQL($data['checkOut']);
-		$checkOut 	= date($checkOut);
-		
-		try {
-			$query = 'SELECT r.*, rt.room_type_id, rt.room_type
-			FROM rooms r
-			LEFT JOIN room_types rt ON r.room_type_id = rt.room_type_id
-			WHERE r.room_id NOT IN (SELECT room_id
-			FROM reservations 
-			WHERE (check_in < "'.$checkOut.'" AND check_out >="'.$checkOut.'")
-			OR (check_in <= "'.$checkIn.'" AND check_out >"'.$checkIn.'")
-			OR (check_in >= "'.$checkIn.'" AND check_out <= "'.$checkOut.'"))
-			ORDER BY r.room_order ASC		
-			;';
-// 			echo $query;
-			return $this->db->getArray($query);
-		} catch (Exception $e) {
-			echo $e->getMessage();
-			return false;
-		}
-	}
-	
-	/**
-	 * searchSingleRoom
-	 *
-	 * Execute a search for the availability of a singles specific room, according to check in and check out date
-	 *
-	 * @param array $data
-	 * @return multitype:a list of available rooms | false on fail
-	 */
-	public function searchSingleRoom($data)
-	{
-		$checkIn 	= Tools::formatToMYSQL($data['checkIn']);
-		$checkOut 	= Tools::formatToMYSQL($data['checkOut']);
-	
-		$room_id = (int) $data['roomId'];
-		try {
-			$query = 'SELECT r.*, rt.room_type_id, rt.room_type
-			FROM rooms r
-			LEFT JOIN room_types rt ON r.room_type_id = rt.room_type_id
-			WHERE r.room_id NOT IN (SELECT room_id
-			FROM reservations
-			WHERE (check_in < "'.$checkOut.'" AND check_out >="'.$checkOut.'")
-			OR (check_in <= "'.$checkIn.'" AND check_out >"'.$checkIn.'")
-			OR (check_in >= "'.$checkIn.'" AND check_out <= "'.$checkOut.'"))
-			AND r.room_id = '.$data['roomId'].'
-			ORDER BY r.room_order ASC
-			;';
-			return $this->db->getRow($query);
-		} catch (Exception $e) {
-			echo $e->getMessage();
-			return false;
-		}
-	}
-	
-	public function addMemberFromReservation($data)
-	{
-		try {
-			$query = 'INSERT INTO members(name, user_id, last_name, active, date)
-						VALUES(?, '.$_SESSION["userId"].', ?, 1, CURDATE());';
-				
-			$prep = $this->db->prepare($query);
-				
-			$prep->bind_param('ss',
-					$data['memberName'],
-					$data['memberLastName']);
-			
-			if ($prep->execute())
-			{
-				return $prep->insert_id;
-			}
-			else
-			{
-				printf("Errormessage: %s\n", $prep->error);
-			}
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-
-	/**
-	 * getMemberReservationByMemberId
-	 * 
-	 * it gets all the reservation related to a member
-	 * 
-	 * @param int $memberId
-	 * @return array on success | false on fail
-	 */
-	public function getMemberReservationsByMemberId($memberId)
-	{
-		$memberId = (int) $memberId;
-		try {
-			$query = 'SELECT 
-					s.reservation_id,
-					s.check_in,
-					DATE_ADD(s.check_in, INTERVAL -1 DAY) AS check_in_mask,
-					s.check_out,
-					DATE_ADD(s.check_out, INTERVAL 1 DAY) AS check_out_mask,
-					s.date,
-					s.price,
-					s.adults,
-					s.children,
-					s.status,
-					s.external_id,
-					s.room_id,
-					DATEDIFF(s.check_out, s.check_in) AS n_days,
-					rt.room_type,
-					rt.abbr,
-					r.room,
-					m.name,
-					m.last_name,
-					a.agency,
-					a.agency_id
-					FROM reservations s
-					LEFT JOIN rooms r ON s.room_id = r.room_id
-					LEFT JOIN room_types rt ON rt.room_type_id = r.room_type_id
-					LEFT JOIN members m ON m.member_id = s.member_id
-					LEFT JOIN agencies a ON s.agency = a.agency_id
-					WHERE s.member_id = '.$memberId.' ORDER BY s.check_in ASC';
-				
-			return $this->db->getArray($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * getMemberCancelationsByMemberId
-	 *
-	 * it gets all the reservation canceled related to a member
-	 *
-	 * @param int $memberId
-	 * @return array on success | false on fail
-	 */
-	public function getMemberCancelationsByMemberId($memberId)
-	{
-		$memberId = (int) $memberId;
-		try {
-			$query = 'SELECT s.reservation_id,
-					s.check_in,
-					DATE_ADD(s.check_in, INTERVAL -1 DAY) AS check_in_mask,
-					s.check_out,
-					DATE_ADD(s.check_out, INTERVAL 1 DAY) AS check_out_mask,
-					s.date,
-					s.price,
-					s.adults,
-					s.children,
-					s.status,
-					s.external_id,
-					s.room_id,
-					rt.room_type,
-					rt.abbr,
-					r.room,
-					m.name,
-					m.last_name,
-					a.agency
-					FROM cancelations s
-					LEFT JOIN rooms r ON s.room_id = r.room_id
-					LEFT JOIN room_types rt ON rt.room_type_id = r.room_type_id
-					LEFT JOIN members m ON m.member_id = s.member_id
-					LEFT JOIN agencies a ON s.agency = a.agency_id
-					WHERE s.member_id = '.$memberId.' ORDER BY s.reservation_id DESC';
-	
-			return $this->db->getArray($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * getReservationsByRoomId
-	 * 
-	 * returns all the reservations related to an specific room
-	 * 
-	 * @param int $room_id
-	 * @return multitype:array of reservations on success | false on fail
-	 */
-	public function getReservationsByRoomId($room_id)
-	{
-		try {
-			$room_id = (int) $room_id;
-			$query = 'SELECT s.reservation_id, 
-					s.check_in,
-					DATE_ADD(s.check_in, INTERVAL -1 DAY) AS check_in_mask,
-					s.check_out,
-					DATE_ADD(s.check_out, INTERVAL 1 DAY) AS check_out_mask,
-					s.status,
-					s.reservation_id,
-					rt.room_type,
-					rt.abbr,
-					r.room,
-					m.member_id, 
-					m.name,
-					m.last_name,
-					a.agency
-					FROM reservations s
-					LEFT JOIN rooms r ON s.room_id = r.room_id
-					LEFT JOIN room_types rt ON rt.room_type_id = r.room_type_id
-					LEFT JOIN members m ON m.member_id = s.member_id
-					LEFT JOIN agencies a ON s.agency = a.agency_id
-					WHERE r.room_id = '.$room_id.' ORDER BY s.check_in';
-			
-			return $this->db->getArray($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-
-	
-	/**
-	 * getPaymentsByReservationId
-	 * 
-	 * get all the payments related to a reservation
-	 * 
-	 * @param int $reservation_id
-	 * @return multitype:unknown |boolean
-	 */
-	public function getPaymentsByReservationId($reservation_id)
-	{
-		try {
-			$reservation_id = (int) $reservation_id;
-			
-			$query = "SELECT * 
-						FROM payments 
-						WHERE reservation_id = ".$reservation_id;
-			return $this->db->getArray($query);
-			
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * getReservationGrandTotalByReservationId
-	 * 
-	 * returns the sum of the active payments by reservation id
-	 * 
-	 * @param int $reservation_id
-	 * @return int | false on failed
-	 */
-	public function getReservationGrandTotalByReservationId($reservation_id)
-	{
-		try {
-			$reservation_id = (int) $reservation_id;
-			
-			$stayingTotal = $this->getReservationStayingCostTotal($reservation_id);
-			
-			$query = 'SELECT 
-						SUM(cost) as grand_total 
-						FROM payments 
-						WHERE reservation_id = '.$reservation_id." 
-						AND active = 1 
-						AND staying = 0";
-			
-			return ($this->db->getValue($query) + $stayingTotal);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * getReservationPaidByReservationId
-	 *
-	 * returns the sum of the paid payments by reservation id
-	 *
-	 * @param int $reservation_id
-	 * @return int | false on failed
-	 */
-	public function getReservationPaidByReservationId($reservation_id)
-	{
-		try {
-			$reservation_id = (int) $reservation_id;
-			$query = 'SELECT 
-						IFNULL(SUM(cost), 0) as grand_total 
-						FROM payments 
-						WHERE reservation_id = '.$reservation_id." 
-						AND active = 1 
-						AND status = 1";
-			return $this->db->getValue($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * getReservationUnpaidByReservationId
-	 *
-	 * returns the sum of the pending payments by reservation id
-	 *
-	 * @param int $reservation_id
-	 * @return int | false on failed
-	 */
-	public function getReservationUnpaidByReservationId($reservation_id)
-	{
-		try {
-			
-			$total = $this->getReservationGrandTotalByReservationId($reservation_id);
-			$paid = $this->getReservationPaidByReservationId($reservation_id);
-			
-			return ($total - $paid);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	public function getReservationStayingCostTotal($reservation_id)
-	{
-		try {
-			$reservation_id = (int) $reservation_id;
-			$query = 'SELECT 
-					price 
-					FROM reservations 
-					WHERE reservation_id = '.$reservation_id;
-			return $this->db->getValue($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	public function getReservationStayingCostPaid($reservation_id)
-	{
-		try {
-			$query = 'SELECT 
-					IFNULL(SUM(cost), 0) as staying_paid 
-					FROM payments 
-					WHERE reservation_id = '.$reservation_id." 
-					AND active = 1 
-					AND status = 1 
-					AND staying = 1";
-			return $this->db->getValue($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	public function getReservationStayingPending($reservation_id)
-	{
-		try {
-			$total = $this->getReservationStayingCostTotal($reservation_id);
-			$paid = $this->getReservationStayingCostPaid($reservation_id);
-			
-			return $total - $paid;
 		} catch (Exception $e) {
 			return false;
 		}
@@ -1035,181 +608,34 @@ class Layout_Model
 		}
 	}
 	
-	public function setPaymentType($data)
+	public function addInventory($data)
 	{
 		try {
-			$query = 'UPDATE payments 
-					SET payment_type = '.$data['payType'].' 
-					WHERE payment_id = '.$data['paymentId'];
-			return $this->db->run($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
+			$query 	= 'INSERT INTO inventory(category_id, inventory, description) VALUES(?, ?, ?)';
+			$prep 	= $this->db->prepare($query);
 	
-	public function unActivePayment($paymentId)
-	{
-		try {
-			$query = 'UPDATE payments 
-					SET active = 0 
-					WHERE payment_id = '.$paymentId;
-			return $this->db->run($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
+			$prep->bind_param('iss', $data['categoryId'], $data['inventoryName'], $data['inventoryDescription']);
 	
-	/**
-	 * uptadeSingleReservation
-	 * 
-	 * change the status of the reservation to pending, confirmed, checked-in, checked-out. BUT NOT TO CANCELED
-	 * 
-	 * @param array of data
-	 * @return true on success, false on failed
-	 */
-	public function uptadeSingleReservation($data)
-	{
-		try {
-			$query = 'UPDATE reservations 
-					SET status = ?, 
-					agency = ?
-					WHERE reservation_id = '.$data['reservationId'];
-				
-			$prep = $this->db->prepare($query);
-				
-			$prep->bind_param('ii',
-					$data['optRes'],
-					$data['agencyId']);
-			return $prep->execute();
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	/**
-	 * addCancelation
-	 * 
-	 * Place a cancelation, creates a copy of the interested row on the cancelation table, 
-	 * then the reservation is deleted
-	 * 
-	 * @param array $data array of data
-	 * @return Ambigous <boolean, mixed>|boolean
-	 */
-	public function addCancelation($data)
-	{
-		try {
-			$reservation_id = (int) $data['reservationId'];
-				
-			$query = 'INSERT INTO cancelations
-					SELECT * FROM reservations
-					WHERE reservation_id = '.$reservation_id;
-				
-			if ($this->db->run($query))
+			if ($prep->execute())
 			{
-				return $this->deleteReservation($reservation_id);
+				return $prep->insert_id;
 			}
-			
+			else
+			{
+				printf("Errormessage: %s\n", $prep->error);
+			}
 		} catch (Exception $e) {
 			return false;
 		}
 	}
 	
-	/**
-	 * deleteReservation
-	 * 
-	 * 
-	 * 
-	 * @param unknown $reservationId
-	 * @return Ambigous <boolean, mixed>|boolean
-	 */
-	public function deleteReservation($reservationId)
+	public function updateInventoryCategory($data)
 	{
 		try {
-			$reservationId = (int) $reservationId;
-			
-			$query = 'DELETE 
-					FROM reservations 
-					WHERE reservation_id = '.$reservationId;
-			
-			return $this->db->run($query);
-			
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	public function getReservationsByRange($start, $end)
-	{
-		try {
-			$query = '
-					SELECT r.*,
-					m.name,
-					m.last_name,
-					a.agency,
-					ro.room,
-					m.country,
-					m.notes,
-					DATEDIFF(r.check_out, check_in) AS n_days,
-					((SELECT IFNULL(SUM(p.cost), 0) as grand_total FROM payments p WHERE p.reservation_id = r.reservation_id AND p.active = 1 AND p.staying = 0) + r.price) as total,
-					(SELECT IFNULL(SUM(cost), 0) as grand_total FROM payments WHERE reservation_id = r.reservation_id AND active = 1 AND status = 1) AS paid,
-					FORMAT((r.price/DATEDIFF(r.check_out, check_in)), 0) AS ppn,
-					CASE
-						WHEN r.status = 1 THEN "Pending"
-						WHEN r.status = 2 THEN "Confirmed"
-						WHEN r.status = 3 THEN "In"
-						WHEN r.status = 4 THEN "Out"
-						WHEN r.status = 5 THEN "Canceled"
-					END as r_status
-					FROM reservations r
-					LEFT JOIN members m ON r.member_id = m.member_id
-					LEFT JOIN agencies a ON r.agency = a.agency_id
-					LEFT JOIN rooms ro ON r.room_id = ro.room_id 
-					WHERE r.check_in
-					BETWEEN "'.$start.'" AND "'.$end.'"
-					';
-// 			echo $query;
-			return $this->db->getArray($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	public function updateReservation($data)
-	{
-		try {
-			$checkIn 	= Tools::formatToMYSQL($data['checkIn']);
-			$checkIn	= date($checkIn);
-		
-			$checkOut 	= Tools::formatToMYSQL($data['checkOut']);
-			$checkOut 	= date($checkOut);
-		
-			$query = 'UPDATE reservations
-					SET check_in = ?,
-					check_out = ?,
-					room_id = ?,
-					price = ?
-					WHERE reservation_id = '.$data['reservationId'];
-			
+			$query = 'UPDATE inventory_categories SET category = ?, description = ? WHERE category_id = '.$data['categoryId'];
 			$prep = $this->db->prepare($query);
-			
-			$prep->bind_param('ssii',
-					$checkIn,
-					$checkOut,
-					$data['roomId'],
-					$data['total']);
-			
+			$prep->bind_param('ss', $data['categoryName'], $data['categoryDescription']);
 			return $prep->execute();
-			
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	public function getRoomTypes()
-	{
-		try {
-			$query = 'SELECT * FROM room_types';
-			return $this->db->getArray($query);
 		} catch (Exception $e) {
 			return false;
 		}
@@ -1256,39 +682,6 @@ class Layout_Model
 		}
 	}
 	
-	public function updateInventoryCategory($data)
-	{
-		try {
-			$query = 'UPDATE inventory_categories SET category = ?, description = ? WHERE category_id = '.$data['categoryId'];
-			$prep = $this->db->prepare($query);
-			$prep->bind_param('ss', $data['categoryName'], $data['categoryDescription']);
-			return $prep->execute();
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	public function addInventory($data)
-	{
-		try {
-			$query 	= 'INSERT INTO inventory(category_id, inventory, description) VALUES(?, ?, ?)';
-			$prep 	= $this->db->prepare($query);
-				
-			$prep->bind_param('iss', $data['categoryId'], $data['inventoryName'], $data['inventoryDescription']);
-				
-			if ($prep->execute())
-			{
-				return $prep->insert_id;
-			}
-			else
-			{
-				printf("Errormessage: %s\n", $prep->error);
-			}
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
 	public function getInventoryByCategory($id)
 	{
 		try {
@@ -1310,6 +703,26 @@ class Layout_Model
 			if ($prep->execute())
 			{
 				return $prep->insert_id;
+			}
+			else
+			{
+				printf("Errormessage: %s\n", $prep->error);
+			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function updateRoom($data)
+	{
+		try {
+			$query = 'UPDATE rooms SET room_type_id = ?, room = ?, description = ? WHERE room_id = ?';
+			$prep = $this->db->prepare($query);
+			$prep->bind_param('issi',$data['roomType'], $data['roomName'], $data['roomDescription'], $data['roomId']);
+				
+			if ($prep->execute())
+			{
+				return true;
 			}
 			else
 			{
@@ -1364,26 +777,6 @@ class Layout_Model
 					WHERE r.room_id = '.$roomId.'
 					';
 			return $this->db->getRow($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
-	public function updateRoom($data)
-	{
-		try {
-			$query = 'UPDATE rooms SET room_type_id = ?, room = ?, description = ? WHERE room_id = ?';
-			$prep = $this->db->prepare($query);
-			$prep->bind_param('issi',$data['roomType'], $data['roomName'], $data['roomDescription'], $data['roomId']);
-			
-			if ($prep->execute())
-			{
-				return true;
-			}
-			else
-			{
-				printf("Errormessage: %s\n", $prep->error);
-			}
 		} catch (Exception $e) {
 			return false;
 		}
@@ -1659,10 +1052,10 @@ class Layout_Model
 		}
 	}
 	
-	public function getAllCondos()
+	public function getRoomTypes()
 	{
 		try {
-			$query = 'SELECT * FROM condos ORDER BY condo_id DESC';
+			$query = 'SELECT * FROM room_types';
 			return $this->db->getArray($query);
 		} catch (Exception $e) {
 			return false;
@@ -1689,7 +1082,25 @@ class Layout_Model
 			return false;
 		}
 	}
+	
+	public function getAllCondos()
+	{
+		try {
+			$query = 'SELECT * FROM condos ORDER BY condo_id DESC';
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
 }
+
+
+
+
+
+
+
+
 
 
 
