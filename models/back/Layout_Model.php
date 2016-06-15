@@ -697,9 +697,9 @@ class Layout_Model
 	public function addRoom($data)
 	{
 		try {
-			$query = 'INSERT INTO rooms(room_type_id, room, description) VALUES(?, ?, ?)';
+			$query = 'INSERT INTO rooms(room_type_id, room, description, condo_id) VALUES(?, ?, ?, ?)';
 			$prep = $this->db->prepare($query);
-			$prep->bind_param('iss', $data['roomType'], $data['roomName'], $data['roomDescription']);
+			$prep->bind_param('issi', $data['roomType'], $data['roomName'], $data['roomDescription'], $data['condoId']);
 			if ($prep->execute())
 			{
 				return $prep->insert_id;
@@ -716,9 +716,9 @@ class Layout_Model
 	public function updateRoom($data)
 	{
 		try {
-			$query = 'UPDATE rooms SET room_type_id = ?, room = ?, description = ? WHERE room_id = ?';
+			$query = 'UPDATE rooms SET room_type_id = ?, room = ?, description = ?, condo_id = ? WHERE room_id = ?';
 			$prep = $this->db->prepare($query);
-			$prep->bind_param('issi',$data['roomType'], $data['roomName'], $data['roomDescription'], $data['roomId']);
+			$prep->bind_param('issii',$data['roomType'], $data['roomName'], $data['roomDescription'], $data['condoId'], $data['roomId']);
 				
 			if ($prep->execute())
 			{

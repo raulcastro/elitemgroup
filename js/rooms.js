@@ -45,6 +45,7 @@ function addRoom()
 	var roomName 		= $('#roomName').val();
 	var roomType 		= $('#roomType').val();
 	var roomDescription = $('#roomDescription').val();
+	var condoId			= $('#condoId').val();
 
 	if (roomName)
 	{
@@ -54,7 +55,8 @@ function addRoom()
 	    data: {
 	    	roomName: 			roomName,
 	    	roomType: 			roomType,
-	    	roomDescription: 	roomDescription, 
+	    	roomDescription: 	roomDescription,
+	    	condoId:			condoId,
 	    	opt:				'1'
 	    },
 	    success:
@@ -79,6 +81,7 @@ function updateRoom()
 	var roomName 		= $('#roomName').val();
 	var roomType 		= $('#roomType').val();
 	var roomDescription = $('#roomDescription').val();
+	var condoId			= $('#condoId').val();
 
 	if (roomName)
 	{
@@ -86,11 +89,12 @@ function updateRoom()
 	    type: "POST",
 	    url: "/ajax/rooms.php",
 	    data: {
-	    	roomId:	roomId,
-	    	roomName: 	roomName,
-	    	roomType: roomType,
+	    	roomId:				roomId,
+	    	roomName: 			roomName,
+	    	roomType: 			roomType,
 	    	roomDescription: 	roomDescription, 
-	    	opt:			'4'
+	    	condoId:			condoId,
+	    	opt:				'4'
 	    },
 	    success:
 	        function(info)
