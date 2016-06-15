@@ -636,7 +636,7 @@ class Layout_View
                     <li>
 						<a href="">
 							<i class="fa fa-envelope"></i> <span>Messages</span>
-							<small class="label pull-right bg-yellow">12</small>
+							<!-- <small class="label pull-right bg-yellow">12</small> -->
 						</a>
 					</li>
                     <li><a href="/tasks/"><i class="fa fa-tasks"></i> <span>Tasks</span></a></li>
@@ -656,9 +656,21 @@ class Layout_View
                     <li>
 						<a href="#">
 							<i class="fa fa-money"></i> <span>Payments</span>
-							<small class="label pull-right bg-red">12</small>
+							<!-- <small class="label pull-right bg-red">12</small> -->
 						</a>
 					</li>
+					<li class="header">CONDOS</li>
+					<?php 
+					if ($this->data['condos'])
+					{
+						foreach ($this->data['condos'] as $condo)
+						{
+							?>
+					<li><a href="#"><i class="fa fa-bolt"></i> <span><?php echo $condo['condo']; ?></span></a></li>		
+							<?php
+						}
+					}
+					?>
                 </ul>
                 <!-- /.sidebar-menu -->
             </section>
@@ -2322,14 +2334,14 @@ class Layout_View
             </div><!-- /.box-header -->
             <div class="box-body" style="display: block;">
 				<div class="row">
-					<div class="col-md-6">
+					<div class="col-md-4">
 						<div class="form-group">
 							<label for="exampleInputEmail1">Room name</label>
 							<input type="text" class="form-control" id="roomName" placeholder="Room name" value="" >
                   		</div><!-- /.form-group -->
 					</div><!-- /.col -->
 					
-					<div class="col-md-6">
+					<div class="col-md-4">
 						<div class="form-group">
 							<label>Room type</label>
 							<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="roomType">
@@ -2338,6 +2350,22 @@ class Layout_View
 								{
 									?>
 								<option value="<?php echo $type['room_type_id']; ?>"><?php echo $type['room_type']; ?></option>
+									<?php
+								}
+								?>
+							</select>
+                  		</div><!-- /.form-group -->
+					</div><!-- /.col -->
+					
+					<div class="col-md-4">
+						<div class="form-group">
+							<label>Condo</label>
+							<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="condo">
+								<?php 
+								foreach ($this->data['condos'] as $type)
+								{
+									?>
+								<option value="<?php echo $type['condo_id']; ?>"><?php echo $type['condo']; ?></option>
 									<?php
 								}
 								?>

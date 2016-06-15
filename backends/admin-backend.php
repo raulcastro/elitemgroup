@@ -84,6 +84,10 @@ class generalBackend
 		$data['taskInfo']['future'] 	= $this->model->getTotalFutureTasksByMemberId();
 		$data['totalMembers'] 			= $this->model->getTotalMembers();
 		
+		// Condo List
+		$condosArray = $this->model->getAllCondos();
+		$data['condos'] = $condosArray;
+		
 		switch ($section) 
 		{
 			case 'settings':
@@ -118,6 +122,9 @@ class generalBackend
 				
 				$roomsArray = $this->model->getAllRooms();
 				$data['rooms'] = $roomsArray;
+				
+				$condosArray = $this->model->getAllCondos();
+				$data['condos'] = $condosArray;
 			break;
 			
 			case 'room':
