@@ -279,6 +279,61 @@ class Layout_Model
 		}
 	}
 	
+	/**
+	 * Get all the members
+	 *
+	 * With all the details
+	 *
+	 * @return mixed|bool An array of info or false
+	 */
+	public function getRoomsByCondo($condo_id)
+	{
+		try {	
+			$query = 'SELECT 
+				mr.member_room_id,
+				m.member_id,
+				m.name,
+				m.last_name,
+				c.condo,
+				r.room, 
+				r.condo_id,
+				(SELECT IFNULL((
+					SELECT 
+					SUM(p.amount)
+					FROM payments p
+					WHERE p.member_id = m.member_id
+					AND p.room_id = r.room_id 
+				), 0)) AS total,
+				(SELECT IFNULL((
+					SELECT 
+					SUM(p.amount)
+					FROM payments p
+					WHERE p.member_id = m.member_id
+					AND p.room_id = r.room_id 
+					AND p.status = 2
+				), 0)) AS paid,
+				(SELECT IFNULL((
+					SELECT 
+					SUM(p.amount)
+					FROM payments p
+					WHERE p.member_id = m.member_id
+					AND p.room_id = r.room_id 
+					AND p.status = 1
+				), 0)) AS pending
+				FROM member_rooms mr
+				LEFT JOIN rooms r ON r.room_id = mr.room_id
+				LEFT JOIN members m ON m.member_id = mr.member_id
+				LEFT JOIN condos c ON r.condo_id = c.condo_id
+				WHERE r.condo_id = '.$condo_id.'
+				ORDER BY m.member_id DESC
+					';
+			return $this->db->getArray($query);
+				
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
 	public function updateMemberAvatar($file, $memberId)
 	{
 		try {
@@ -745,9 +800,10 @@ class Layout_Model
 	public function getAllRooms()
 	{
 		try {
-			$query = 'SELECT r.*, rt.room_type, rt.abbr
+			$query = 'SELECT r.*, rt.room_type, rt.abbr, c.condo
 					FROM rooms r
 					LEFT JOIN room_types rt ON rt.room_type_id = r.room_type_id
+					LEFT JOIN condos c ON c.condo_id = r.condo_id
 					ORDER BY r.room_id DESC
 					';
 			return $this->db->getArray($query);
@@ -858,9 +914,10 @@ class Layout_Model
 	public function getRoomsByMember($memberId)
 	{
 		try {
-			$query = 'SELECT r.room_id, r.room, r.description, rt.room_type
+			$query = 'SELECT r.room_id, r.room, r.description, rt.room_type, c.condo
 					FROM member_rooms mr
 					LEFT JOIN rooms r ON r.room_id = mr.room_id
+					LEFT JOIN condos c ON c.condo_id = r.condo_id
 					LEFT JOIN room_types rt ON rt.room_type_id = r.room_type_id
 					WHERE mr.member_id = '.$memberId;
 			

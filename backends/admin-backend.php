@@ -116,6 +116,12 @@ class generalBackend
 				$data['members'] 	= $membersArray;
 			break;
 			
+			case 'condo':
+				// 		get rooms by condo
+				$membersArray 		= $this->model->getRoomsByCondo($_GET['condo']);
+				$data['members'] 	= $membersArray;
+			break;
+			
 			case 'rooms':
 				$infoArray 	= $this->model->getRoomTypes();
 				$data['types'] 	= $infoArray;
@@ -148,7 +154,6 @@ class generalBackend
 			break;
 			
 			case 'member':
-				
 				$memberInfoRow 			= $this->model->getMemberByMemberId($memberId);
 				$data['memberInfo'] 	= $memberInfoRow;
 				
@@ -160,48 +165,12 @@ class generalBackend
 				$memberTasksArray		= $this->model->getMemberTaskByMemberId($memberId);
 				$data['memberTasks'] 	= $memberTasksArray; 
 				
-				$roomsArray = $this->model->getAllRooms();
-				$data['rooms'] = $roomsArray;
+				$roomsArray 			= $this->model->getAllRooms();
+				$data['rooms'] 			= $roomsArray;
 				
 				$memberRooms = $this->model->getRoomsByMember($memberId);
 				$data['memberRooms'] = $memberRooms;
 				
-			break;
-			
-// 			Reservations
-			case 'reservations':
-				$agenciesArray 		= $this->model->getAgencies();
-				$data['agencies'] 	= $agenciesArray;
-			break;
-			
-// 			Rooms
-			case 'rooms':
-				$roomsArray 	= $this->model->getAllRooms();
-				$data['rooms'] 	= array();
-				foreach ($roomsArray as $room)
-				{
-					$roomInfo = array(
-							'room_id'	=> $room['room_id'],
-							'room' 		=> $room['room'],
-							'abbr' 		=> $room['abbr']
-					);
-						
-					$reservations['reservations'] = $this->model->getReservationsByRoomId($room['room_id']);
-					array_push($roomInfo, $reservations);
-					array_push($data['rooms'], $roomInfo);
-				}
-			break;
-			
-// 			Calendar
-			case 'calendar':
-				$calendarArray 			= $this->model->getAllReservations();
-				$data['reservations'] 	= $calendarArray;
-			break;
-					
-// 			Agencias
-			case 'agencies':
-				$agenciesArray 		= $this->model->getAgencies();
-				$data['agencies'] 	= $agenciesArray;
 			break;
 			
 // 			Tasks

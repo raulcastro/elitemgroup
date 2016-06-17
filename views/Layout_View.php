@@ -164,6 +164,10 @@ class Layout_View
 								echo self::getAllMembers();
 							break;
 							
+							case 'condo':
+								echo self::getRoomsByCondo();
+							break;
+							
 							case 'rooms':
 								echo self::getRoomsContent();
 							break;
@@ -649,6 +653,17 @@ class Layout_View
                         <ul class="treeview-menu">
                             <li><a href="/add-owner/"><i class="fa fa-circle-o"></i> Add owner</a></li>
                             <li><a href="/owners/"><i class="fa fa-circle-o"></i> Owners list</a></li>
+                            <?php 
+							if ($this->data['condos'])
+							{
+								foreach ($this->data['condos'] as $condo)
+								{
+									?>
+							<li><a href="/condo/<?php echo $condo['condo_id'].'/'.Tools::slugify($condo['condo']).'/'; ?>"><i class="fa fa-institution"></i> <span><?php echo $condo['condo']; ?></span></a></li>		
+									<?php
+								}
+							}
+							?>
                         </ul>
                     </li>
                     <li><a href="/rooms/"><i class="fa fa-home"></i> <span>Rooms</span></a></li>
@@ -659,18 +674,6 @@ class Layout_View
 							<!-- <small class="label pull-right bg-red">12</small> -->
 						</a>
 					</li>
-					<li class="header">CONDOS</li>
-					<?php 
-					if ($this->data['condos'])
-					{
-						foreach ($this->data['condos'] as $condo)
-						{
-							?>
-					<li><a href="#"><i class="fa fa-bolt"></i> <span><?php echo $condo['condo']; ?></span></a></li>		
-							<?php
-						}
-					}
-					?>
                 </ul>
                 <!-- /.sidebar-menu -->
             </section>
@@ -1923,7 +1926,7 @@ class Layout_View
 			<div class="box-header with-border">
 				<h5 class="box-title">
 					<a data-toggle="collapse" data-parent="#accordion" href="#collapse<?php echo $room['room_id']; ?>" class="roomList room-id" data-id="<?php echo $room['room_id']; ?>">
-						<?php echo $room['room'].' / '.$room['room_type']; ?>
+						<strong><?php echo $room['condo'].' / '.$room['room'].' / '.$room['room_type']; ?></strong>
 					</a>
 				</h5>
 			</div>
@@ -1990,6 +1993,8 @@ class Layout_View
     	<link rel="stylesheet" href="/plugins/datepicker/datepicker3.css">
     	<!-- Select2 -->
     	<link rel="stylesheet" href="/plugins/select2/select2.min.css">
+    	
+    	<link rel="stylesheet" href="/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
     	<?php
     	$head = ob_get_contents();
     	ob_end_clean();
@@ -2009,6 +2014,7 @@ class Layout_View
     	<script src="/plugins/datepicker/bootstrap-datepicker.js"></script>
     	<script src="/plugins/select2/select2.full.min.js"></script>
     	<script src="/plugins/iCheck/icheck.min.js"></script>
+    	<script src="/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
     	
     	<script type="text/javascript">
     	$(function () {
@@ -2023,7 +2029,13 @@ class Layout_View
                 radioClass: 'iradio_minimal-blue',
                 increaseArea: '20%' // optional
             });
+
+            
     	});
+    	$(function () {
+    	    //Add text editor
+    	    //$("#compose-textarea").wysihtml5();
+    	  });
 		</script>
 		<link href="/css/uploadfile.css" rel="stylesheet">
 		<script src="/js/jquery.uploadfile.min.js"></script>
@@ -2032,6 +2044,7 @@ class Layout_View
 		<script src="/js/tasks.js"></script>
 		<script src="/js/rooms.js"></script>
 		<script src="/js/payments.js"></script>
+		<script src="/js/email.js"></script>
     	<?php
     	$scripts = ob_get_contents();
     	ob_end_clean();
@@ -2084,6 +2097,66 @@ class Layout_View
 				</div><!-- /.modal-dialog -->
 			</div><!-- /.modal -->
 		</div><!-- /.example-modal -->
+		
+		<!-- Modal  -->
+		<div class="example-modal" >
+			<div class="modal" id="sendEmail">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Send e-mail to <?php echo $this->data['memberInfo']['name'].' '.$this->data['memberInfo']['last_name']; ?></h4>
+						</div>
+						<div class="modal-body">
+						
+						
+						<div class="box box-primary">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="form-group">
+                <input class="form-control" placeholder="To:" value="<?php echo $this->data['memberInfo']['email_one']; ?>" id="sendEmailTo">
+              </div>
+              <div class="form-group">
+                <input class="form-control" placeholder="Subject:" id="sendEmailSubject">
+              </div>
+              <div class="form-group">
+                    <ul class="wysihtml5-toolbar">
+</ul><textarea class="form-control" style="height: 300px; ;" id="sendEmailContent"></textarea>
+              </div>
+              <!-- <div class="form-group">
+                <div class="btn btn-default btn-file">
+                  <i class="fa fa-paperclip"></i> Attachment
+                  <input type="file" name="attachment">
+                </div>
+                <p class="help-block">Max. 32MB</p>
+              </div> -->
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+              <div class="pull-right">
+                <!-- <button type="button" class="btn btn-default"><i class="fa fa-pencil"></i> Draft</button> -->
+                <button type="submit" class="btn btn-primary" id="sendEmailOwner"><i class="fa fa-envelope-o"></i> Send</button>
+              </div>
+              <!-- <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Discard</button> -->
+            </div>
+            <!-- /.box-footer -->
+          </div>
+							
+							
+							
+							
+							
+							
+							
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+		</div><!-- /.example-modal -->
+		
     	<div class="row">
 			<div class="col-md-12">
 				<!-- Widget: user widget style 1 -->
@@ -2140,6 +2213,7 @@ class Layout_View
 							<li><span><i class="fa fa-fw fa-map-o"></i> <?php echo $this->data['memberInfo']['address']; ?></span></li>
 							<?php } ?>
 							<li><span><i class="fa fa-fw fa-sticky-note"></i><strong> <?php echo $this->data['memberInfo']['notes']; ?></strong></span></li>
+							<li><span> <button data-target="#sendEmail" type="submit" class="btn btn-info pull-left btn-sm" data-toggle="modal">Send E-Mail</button></span></li>
 						</ul>
 					</div>
 				</div><!-- /.widget-user -->
@@ -2253,14 +2327,14 @@ class Layout_View
 				<!-- Custom Tabs (Pulled to the right) -->
 				<div class="nav-tabs-custom">
 					<ul class="nav nav-tabs pull-right">
-						<li class="dropdown">
+						<!-- <li class="dropdown">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#">
 								Dropdown <span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">
 								<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
 							</ul>
-						</li>
+						</li> -->
 						<li><a href="#tab_1-1" data-toggle="tab">Tasks</a></li>
 						<li><a href="#tab_2-2" data-toggle="tab">History</a></li>
 						<li class="active"><a href="#tab_3-2" data-toggle="tab">Rooms</a></li>
@@ -2399,7 +2473,12 @@ class Layout_View
 								foreach ($this->data['rooms'] as $room)
 								{
 									?>
-							<li><a href="/edit-room/<?php echo $room['room_id']; ?>/"><?php echo $room['room'].' / '.$room['room_type']; ?></a></li>
+							<li>
+								<a href="/edit-room/<?php echo $room['room_id']; ?>/">
+									<strong>[<?php echo $room['condo']; ?>]</strong>
+									<?php echo $room['room'].' / '.$room['room_type']; ?>
+								</a>
+							</li>
 									<?php
 								}
 							}
@@ -2591,6 +2670,68 @@ class Layout_View
         ob_end_clean();
         return $content;
     }
+    
+    /**
+   	 * The whole list of members
+   	 * 
+   	 * @return string
+   	 */
+   	public function getRoomsByCondo()
+   	{
+   		ob_start();
+   		?>
+   		<div class="row">
+			<div class="col-xs-12">
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title">Recent Owners</h3>
+					</div><!-- /.box-header -->
+					<div class="box-body table-responsive no-padding">
+	                  <table class="table table-hover">
+	                    <tr>
+	                      <th>Member ID</th>
+							<th>Name</th>
+							<th>Room</th>
+							<th>Condo</th>
+							<th>Total</th>
+							<th>Paid</th>
+							<th>Pending</th>
+	                    </tr>
+	                    <?php 
+						foreach ($this->data['members'] as $member)
+						{
+							?>
+						<tr>
+							<td>
+								<a href="/owner/<?php echo $member['member_id']; ?>/<?php echo Tools::slugify($member['name'].' '.$member['last_name']); ?>/">
+									<?php echo $member['member_id']; ?>
+								</a>
+							</td>
+							<td>
+								<a href="/owner/<?php echo $member['member_id']; ?>/<?php echo Tools::slugify($member['name'].' '.$member['last_name']); ?>/" class="member-link">
+									<?php echo $member['name'].' '.$member['last_name']; ?>
+								</a>
+							</td>
+							<td><?php echo $member['room']; ?></td>
+							<td><?php echo $member['condo']; ?></td>
+							<td>$ <?php echo $member['total']; ?></td>
+							<td>$ <?php echo $member['paid']; ?></td>
+							<td>$ <?php echo $member['pending']; ?></td>
+						</tr>
+							<?php
+						}
+						?>
+	                  </table>
+                	</div><!-- /.box-body -->
+				</div><!-- /.box -->
+			</div>
+		</div>
+   		
+   	   	<?php
+   	   	$membersRecent = ob_get_contents();
+   	   	ob_end_clean();
+   	   	return $membersRecent;
+   	}    
     
     public function getSectionHead()
     {
