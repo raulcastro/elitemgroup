@@ -137,6 +137,36 @@ switch ($_POST['opt'])
 		}
 	break;
 	
+	case 6:
+		if ($payments = $model->getPaymentsByRoom($_POST))
+		{
+			foreach ($payments as $payment)
+			{
+				if ($payment['status'] == 2)
+				{
+					$paymentTotal = '00.00';
+					$status = 'Paid';
+				}
+				else 
+				{
+					$paymentTotal = $payment['amount'];
+					$status = 'Pending';
+				}
+				?>
+				<tr>
+					<td id=""><?php echo $payment['payment_id']; ?></td>
+					<td id=""><?php echo $payment['room']; ?></td>
+					<td id=""><?php echo $payment['category']; ?></td>
+					<td id=""><?php echo $payment['description']; ?></td>
+					<td id=""><?php echo Tools::formatMYSQLToFront($payment['due_date']); ?></td>
+					<td id=""><strong><?php echo $status; ?></strong></td>
+					<td id="">$ <?php echo $paymentTotal; ?></td>
+				</tr>
+				<?php
+			}
+		}
+	break;
+	
 	default:
 	break;
 }

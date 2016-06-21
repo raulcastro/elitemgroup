@@ -126,6 +126,7 @@ function calculatePayments()
 	$('#paymentTotal').html();
 	$('#paymentPaid').html();
 	$('#paymentPending').html();
+	$('#totalViewAllPayments').html();
 	
 	$.ajax({
 	    type: "POST",
@@ -142,6 +143,7 @@ function calculatePayments()
     		$('#paymentTotal').html(info.total);
     		$('#paymentPaid').html(info.paid);
     		$('#paymentPending').html(info.pending);
+    		$('#totalViewAllPayments').html(info.pending);
         }
 	});
 }
@@ -191,4 +193,30 @@ function getSinglePayment(node)
 //	    	$('#').html();
         }
 	});
+	
+}
+
+function displayAllPayments()
+{
+	var memberId 			= $('#memberId').val();
+	var currentRoom 		= $('#currentRoom').val();
+	
+	$('#allPaymentsContent').html();
+	
+	
+	$.ajax({
+	    type: "POST",
+	    url: "/ajax/payments.php",
+	    data: {
+	    	memberId:		memberId,
+	    	currentRoom: 	currentRoom,
+	    	opt:			6
+	    },
+	    success:
+        function(data)
+        {
+	    	$('#allPaymentsContent').html(data);
+        }
+	});
+	
 }

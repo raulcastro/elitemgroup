@@ -343,102 +343,8 @@ class Layout_View
                 <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        <!-- Messages: style can be found in dropdown.less-->
-                        <li class="dropdown messages-menu">
-                            <!-- Menu toggle button -->
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-envelope-o"></i>
-                                <span class="label label-success">4</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="header">You have 4 messages</li>
-                                <li>
-                                    <!-- inner menu: contains the messages -->
-                                    <ul class="menu">
-                                        <li>
-                                            <!-- start message -->
-                                            <a href="#">
-                                                <div class="pull-left">
-                                                    <!-- User Image -->
-                                                    <img src="/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
-                                                </div>
-                                                <!-- Message title and timestamp -->
-                                                <h4>Owner Room 2
-                            						<small><i class="fa fa-clock-o"></i> 5 mins</small>
-												</h4>
-                                                <!-- The message -->
-                                                <p>Pending payment</p>
-                                            </a>
-                                        </li>
-                                        <!-- end message -->
-                                    </ul>
-                                    <!-- /.menu -->
-                                </li>
-                                <li class="footer"><a href="#">See All Messages</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <!-- /.messages-menu -->
+                        
 
-                        <!-- Notifications Menu -->
-                        <li class="dropdown notifications-menu">
-                            <!-- Menu toggle button -->
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-bell-o"></i>
-                                <span class="label label-warning">10</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="header">You have 10 notifications</li>
-                                <li>
-                                    <!-- Inner Menu: contains the notifications -->
-                                    <ul class="menu">
-                                        <li>
-                                            <!-- start notification -->
-                                            <a href="#">
-                                                <i class="fa fa-users text-aqua"></i> 5 new incidents today
-                                            </a>
-                                        </li>
-                                        <!-- end notification -->
-                                    </ul>
-                                </li>
-                                <li class="footer"><a href="#">View all</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <!-- Tasks Menu -->
-                        <li class="dropdown tasks-menu">
-                            <!-- Menu Toggle Button -->
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-flag-o"></i>
-                                <span class="label label-danger">9</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="header">You have 9 tasks</li>
-                                <li>
-                                    <!-- Inner menu: contains the tasks -->
-                                    <ul class="menu">
-                                        <li>
-                                            <!-- Task item -->
-                                            <a href="#">
-                                                <!-- Task title and progress text -->
-                                                <h3>Collect Payment<small class="pull-right">20%</small></h3>
-                                                <!-- The progress bar -->
-                                                <div class="progress xs">
-                                                    <!-- Change the css width attribute to simulate progress -->
-                                                    <div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                                                        <span class="sr-only">20% Complete</span>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </li>
-                                        <!-- end task item -->
-                                    </ul>
-                                </li>
-                                <li class="footer">
-                                    <a href="#">View all tasks</a>
-                                </li>
-                            </ul>
-                        </li>
                         <!-- User Account Menu -->
                         <li class="dropdown user user-menu">
                             <!-- Menu Toggle Button -->
@@ -667,13 +573,6 @@ class Layout_View
                         </ul>
                     </li>
                     <li><a href="/rooms/"><i class="fa fa-home"></i> <span>Rooms</span></a></li>
-                    <li><a href="#"><i class="fa fa-bolt"></i> <span>Incidents</span></a></li>
-                    <li>
-						<a href="#">
-							<i class="fa fa-money"></i> <span>Payments</span>
-							<!-- <small class="label pull-right bg-red">12</small> -->
-						</a>
-					</li>
                 </ul>
                 <!-- /.sidebar-menu -->
             </section>
@@ -1887,7 +1786,7 @@ class Layout_View
 										</div>
 									</div><!-- /.col -->
 									            
-									<div class="col-xs-6">
+									<!-- <div class="col-xs-6">
 										<p class="lead">Documents</p>
 										<div class="table-responsive">
 											<table class="table">
@@ -1941,8 +1840,8 @@ class Layout_View
 							<div class="nav-tabs-custom">
 								<ul class="nav nav-tabs">
 									<li class="active"><a href="#tab_1" data-toggle="tab">Payments</a></li>
-									<li><a href="#tab_2" data-toggle="tab">Incidents</a></li>
-									<li><a href="#tab_3" data-toggle="tab">Galleries</a></li>
+									<li><a href="#tab_2" data-toggle="tab">All Payments</a></li>
+									<!-- <li><a href="#tab_3" data-toggle="tab">Galleries</a></li> -->
 								</ul>
 								<div class="tab-content">
 									<div class="tab-pane active" id="tab_1">
@@ -1968,11 +1867,83 @@ class Layout_View
 										
 									</div><!-- /.tab-pane -->
 									<div class="tab-pane" id="tab_2">
-										Incidents
+										
+										
+										<section class="invoice">
+								<!-- title row -->
+								<div class="row">
+									<div class="col-xs-12">
+										<h2 class="page-header">
+											<i class="fa fa-globe"></i> <?php echo $this->data['appInfo']['siteName']; ?>
+										</h2>
+									</div><!-- /.col -->
+								</div>
+								<!-- info row -->
+								<div class="row invoice-info">
+									<div class="col-sm-4 invoice-col">
+										From
+										<address>
+											<strong><?php echo $this->data['appInfo']['siteName']; ?></strong><br>
+											Phone: <?php echo $this->data['appInfo']['phone']; ?><br>
+											Email: <?php echo $this->data['appInfo']['email']; ?>
+										</address>
+									</div><!-- /.col -->
+									<div class="col-sm-4 invoice-col">
+										To
+										<address>
+											<strong><?php echo $this->data['memberInfo']['name'].' '.$this->data['memberInfo']['last_name']; ?></strong><br>
+											<?php echo $this->data['memberInfo']['address']; ?><br>
+											Phone: <?php echo $this->data['memberInfo']['phone_one']; ?><br>
+											Email: <?php echo $this->data['memberInfo']['email_one']; ?>
+										</address>
+									</div><!-- /.col -->
+								</div><!-- /.row -->
+								
+								<!-- Table row -->
+								<div class="row">
+									<div class="col-xs-12 table-responsive">
+										<table class="table table-striped">
+											<thead>
+												<tr>
+													<th>Order</th>
+													<th>Room</th>
+													<th>Category</th>
+													<th>Description</th>
+													<th>Payment due</th>
+													<th>Status</th>
+													<th>Sub total</th>
+												</tr>
+											</thead>
+											<tbody id="allPaymentsContent">
+												
+											</tbody>
+										</table>
+									</div><!-- /.col -->
+								</div><!-- /.row -->
+								<div class="row">
+									<!-- accepted payments column -->
+									<div class="col-xs-6">
+										
+										<div id="paymentOptionsBox">
+											<h3>Total: $<span id="totalViewAllPayments"></span></h3>
+										</div>
+									</div><!-- /.col -->
+									            
+									
+								</div><!-- /.row -->
+							
+							</section>
+										
+										
+										
+										
+										
+										
+										
 									</div><!-- /.tab-pane -->
-									<div class="tab-pane" id="tab_3">
+									<!-- <div class="tab-pane" id="tab_3">
 										Galleries
-									</div><!-- /.tab-pane -->
+									</div> --><!-- /.tab-pane -->
 								</div><!-- /.tab-content -->
 							</div><!-- nav-tabs-custom -->
 						</div><!-- /.col -->

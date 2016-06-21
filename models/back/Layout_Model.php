@@ -136,6 +136,27 @@ class Layout_Model
 		}
 	}
 	
+	public function addUser($data, $member_id)
+	{
+		try {
+			$query = 'INSERT INTO users(user, password, type, active) VALUES(?, SHA1("password"), 1, 1)';
+			$prep = $this->db->prepare($query);
+			$prep->bind_param('s',$data['emailOne']);
+			
+			if ($prep->execute())
+			{
+				$lastId =  $prep->insert_id;
+				$query = 'INSERT INTO user_detail(user_id, name, member_id) VALUES(?, ?, ?)';
+				$prep = $this->db->prepare($query);
+				$prep->bind_param('isi', $lastId, $data['memberFirst'], $member_id);
+				$prep->execute();
+			}
+			
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
 	public function updateMember($data)
 	{
 		try {
@@ -1002,6 +1023,7 @@ class Layout_Model
 					p.amount, 
 					p.due_date, 
 					p.status,
+					p.description,
 					DATEDIFF(p.due_date, CURDATE()) AS days, 
 					ic.category, 
 					i.inventory  

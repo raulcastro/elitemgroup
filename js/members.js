@@ -174,6 +174,7 @@ function loadRoomData(node)
 	getCategories();
 	getPayments();
 	calculatePayments();
+	displayAllPayments();
 }
 
 function getCategories()
