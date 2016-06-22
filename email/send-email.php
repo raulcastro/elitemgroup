@@ -18,7 +18,6 @@ $mail->From = $from;
 $mail->FromName = $fromName;
 $mail->addAddress($to, 'Info');     // Add a recipient             // Name is optional
 $mail->addReplyTo($replyTo, 'Info from Elite M Group');
-// $mail->addBCC('oliver@wheretogo.com.mx');
 $mail->addBCC('raul@wheretogo.com.mx');
 $mail->addBCC('info@elitemgroup.com');
 

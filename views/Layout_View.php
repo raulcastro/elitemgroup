@@ -1962,9 +1962,7 @@ class Layout_View
     	ob_start();
     	?>
     	<link rel="stylesheet" href="/plugins/datepicker/datepicker3.css">
-    	<!-- Select2 -->
     	<link rel="stylesheet" href="/plugins/select2/select2.min.css">
-    	
     	<link rel="stylesheet" href="/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
     	<?php
     	$head = ob_get_contents();
@@ -2005,7 +2003,7 @@ class Layout_View
     	});
     	$(function () {
     	    //Add text editor
-    	    //$("#compose-textarea").wysihtml5();
+    	    $("#sendEmailContent").wysihtml5();
     	  });
 		</script>
 		<link href="/css/uploadfile.css" rel="stylesheet">
@@ -2069,7 +2067,7 @@ class Layout_View
 			</div><!-- /.modal -->
 		</div><!-- /.example-modal -->
 		
-		<!-- Modal  -->
+		<!-- Modal Send Email  -->
 		<div class="example-modal" >
 			<div class="modal" id="sendEmail">
 				<div class="modal-dialog modal-lg">
@@ -2079,46 +2077,38 @@ class Layout_View
 							<h4 class="modal-title">Send e-mail to <?php echo $this->data['memberInfo']['name'].' '.$this->data['memberInfo']['last_name']; ?></h4>
 						</div>
 						<div class="modal-body">
-						
-						
-						<div class="box box-primary">
-            <!-- /.box-header -->
-            <div class="box-body">
-              <div class="form-group">
-                <input class="form-control" placeholder="To:" value="<?php echo $this->data['memberInfo']['email_one']; ?>" id="sendEmailTo">
-              </div>
-              <div class="form-group">
-                <input class="form-control" placeholder="Subject:" id="sendEmailSubject">
-              </div>
-              <div class="form-group">
-                    <ul class="wysihtml5-toolbar">
-</ul><textarea class="form-control" style="height: 300px; ;" id="sendEmailContent"></textarea>
-              </div>
-              <!-- <div class="form-group">
-                <div class="btn btn-default btn-file">
-                  <i class="fa fa-paperclip"></i> Attachment
-                  <input type="file" name="attachment">
-                </div>
-                <p class="help-block">Max. 32MB</p>
-              </div> -->
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer">
-              <div class="pull-right">
-                <!-- <button type="button" class="btn btn-default"><i class="fa fa-pencil"></i> Draft</button> -->
-                <button type="submit" class="btn btn-primary" id="sendEmailOwner"><i class="fa fa-envelope-o"></i> Send</button>
-              </div>
-              <!-- <button type="reset" class="btn btn-default"><i class="fa fa-times"></i> Discard</button> -->
-            </div>
-            <!-- /.box-footer -->
-          </div>
-							
-							
-							
-							
-							
-							
-							
+							<div class="box box-primary">
+								<div class="box-header with-border">
+									<h3 class="box-title">Compose New Message</h3>
+								</div>
+								<!-- /.box-header -->
+								<div class="box-body">
+									<div class="form-group">
+										<input class="form-control" placeholder="To:" value="<?php echo $this->data['memberInfo']['email_one']; ?>" id="sendEmailTo">
+									</div>
+									<div class="form-group">
+										<input class="form-control" placeholder="Subject:" id="sendEmailSubject">
+									</div>
+									<div class="form-group">
+										<textarea id="sendEmailContent" class="form-control" style="height: 300px"></textarea>
+									</div>
+									<div class="form-group">
+										<div class="btn btn-default btn-file">
+											<i class="fa fa-paperclip"></i> Attachment
+											<input type="file" name="attachment">
+										</div>
+										<p class="help-block">Max. 32MB</p>
+									</div>
+								</div>
+								<!-- /.box-body -->
+								<div class="box-footer">
+									<div class="pull-right">
+										<button type="submit" class="btn btn-primary" id="sendEmailOwner"><i class="fa fa-envelope-o"></i> Send</button>
+									</div>
+								</div>
+								<!-- /.box-footer -->
+							</div>
+							<!-- /. box -->
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
