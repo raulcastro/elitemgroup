@@ -28,41 +28,59 @@ switch ($_POST['opt'])
 				$class = '';
 				$percent = 0;
 				$days = $payment['days'];
+				$statusP =  $payment['status'];
 				
 				if ($days >= 12)
 				{
-					$class="bg-green";
+					$class="bg-aqua";
 					if ($days > 12)
 						$percent = 100;
 					else
 						$percent = ($days * 100) / 12;
 				}
 				
-				if ($days <= 9 && $days >= 7)
-				{
-					$class="bg-aqua";
-					$percent = ($days * 100) / 12;
-				}
-				
-				if ($days <= 6 && $days >= 4)
+				if ($days <= 7)
 				{
 					$class="bg-yellow";
 					$percent = ($days * 100) / 12;
 				}
 				
-				if ($days <= 3)
+				if ($days <= 1)
 				{
 					$class="bg-red";
 					if ($days <= 0)
 						$percent = 0;
-					else
-						$percent = ($days * 100) / 12;
+						else
+							$percent = ($days * 100) / 12;
 				}
+				
+				if ($statusP == 2)
+				{
+					$class="bg-green";
+					$percent = ($days * 100) / 12;
+				}
+				
+				if ($statusP == 3)
+				{
+					$class="bg-gray";
+					$percent = ($days * 100) / 12;
+				}
+				
+// 				if ($days <= 6 && $days >= 4)
+// 				{
+// 					$class="bg-yellow";
+// 					$percent = ($days * 100) / 12;
+// 				}
+				
+				
 				
 				$status = '';
 				
 				if ($payment['status'] == 2)
 				 	$status = '/ PAID';
+				
+			 	if ($payment['status'] == 3)
+			 		$status = '/ Cancelled';
 				?>
 				<div class="col-md-3 col-sm-6 col-xs-12 payment-item">
 					<div class="info-box <?php echo $class; ?>">

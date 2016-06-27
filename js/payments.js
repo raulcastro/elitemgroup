@@ -53,6 +53,7 @@ function updatePayment()
 		    		var statusP = $('#currentPaymentSelection').val();
 		    		getPayments(statusP);
 	        		calculatePayments();
+	        		displayAllPayments();
 		    	}
 	        }
 		});
