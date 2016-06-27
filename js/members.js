@@ -77,7 +77,7 @@ function saveMember()
 	var phoneTwo		= $('#phoneTwo').val();
 	var emailOne		= $('#emailOne').val();
 	var emailTwo		= $('#emailTwo').val();
-//	var memberCondo		= $('#memberCondo').val();
+	var memberCondo		= $('#memberCondo').val();
 	
 	if (memberFirst)
 	{
@@ -95,7 +95,7 @@ function saveMember()
 	    	emailOne:		emailOne,
 	    	emailTwo:		emailTwo,
 	    	notes:			notes,
-//	    	memberCondo:	memberCondo,
+	    	memberCondo:	memberCondo,
 	    	opt:			'1'
 	    },
 	    success:

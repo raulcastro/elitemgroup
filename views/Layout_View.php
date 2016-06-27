@@ -343,8 +343,6 @@ class Layout_View
                 <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        
-
                         <!-- User Account Menu -->
                         <li class="dropdown user user-menu">
                             <!-- Menu Toggle Button -->
@@ -365,6 +363,9 @@ class Layout_View
                                 </li>
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
+                                	<div class="pull-left">
+                  						<a href="#" class="btn btn-default btn-flat">Profile</a>
+                					</div>
                                     <div class="pull-right">
                                         <a href="#" class="btn btn-default btn-flat">Sign out</a>
                                     </div>
@@ -378,13 +379,11 @@ class Layout_View
                 </div>
             </nav>
         </header>
-		
     	<?php
     	$header = ob_get_contents();
     	ob_end_clean();
     	return $header;
     }
-    
     
     /**
      * it is the head that works for the sign in section, aparently isn't getting 
@@ -972,7 +971,6 @@ class Layout_View
    		return $taskPanel;
    	}
 
-
 	/**
 	 * extra files for the task section
 	 * 
@@ -1169,6 +1167,51 @@ class Layout_View
 			<div class="col-md-6">
 				<div class="box box-widget widget-user-2">
 					<div class="widget-user-header bg-blue">
+						<h3 class="widget-user-username">Condos</h3>
+					</div>
+					<!-- Horizontal Form -->
+              		<div class="box box-info">
+						<!-- form start -->
+						<form class="form-horizontal">
+							<div class="box-body">
+								<div class="form-group">
+									<label for="inputEmail3" class="col-sm-2 control-label">Condo</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" id="condoName" placeholder="Condo name ...">
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="inputPassword3" class="col-sm-2 control-label">Description</label>
+									<div class="col-sm-10">
+										<textarea class="form-control" rows="3" id="condoDescription" placeholder="Description ..."></textarea>
+									</div>
+								</div>
+							</div><!-- /.box-body -->
+							<div class="box-footer">
+								<button type="submit" class="btn btn-info btn-xs pull-right" id="addCondo">Add</button>
+							</div><!-- /.box-footer -->
+						</form>
+					</div><!-- /.box -->
+					<div class="box-footer no-padding">
+						<ul class="nav nav-stacked" id="condoBox">
+							<?php 
+							if ($this->data['condos'])
+							{
+								foreach ($this->data['condos'] as $condo)
+								{
+									?>
+							<li><a href="#"><?php echo $condo['condo']; ?></a></li>
+									<?php
+								}
+							}
+							?>
+						</ul>
+					</div>
+				</div><!-- /.widget-user -->
+			</div><!-- /.col -->
+			<div class="col-md-6">
+				<div class="box box-widget widget-user-2">
+					<div class="widget-user-header bg-blue">
 						<h3 class="widget-user-username">Inventory categories</h3>
 					</div>
 					<!-- Horizontal Form -->
@@ -1211,8 +1254,10 @@ class Layout_View
 					</div>
 				</div><!-- /.widget-user -->
 			</div><!-- /.col -->
-			
-			<div class="col-md-6">
+        </div>
+        
+        <div class="row">
+        	<div class="col-md-6">
 				<div class="box box-widget widget-user-2">
 					<div class="widget-user-header bg-blue">
 						<h3 class="widget-user-username">Room Types</h3>
@@ -1259,54 +1304,7 @@ class Layout_View
 					</div>
 				</div><!-- /.widget-user -->
 			</div><!-- /.col -->
-        </div>
-        
-        <div class="row">
-			<div class="col-md-6">
-				<div class="box box-widget widget-user-2">
-					<div class="widget-user-header bg-blue">
-						<h3 class="widget-user-username">Condos</h3>
-					</div>
-					<!-- Horizontal Form -->
-              		<div class="box box-info">
-						<!-- form start -->
-						<form class="form-horizontal">
-							<div class="box-body">
-								<div class="form-group">
-									<label for="inputEmail3" class="col-sm-2 control-label">Condo</label>
-									<div class="col-sm-10">
-										<input type="text" class="form-control" id="condoName" placeholder="Condo name ...">
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="inputPassword3" class="col-sm-2 control-label">Description</label>
-									<div class="col-sm-10">
-										<textarea class="form-control" rows="3" id="condoDescription" placeholder="Description ..."></textarea>
-									</div>
-								</div>
-							</div><!-- /.box-body -->
-							<div class="box-footer">
-								<button type="submit" class="btn btn-info btn-xs pull-right" id="addCondo">Add</button>
-							</div><!-- /.box-footer -->
-						</form>
-					</div><!-- /.box -->
-					<div class="box-footer no-padding">
-						<ul class="nav nav-stacked" id="condoBox">
-							<?php 
-							if ($this->data['condos'])
-							{
-								foreach ($this->data['condos'] as $condo)
-								{
-									?>
-							<li><a href="#"><?php echo $condo['condo']; ?></a></li>
-									<?php
-								}
-							}
-							?>
-						</ul>
-					</div>
-				</div><!-- /.widget-user -->
-			</div><!-- /.col -->
+			
         </div>
         <?php
         $content = ob_get_contents();
@@ -1544,12 +1542,11 @@ class Layout_View
 			<div class="col-md-6">
 				<div class="box box-info">
 					<div class="box-body">
-					<!-- 
 						<div class="form-group">
-							<label for="exampleInputEmail1">Condo </label>
-							<input type="text" class="form-control" id="memberCondo" placeholder="Condo">
+							<label for="exampleInputEmail1">Individual percentage </label>
+							<input type="text" class="form-control" id="memberCondo" placeholder="Percentage ...">
 						</div>
-					 -->
+					 
 						<div class="form-group">
 							<label for="exampleInputEmail1">Address</label>
 							<textarea class="form-control" id="memberAddress" rows="3" placeholder="Address ..."></textarea>
@@ -1799,7 +1796,6 @@ class Layout_View
 										</div>
 									</div><!-- /.col -->
 								</div><!-- /.row -->
-							
 							</section>
 						</div>
 						<div class="modal-footer">
@@ -1870,76 +1866,69 @@ class Layout_View
 										
 										
 										<section class="invoice">
-								<!-- title row -->
-								<div class="row">
-									<div class="col-xs-12">
-										<h2 class="page-header">
-											<i class="fa fa-globe"></i> <?php echo $this->data['appInfo']['siteName']; ?>
-										</h2>
-									</div><!-- /.col -->
-								</div>
-								<!-- info row -->
-								<div class="row invoice-info">
-									<div class="col-sm-4 invoice-col">
-										From
-										<address>
-											<strong><?php echo $this->data['appInfo']['siteName']; ?></strong><br>
-											Phone: <?php echo $this->data['appInfo']['phone']; ?><br>
-											Email: <?php echo $this->data['appInfo']['email']; ?>
-										</address>
-									</div><!-- /.col -->
-									<div class="col-sm-4 invoice-col">
-										To
-										<address>
-											<strong><?php echo $this->data['memberInfo']['name'].' '.$this->data['memberInfo']['last_name']; ?></strong><br>
-											<?php echo $this->data['memberInfo']['address']; ?><br>
-											Phone: <?php echo $this->data['memberInfo']['phone_one']; ?><br>
-											Email: <?php echo $this->data['memberInfo']['email_one']; ?>
-										</address>
-									</div><!-- /.col -->
-								</div><!-- /.row -->
-								
-								<!-- Table row -->
-								<div class="row">
-									<div class="col-xs-12 table-responsive">
-										<table class="table table-striped">
-											<thead>
-												<tr>
-													<th>Order</th>
-													<th>Room</th>
-													<th>Category</th>
-													<th>Description</th>
-													<th>Payment due</th>
-													<th>Status</th>
-													<th>Sub total</th>
-												</tr>
-											</thead>
-											<tbody id="allPaymentsContent">
+											<!-- title row -->
+											<div class="row">
+												<div class="col-xs-12">
+													<h2 class="page-header">
+														<i class="fa fa-globe"></i> <?php echo $this->data['appInfo']['siteName']; ?>
+													</h2>
+												</div><!-- /.col -->
+											</div>
+											<!-- info row -->
+											<div class="row invoice-info">
+												<div class="col-sm-4 invoice-col">
+													From
+													<address>
+														<strong><?php echo $this->data['appInfo']['siteName']; ?></strong><br>
+														Phone: <?php echo $this->data['appInfo']['phone']; ?><br>
+														Email: <?php echo $this->data['appInfo']['email']; ?>
+													</address>
+												</div><!-- /.col -->
+												<div class="col-sm-4 invoice-col">
+													To
+													<address>
+														<strong><?php echo $this->data['memberInfo']['name'].' '.$this->data['memberInfo']['last_name']; ?></strong><br>
+														<?php echo $this->data['memberInfo']['address']; ?><br>
+														Phone: <?php echo $this->data['memberInfo']['phone_one']; ?><br>
+														Email: <?php echo $this->data['memberInfo']['email_one']; ?>
+													</address>
+												</div><!-- /.col -->
+											</div><!-- /.row -->
+											
+											<!-- Table row -->
+											<div class="row">
+												<div class="col-xs-12 table-responsive">
+													<table class="table table-striped">
+														<thead>
+															<tr>
+																<th>Order</th>
+																<th>Room</th>
+																<th>Category</th>
+																<th>Description</th>
+																<th>Payment due</th>
+																<th>Status</th>
+																<th>Sub total</th>
+															</tr>
+														</thead>
+														<tbody id="allPaymentsContent">
+															
+														</tbody>
+													</table>
+												</div><!-- /.col -->
+											</div><!-- /.row -->
+											<div class="row">
+												<!-- accepted payments column -->
+												<div class="col-xs-6">
+													
+													<div id="paymentOptionsBox">
+														<h3>Total: $<span id="totalViewAllPayments"></span></h3>
+													</div>
+												</div><!-- /.col -->
+												            
 												
-											</tbody>
-										</table>
-									</div><!-- /.col -->
-								</div><!-- /.row -->
-								<div class="row">
-									<!-- accepted payments column -->
-									<div class="col-xs-6">
+											</div><!-- /.row -->
 										
-										<div id="paymentOptionsBox">
-											<h3>Total: $<span id="totalViewAllPayments"></span></h3>
-										</div>
-									</div><!-- /.col -->
-									            
-									
-								</div><!-- /.row -->
-							
-							</section>
-										
-										
-										
-										
-										
-										
-										
+										</section>
 									</div><!-- /.tab-pane -->
 									<!-- <div class="tab-pane" id="tab_3">
 										Galleries
@@ -1955,6 +1944,86 @@ class Layout_View
         $content = ob_get_contents();
         ob_end_clean();
         return $content;
+    }
+    
+    public function getSingleMessage($message)
+    {
+    	ob_start();
+    	$class = '';
+    	$className = '';
+    	$classDate = '';
+    	$name = '';
+//     	var_dump($message);
+    	if ($message['from_user'] == $this->data['memberInfo']['member_id'])
+    	{
+    		$class = 'right';
+    		$className = 'pull-right';
+    		$classDate = 'pull-left';
+    		$name = $message['member_name'];
+    	}
+    	else 
+    	{
+    		$className = 'pull-left';
+    		$classDate = 'pull-right';
+    		$name = $message['user_name'];
+    	}
+    	?>
+    	<!-- Message to the right -->
+		<div class="direct-chat-msg <?php echo $class; ?>">
+			<div class="direct-chat-info clearfix">
+				<span class="direct-chat-name <?php echo $className; ?>"><?php echo $name; ?></span>
+				<span class="direct-chat-timestamp <?php echo $classDate; ?>"><?php echo $message['date']; ?></span>
+			</div><!-- /.direct-chat-info -->
+			<img class="direct-chat-img" src="/dist/img/user3-128x128.jpg" alt="message user image"><!-- /.direct-chat-img -->
+			<div class="direct-chat-text">
+				<?php echo $message['message']; ?>
+			</div><!-- /.direct-chat-text -->
+		</div><!-- /.direct-chat-msg -->
+    	<?php
+    	$content = ob_get_contents();
+    	ob_end_clean();
+    	return $content;
+    }
+    
+    public function getMessagesPanel()
+    {
+    	ob_start();
+    	?>
+    	<!-- DIRECT CHAT WARNING -->
+		<div class="box box-primary direct-chat direct-chat-primary">
+			<div class="box-header">
+				<h3 class="box-title">Direct Chat</h3>
+				<div class="box-tools pull-right">
+					<span data-toggle="tooltip" title="3 New Messages" class="badge bg-light-blue">3</span>
+				</div>
+			</div><!-- /.box-header -->
+			<div class="box-body" id="">
+				<!-- Conversations are loaded here -->
+				<div class="direct-chat-messages" id="boxChat">
+					<?php 
+					if ($this->data['messages'])
+					{
+						foreach ($this->data['messages'] as $message)
+						{
+							echo $this->getSingleMessage($message);
+						}
+					}
+					?>
+				</div><!--/.direct-chat-messages-->
+			</div><!-- /.box-body -->
+			<div class="box-footer">
+					<div class="input-group">
+						<input type="text" name="message" placeholder="Type Message ..." class="form-control" id="chatMessage">
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-primary btn-flat" id="addChatMessage">Send</button>
+						</span>
+					</div>
+			</div><!-- /.box-footer-->
+		</div><!--/.direct-chat -->
+    	<?php
+    	$content = ob_get_contents();
+    	ob_end_clean();
+    	return $content;
     }
     
     public function getMemberHead()
@@ -2014,6 +2083,7 @@ class Layout_View
 		<script src="/js/rooms.js"></script>
 		<script src="/js/payments.js"></script>
 		<script src="/js/email.js"></script>
+		<script src="/js/messages.js"></script>
     	<?php
     	$scripts = ob_get_contents();
     	ob_end_clean();
@@ -2173,6 +2243,9 @@ class Layout_View
 							<?php if ($this->data['memberInfo']['address']) {?>
 							<li><span><i class="fa fa-fw fa-map-o"></i> <?php echo $this->data['memberInfo']['address']; ?></span></li>
 							<?php } ?>
+							<?php if ($this->data['memberInfo']['condo']) {?>
+							<li><span><i class="fa fa-fw fa-pie-chart"></i>Percentage <?php echo $this->data['memberInfo']['condo']; ?></span></li>
+							<?php } ?>
 							<li><span><i class="fa fa-fw fa-sticky-note"></i><strong> <?php echo $this->data['memberInfo']['notes']; ?></strong></span></li>
 							<li><span> <button data-target="#sendEmail" type="submit" class="btn btn-info pull-left btn-sm" data-toggle="modal">Send E-Mail</button></span></li>
 						</ul>
@@ -2255,7 +2328,7 @@ class Layout_View
 				<div class="box box-info">
 					<div class="box-body">
 						<div class="form-group">
-							<label for="exampleInputEmail1">Condo </label>
+							<label for="exampleInputEmail1">Individual percentage </label>
 							<input type="text" class="form-control" id="memberCondo" placeholder="Condo" value="<?php echo $this->data['memberInfo']['condo']; ?>">
 						</div>
 						
@@ -2276,8 +2349,6 @@ class Layout_View
 							<div class="col-sm-2"><button type="submit" class="btn btn-info pull-right btn-sm" id="updateMember">Update info</button></div>
 							<div class="col-sm-2"><button type="submit" class="btn btn-danger pull-right btn-sm" id="cancelEditUser">Cancel</button></div>
 						</div>
-	                    
-	                    
                   	</div>
 				</div>
 			</div>
@@ -2298,6 +2369,7 @@ class Layout_View
 						</li> -->
 						<li><a href="#tab_1-1" data-toggle="tab">Tasks</a></li>
 						<li><a href="#tab_2-2" data-toggle="tab">History</a></li>
+						<li><a href="#tab_3-3" data-toggle="tab" id="tabMessageSender" onclick="scrollToBottom();">Messages</a></li>
 						<li class="active"><a href="#tab_3-2" data-toggle="tab">Rooms</a></li>
 						<li class="pull-left header"><i class="fa fa-th"></i>Admin Owner</li>
 					</ul>
@@ -2305,13 +2377,15 @@ class Layout_View
 						<div class="tab-pane active" id="tab_3-2">
 							<?php echo $this->getRoomPanel(); ?>
 						</div><!-- /.tab-pane -->
+						
+						<div class="tab-pane" id="tab_3-3">
+							<?php echo $this->getMessagesPanel(); ?>
+						</div><!-- /.tab-pane -->
+						
 						<div class="tab-pane" id="tab_2-2">
 							<div class="row">
 								<?php echo $this->getHistoryPanel(); ?>
 							</div>
-						</div><!-- /.tab-pane -->
-						<div class="tab-pane" id="tab_3-2">
-							Lorem 
 						</div><!-- /.tab-pane -->
 						<div class="tab-pane" id="tab_1-1">
 							<div class="row">

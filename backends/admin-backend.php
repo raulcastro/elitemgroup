@@ -168,8 +168,11 @@ class generalBackend
 				$roomsArray 			= $this->model->getAllRooms();
 				$data['rooms'] 			= $roomsArray;
 				
-				$memberRooms = $this->model->getRoomsByMember($memberId);
-				$data['memberRooms'] = $memberRooms;
+				$memberRooms 			= $this->model->getRoomsByMember($memberId);
+				$data['memberRooms'] 	= $memberRooms;
+				
+				$data['messages'] 	= $this->model->getMessagesByMember($memberId);
+				
 				
 			break;
 			

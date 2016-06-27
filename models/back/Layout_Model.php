@@ -1171,7 +1171,82 @@ class Layout_Model
 			return false;
 		}
 	}
+	
+	public function getMessagesByMember($member_id)
+	{
+		try {
+			$query = 'SELECT m.message_id,
+					m.user_id,
+					m.from_user,
+					m.to_user,
+					DATE_FORMAT(m.date, "%e %b %l:%i %p") as date,
+					m.message,
+					m.status,
+					ud.name AS user_name,
+					CONCAT(me.name, " ", me.last_name ) AS member_name
+					FROM messages m
+					LEFT JOIN user_detail ud ON ud.user_id = m.user_id
+					LEFT JOIN members me ON me.member_id = m.member_id
+					WHERE m.member_id = '.$member_id.'
+					ORDER BY m.message_id ASC
+					';
+			
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;			
+		}
+	}
+	
+	public function getMessageByMessageId($message_id)
+	{
+		try {
+			$query = 'SELECT m.message_id,
+					m.user_id,
+					m.from_user,
+					m.to_user,
+					DATE_FORMAT(m.date, "%e %b %l:%i %p") as date,
+					m.message,
+					m.status,
+					ud.name AS user_name,
+					CONCAT(me.name, " ", me.last_name ) AS member_name
+					FROM messages m
+					LEFT JOIN user_detail ud ON ud.user_id = m.user_id
+					LEFT JOIN members me ON me.member_id = m.member_id
+					WHERE m.message_id = '.$message_id.'
+					ORDER BY m.message_id ASC
+					';
+				
+			return $this->db->getRow($query);
+			
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function addMemberMessage($data)
+	{
+		try {
+			$query = 'INSERT INTO messages(member_id, user_id, from_user, to_user, message) VALUES(?, '.$_SESSION['userId'].' , '.$_SESSION['userId'].', ?, ?)';
+			$prep = $this->db->prepare($query);
+			$prep->bind_param('iis', $data['memberId'], $data['memberId'], $data['message']);
+			if ($prep->execute())
+			{
+				return $this->getMessageByMessageId($prep->insert_id);
+			}
+			else 
+			{
+				printf("Errormessage: %s\n", $prep->error);
+			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
 }
+
+
+
+
+
 
 
 

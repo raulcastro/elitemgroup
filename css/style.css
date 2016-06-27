@@ -269,3 +269,7 @@
 .vertical-spacer {
 	height: 40px;
 }
+
+#boxChat {
+	min-height: 450px;
+}
