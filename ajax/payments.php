@@ -160,15 +160,22 @@ switch ($_POST['opt'])
 		{
 			foreach ($payments as $payment)
 			{
-				if ($payment['status'] == 2)
+				switch ($payment['status'])
 				{
-					$paymentTotal = '00.00';
-					$status = 'Paid';
-				}
-				else 
-				{
-					$paymentTotal = $payment['amount'];
-					$status = 'Pending';
+					case 1:
+						$paymentTotal = $payment['amount'];
+						$status = 'Pending';
+					break;
+					
+					case 2:
+						$paymentTotal = '00.00';
+						$status = 'Paid';
+					break;
+				
+					case 3:
+						$paymentTotal = '00.00';
+						$status = 'Cancelled';
+					break;
 				}
 				?>
 				<tr>

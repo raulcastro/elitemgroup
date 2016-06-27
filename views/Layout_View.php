@@ -1769,7 +1769,12 @@ class Layout_View
 										<div id="paymentOptionsPaid">
 											<h3>PAID</h3>
 										</div>
-										<div id="paymentOptionsBox">
+										
+										<div id="paymentOptionsCancelled">
+											<h3>CANCELLED</h3>
+										</div>
+										
+										<div id="setPaymentOptionsBox">
 											<p class="lead">Set payment as: </p>
 											<div >
 												<div class="form-group">
@@ -1850,7 +1855,7 @@ class Layout_View
 									<li><a href="#tab_2" data-toggle="tab" id="getPastDueTab">Past Due</a></li>
 									<li><a href="#tab_3" data-toggle="tab" id="getPaidTab">Paid</a></li>
 									<li><a href="#tab_4" data-toggle="tab" id="getCancelledTab">Cancelled</a></li>
-									<li><a href="#tab_5" data-toggle="tab">All Payments</a></li>
+									<li><a href="#tab_5" data-toggle="tab" id="getDisplayAllPayments">All Payments</a></li>
 									<!-- <li><a href="#tab_3" data-toggle="tab">Galleries</a></li> -->
 								</ul>
 								<div class="tab-content">

@@ -68,6 +68,13 @@ $(function(){
 		});
 	}
 	
+	if ( $('#getDisplayAllPayments').length ) { 
+		$('#getDisplayAllPayments').click(function(){
+			displayAllPayments();
+		});
+	}
+	
+	
 	if ( $('#uploadAvatar').length ) { 
 		$("#uploadAvatar").uploadFile({
 			url:		"/ajax/media.php",

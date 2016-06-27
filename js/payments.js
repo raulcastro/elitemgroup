@@ -191,18 +191,31 @@ function getSinglePayment(node)
 	    	
 	    	$('#updatPayment').show();
 	    	
-	    	if (pStatus == 2)
+	    	switch (pStatus)
 	    	{
-	    		$('#paymentOptionsBox').hide();
-	    		$('#paymentOptionsPaid').show();
-	    		$('#updatPayment').hide();
-	    	}
-	    	else
-	    	{
+	    	case "1":
 	    		$('#optionPaymentPending').iCheck('check');
 	    		$('#paymentOptionsPaid').hide();
-	    		$('#paymentOptionsBox').show();
+	    		$('#paymentOptionsCancelled').hide();
+	    		$('#setPaymentOptionsBox').show();
+	    	break;
+	    	
+	    	case "2":
+	    		$('#setPaymentOptionsBox').hide();
+	    		$('#paymentOptionsPaid').show();
+	    		$('#paymentOptionsCancelled').hide();
+	    		$('#updatPayment').hide();
+	    	break;
+	    	
+	    	case "3":
+	    		$('#setPaymentOptionsBox').hide();
+	    		$('#paymentOptionsPaid').hide();
+	    		$('#paymentOptionsCancelled').show();
+	    		$('#updatPayment').hide();
+	    	break;
+	    		
 	    	}
+	    	
 	    	
 //	    	$('#').html();
         }
