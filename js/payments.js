@@ -22,8 +22,18 @@ $(function(){
 
 function updatePayment()
 {
-	var chckValue = $('#optionPaymentPaid').iCheck('update')[0].checked;
-	if (chckValue)
+	var statusPayment = 0;
+	
+	if ($('#optionPaymentPaid').iCheck('update')[0].checked)
+	{
+		statusPayment = 2;
+	}else if ($('#optionPaymentCancelled').iCheck('update')[0].checked)
+	{
+		statusPayment = 3;
+	}
+	
+//	var chckValue = $('#optionPaymentPaid').iCheck('update')[0].checked;
+	if (statusPayment > 0)
 	{
 		paymentId = $('#singlePaymentIdVal').val();
 		$.ajax({
@@ -31,6 +41,7 @@ function updatePayment()
 		    url: "/ajax/payments.php",
 		    data: {
 		    	paymentId:	paymentId,
+		    	statusPayment: statusPayment,
 		    	opt:	5
 		    },
 		    success:
@@ -39,7 +50,8 @@ function updatePayment()
 		    	if (info !=0 )
 		    	{
 		    		$('#singlePayment').modal('hide');
-		    		getPayments();
+		    		var statusP = $('#currentPaymentSelection').val();
+		    		getPayments(statusP);
 	        		calculatePayments();
 		    	}
 	        }
@@ -94,23 +106,24 @@ function addPayment()
 	    });
 }
 
-function getPayments()
+function getPayments(statusP)
 {
 	var memberId 			= $('#memberId').val();
 	var currentRoom 		= $('#currentRoom').val();
-	
+
 	$.ajax({
 	    type: "POST",
 	    url: "/ajax/payments.php",
 	    data: {
-	    	memberId:	memberId,
-	    	currentRoom: currentRoom,
-	    	opt:	2
+	    	memberId:		memberId,
+	    	currentRoom: 	currentRoom,
+	    	statusP:		statusP,
+	    	opt:			2
 	    },
 	    success:
         function(info)
         {
-    		$('#paymentsBox-'+currentRoom).html(info);
+    		$('.paymentsBox-'+currentRoom).html(info);
 			$('.show-payment').click(function(){
 				getSinglePayment(this);
 			});
@@ -120,12 +133,12 @@ function getPayments()
 
 function calculatePayments()
 {
-	var memberId 			= $('#memberId').val();
-	var currentRoom 		= $('#currentRoom').val();
+	var memberId 		= $('#memberId').val();
+	var currentRoom 	= $('#currentRoom').val();
 	
-	$('#paymentTotal').html();
-	$('#paymentPaid').html();
-	$('#paymentPending').html();
+	$('.paymentTotal').html();
+	$('.paymentPaid').html();
+	$('.paymentPending').html();
 	$('#totalViewAllPayments').html();
 	
 	$.ajax({
@@ -140,9 +153,9 @@ function calculatePayments()
         function(data)
         {
     		info = JSON.parse(data);
-    		$('#paymentTotal').html(info.total);
-    		$('#paymentPaid').html(info.paid);
-    		$('#paymentPending').html(info.pending);
+    		$('.paymentTotal').html(info.total);
+    		$('.paymentPaid').html(info.paid);
+    		$('.paymentPending').html(info.pending);
     		$('#totalViewAllPayments').html(info.pending);
         }
 	});

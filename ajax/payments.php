@@ -117,9 +117,9 @@ switch ($_POST['opt'])
 		if ($totals = $model->calculatePayments($_POST))
 		{
 			$data = array(
-				'total' => $totals['total'],
-				'paid'	=> $totals['paid'],
-				'pending' => $totals['pending']
+				'total' 	=> $totals['total'],
+				'paid'		=> $totals['paid'],
+				'pending' 	=> $totals['pending']
 			);
 			
 			echo htmlspecialchars(json_encode($data), ENT_NOQUOTES);
@@ -127,7 +127,7 @@ switch ($_POST['opt'])
 	break;
 	
 	case 5:
-		if ($model->setPaymentAsPaid($_POST['paymentId']))
+		if ($model->setPaymentStatus($_POST['paymentId'], $_POST['statusPayment']))
 		{
 			echo 1;
 		}

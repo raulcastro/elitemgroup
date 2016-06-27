@@ -1782,6 +1782,11 @@ class Layout_View
 															<input tabindex="8" type="radio" id="optionPaymentPaid" name="minimal-radio">
 															<label for="minimal-radio-2"> Paid</label>
 														</li>
+														
+														<li>
+															<input tabindex="9" type="radio" id="optionPaymentCancelled" name="minimal-radio">
+															<label for="minimal-radio-3"> Cancelled</label>
+														</li>
 													</ul>
 												</div>
 											</div>
@@ -1839,9 +1844,13 @@ class Layout_View
 						<div class="col-md-12">
 							<!-- Custom Tabs -->
 							<div class="nav-tabs-custom">
+								<input type="hidden" value="pending" id="currentPaymentSelection" />
 								<ul class="nav nav-tabs">
-									<li class="active"><a href="#tab_1" data-toggle="tab">Payments</a></li>
-									<li><a href="#tab_2" data-toggle="tab">All Payments</a></li>
+									<li class="active"><a href="#tab_1" data-toggle="tab" id="getPendingTab">Payments</a></li>
+									<li><a href="#tab_2" data-toggle="tab" id="getPastDueTab">Past Due</a></li>
+									<li><a href="#tab_3" data-toggle="tab" id="getPaidTab">Paid</a></li>
+									<li><a href="#tab_4" data-toggle="tab" id="getCancelledTab">Cancelled</a></li>
+									<li><a href="#tab_5" data-toggle="tab">All Payments</a></li>
 									<!-- <li><a href="#tab_3" data-toggle="tab">Galleries</a></li> -->
 								</ul>
 								<div class="tab-content">
@@ -1851,25 +1860,79 @@ class Layout_View
 												<button data-target="#payment-modal" type="submit" class="btn btn-info pull-left btn-sm" data-toggle="modal" >Add payment</button>
 											</div>
 											<div class="col-sm-3">
-												<h3>Total: $<span id="paymentTotal"></span></h3>
+												<h3>Total: $<span class="paymentTotal"></span></h3>
 											</div>
 											<div class="col-sm-3">
-												<h3>Paid: $<span id="paymentPaid"></span></h3>
+												<h3>Paid: $<span class="paymentPaid"></span></h3>
 											</div>
 											<div class="col-sm-3">
-												<h3>Pending: $<span id="paymentPending"></span></h3>
+												<h3>Pending: $<span class="paymentPending"></span></h3>
 											</div>
 										</div>
 										<div class="vertical-spacer"></div>
-										<div class="row" id="paymentsBox-<?php echo $room['room_id']; ?>">
-											
-											
-										</div>
+										<div class="row paymentsBox-<?php echo $room['room_id']; ?>" id=""></div>
 										
 									</div><!-- /.tab-pane -->
+									
 									<div class="tab-pane" id="tab_2">
-										
-										
+										<div class="row">
+											<div class="col-sm-3">
+												<button data-target="#payment-modal" type="submit" class="btn btn-info pull-left btn-sm" data-toggle="modal" >Add payment</button>
+											</div>
+											<div class="col-sm-3">
+												<h3>Total: $<span class="paymentTotal"></span></h3>
+											</div>
+											<div class="col-sm-3">
+												<h3>Paid: $<span class="paymentPaid"></span></h3>
+											</div>
+											<div class="col-sm-3">
+												<h3>Pending: $<span class="paymentPending"></span></h3>
+											</div>
+										</div>
+										<div class="vertical-spacer"></div>
+										<div class="row paymentsBox-<?php echo $room['room_id']; ?>" id=""></div>
+									</div> <!-- /.tab-pane -->
+									
+									<div class="tab-pane" id="tab_3">
+										<div class="row">
+											<div class="col-sm-3">
+												<button data-target="#payment-modal" type="submit" class="btn btn-info pull-left btn-sm" data-toggle="modal" >Add payment</button>
+											</div>
+											<div class="col-sm-3">
+												<h3>Total: $<span class="paymentTotal"></span></h3>
+											</div>
+											<div class="col-sm-3">
+												<h3>Paid: $<span class="paymentPaid"></span></h3>
+											</div>
+											<div class="col-sm-3">
+												<h3>Pending: $<span class="paymentPending"></span></h3>
+											</div>
+										</div>
+										<div class="vertical-spacer"></div>
+										<div class="row paymentsBox-<?php echo $room['room_id']; ?>" id=""></div>
+									</div> <!-- /.tab-pane -->
+									
+									<div class="tab-pane" id="tab_4">
+										<div class="row">
+											<div class="col-sm-3">
+												<button data-target="#payment-modal" type="submit" class="btn btn-info pull-left btn-sm" data-toggle="modal" >Add payment</button>
+											</div>
+											<div class="col-sm-3">
+												<h3>Total: $<span class="paymentTotal"></span></h3>
+											</div>
+											<div class="col-sm-3">
+												<h3>Paid: $<span class="paymentPaid"></span></h3>
+											</div>
+											<div class="col-sm-3">
+												<h3>Pending: $<span class="paymentPending"></span></h3>
+											</div>
+										</div>
+										<div class="vertical-spacer"></div>
+										<div class="row paymentsBox-<?php echo $room['room_id']; ?>" id=""></div>
+									</div> <!-- /.tab-pane -->
+									
+									
+									<div class="tab-pane" id="tab_5">
 										<section class="invoice">
 											<!-- title row -->
 											<div class="row">
@@ -1929,15 +1992,10 @@ class Layout_View
 														<h3>Total: $<span id="totalViewAllPayments"></span></h3>
 													</div>
 												</div><!-- /.col -->
-												            
-												
 											</div><!-- /.row -->
-										
 										</section>
 									</div><!-- /.tab-pane -->
-									<!-- <div class="tab-pane" id="tab_3">
-										Galleries
-									</div> --><!-- /.tab-pane -->
+									
 								</div><!-- /.tab-content -->
 							</div><!-- nav-tabs-custom -->
 						</div><!-- /.col -->

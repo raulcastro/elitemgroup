@@ -671,19 +671,6 @@ class Layout_Model
 		}
 	}
 	
-	public function setPaymentStatus($paymentId)
-	{
-		try {
-			$query = 'UPDATE payments 
-					SET status = 1 
-					WHERE payment_id = '.$paymentId;
-			
-			return $this->db->run($query);
-		} catch (Exception $e) {
-			return false;
-		}
-	}
-	
 	public function addInventory($data)
 	{
 		try {
@@ -1017,6 +1004,27 @@ class Layout_Model
 	
 	public function getPaymentsByRoom($data)
 	{
+		$conditional = "";
+		
+		switch ($_POST['statusP'])
+		{
+			case "pending":
+				$conditional = ' AND status = 1 ';
+			break;
+			
+			case "past":
+				$conditional = ' AND status = 1 AND p.due_date < CURDATE() ';
+			break;
+			
+			case "paid":
+				$conditional = ' AND status = 2 ';
+			break;
+			
+			case "cancel":
+				$conditional = ' AND status = 3 ';
+			break;
+		}
+		
 		try {
 			$query = 'SELECT 
 					p.payment_id, 
@@ -1032,6 +1040,7 @@ class Layout_Model
 					LEFT JOIN inventory i ON i.inventory_id = p.inventory_id
 					WHERE p.member_id = '.$data['memberId'].'
 					AND p.room_id = '.$data['currentRoom'].'
+					'.$conditional.'
 					ORDER BY p.due_date ASC		
 					';
 			return $this->db->getArray($query);
@@ -1049,6 +1058,7 @@ class Layout_Model
 					FROM payments p
 					WHERE p.member_id = '.$data['memberId'].'
 					AND p.room_id = '.$data['currentRoom'].' 
+					AND status != 3
 				), 0) AS total,
 				IFNULL((	
 					SELECT 
@@ -1099,11 +1109,12 @@ class Layout_Model
 		}
 	}
 	
-	public function setPaymentAsPaid($paymentId)
+	public function setPaymentStatus($paymentId, $status)
 	{
 		try {
 			$paymentId = (int) $paymentId;
-			$query = 'UPDATE payments SET status = 2 WHERE payment_id = '.$paymentId;
+			$status = (int) $status;
+			$query = 'UPDATE payments SET status = '.$status.' WHERE payment_id = '.$paymentId;
 			return $this->db->run($query);
 		} catch (Exception $e) {
 			return false;

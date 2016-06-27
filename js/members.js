@@ -40,6 +40,34 @@ $(function(){
 		var memberId = $('#memberId').val();
 	}
 	
+	if ( $('#getPendingTab').length ) { 
+		$('#getPendingTab').click(function(){
+			getPayments("pending");
+			$('#currentPaymentSelection').val("pending");
+		});
+	}
+	
+	if ( $('#getPastDueTab').length ) { 
+		$('#getPastDueTab').click(function(){
+			getPayments("past");
+			$('#currentPaymentSelection').val("past");
+		});
+	}
+	
+	if ( $('#getPaidTab').length ) { 
+		$('#getPaidTab').click(function(){
+			getPayments("paid");
+			$('#currentPaymentSelection').val("paid");
+		});
+	}
+	
+	if ( $('#getCancelledTab').length ) { 
+		$('#getCancelledTab').click(function(){
+			getPayments("cancel");
+			$('#currentPaymentSelection').val("cancel");
+		});
+	}
+	
 	if ( $('#uploadAvatar').length ) { 
 		$("#uploadAvatar").uploadFile({
 			url:		"/ajax/media.php",
@@ -172,7 +200,7 @@ function loadRoomData(node)
 	var currentRoom = $(node).attr('data-id');
 	$('#currentRoom').val(currentRoom);
 	getCategories();
-	getPayments();
+	getPayments("pending");
 	calculatePayments();
 	displayAllPayments();
 }
