@@ -1581,9 +1581,14 @@ class Layout_View
     	ob_start();
     	?>
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-6 text-right " id="showAddRoomBox">
 				<div class="form-group">
-					<label  class="col-sm-2 control-label">Rooms</label>
+					<button type="submit" class="btn btn-info pull-left btn-xs" id="showAddRoom">Add apartment</button>
+				</div>
+			</div>
+			<div class="col-md-6 add-room-boxes">
+				<div class="form-group">
+					<label  class="col-sm-2 control-label">Apartment</label>
 					<div class="col-sm-10">
 						<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="roomList">
 							<?php 
@@ -1599,14 +1604,14 @@ class Layout_View
 				</div><!-- /.form-group -->
 			</div><!-- /.col -->
 			
-			<div class="col-md-6 text-right">
+			<div class="col-md-6 text-right add-room-boxes">
 				<div class="form-group">
 					<button type="submit" class="btn btn-info pull-left btn-sm" id="addMemberRoom">Add room</button>
 				</div>
 			</div>
 		</div>
 		
-		<h2 class="page-header">Rooms</h2>
+		<h2 class="page-header">Apartments</h2>
 		<input type="hidden" val="" id="currentRoom">
 		<div class="row">
 			<div class="col-md-12">
@@ -2370,7 +2375,7 @@ class Layout_View
 						<li><a href="#tab_1-1" data-toggle="tab">Tasks</a></li>
 						<li><a href="#tab_2-2" data-toggle="tab">History</a></li>
 						<li><a href="#tab_3-3" data-toggle="tab" id="tabMessageSender" onclick="scrollToBottom();">Messages</a></li>
-						<li class="active"><a href="#tab_3-2" data-toggle="tab">Rooms</a></li>
+						<li class="active"><a href="#tab_3-2" data-toggle="tab">Apartments</a></li>
 						<li class="pull-left header"><i class="fa fa-th"></i>Admin Owner</li>
 					</ul>
 					<div class="tab-content">

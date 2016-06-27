@@ -38,6 +38,14 @@ $(function(){
 			return false;
 		});
 	}
+	
+	if ( $('#showAddRoom').length ) { 
+		$('#showAddRoom').click(function(){
+			$('#showAddRoomBox').hide();
+			$('.add-room-boxes').show();
+			return false;
+		});
+	}
 });
 
 function addRoom()

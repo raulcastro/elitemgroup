@@ -273,3 +273,7 @@
 #boxChat {
 	min-height: 450px;
 }
+
+.add-room-boxes {
+	display: none;
+}
