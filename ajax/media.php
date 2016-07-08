@@ -49,7 +49,26 @@ switch ($_POST['opt'])
 		}
 	break;
 	
+	case 2:
+		$allowedExtensions = array("pdf", "PDF", "doc", "DOC", "jpg", "JPG", "jpeg", "JPEG", "docx", "pps", "ppsx", "xml", "xmlx", "rtfd");
+		$memberId = (int) $_POST['memberId'];
+		$sizeLimit 	= 20 * 1024 * 1024;
 		
+		$uploader 	= new Media_Model($allowedExtensions, $sizeLimit);
+		
+		$savePath 	= $root.'/uploads/documents/';
+		$pre		= Tools::getRandom(6);
+		
+		if ($result = $uploader->handleUpload($savePath, $pre))
+		{
+			
+			$data = array('success'=>true, 'fileName'=>$result['fileName']);
+		}
+		
+		echo htmlspecialchars(json_encode($data), ENT_NOQUOTES);
+	break;
+	
+	
 	default:
 	break;
 }

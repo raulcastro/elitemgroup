@@ -776,6 +776,18 @@ class Layout_Model
 		}
 	}
 	
+	public function deleteRoom($roomId)
+	{
+		try {
+			$roomId = (int) $roomId;
+			$query = 'DELETE FROM rooms WHERE room_id = '.$roomId;
+			
+			return $this->db->run($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
 	public function updateRoom($data)
 	{
 		try {
@@ -914,6 +926,16 @@ class Layout_Model
 			$prep = $this->db->prepare($query);
 			$prep->bind_param('ii', $data['memberId'], $data['roomId']);
 			return $prep->execute();
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function deleteMemberRoom($data)
+	{
+		try {
+			$query = 'DELETE FROM member_rooms WHERE member_id = '.$data['memberId'].' AND room_id = '.$data['roomId'];
+			return $this->db->run($query);
 		} catch (Exception $e) {
 			return false;
 		}
@@ -1194,7 +1216,8 @@ class Layout_Model
 					m.message,
 					m.status,
 					ud.name AS user_name,
-					CONCAT(me.name, " ", me.last_name ) AS member_name
+					CONCAT(me.name, " ", me.last_name ) AS member_name,
+					me.avatar
 					FROM messages m
 					LEFT JOIN user_detail ud ON ud.user_id = m.user_id
 					LEFT JOIN members me ON me.member_id = m.member_id
@@ -1248,6 +1271,55 @@ class Layout_Model
 			{
 				printf("Errormessage: %s\n", $prep->error);
 			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function addDocument($data)
+	{
+		try {
+			$query = 'INSERT INTO documents(member_id, payment_id, document) VALUES(?, ?, ?)';
+			$prep = $this->db->prepare($query);
+			$prep->bind_param('iis', $data['memberId'], $data['paymentId'], $data['documentUploaded']);
+			if ($prep->execute())
+			{
+				return true;
+			}
+			else 
+			{
+				return false;
+			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function getDocumentsByPaymentId($paymentId)
+	{
+		try {
+			$query = 'SELECT * FROM documents WHERE payment_id = '.$paymentId;
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function deleteOwner($memberId)
+	{
+		try {
+			$query = 'DELETE FROM members WHERE member_id = '.$memberId;
+			return $this->db->run($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function deletePayment($paymentId)
+	{
+		try {
+			$query = 'DELETE FROM payments WHERE payment_id = '.$paymentId;
+			return $this->db->run($query);
 		} catch (Exception $e) {
 			return false;
 		}

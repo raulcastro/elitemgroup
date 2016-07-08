@@ -74,6 +74,11 @@ $(function(){
 		});
 	}
 	
+	if ( $('#deleteOwner').length ) { 
+		$('#deleteOwner').click(function(){
+			deleteOwner();
+		});
+	}
 	
 	if ( $('#uploadAvatar').length ) { 
 		$("#uploadAvatar").uploadFile({
@@ -280,3 +285,32 @@ function updateInventoryOptionsRooms(categoryId)
     });
 }
 
+function deleteOwner()
+{
+	var memberId = $('#memberId').val();
+	
+	if (memberId)
+	{
+		$.ajax({
+	    type: "POST",
+	    url: "/ajax/members.php",
+	    data: {
+	    	memberId:		memberId,
+	    	opt:			10
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		pathArray 		= $(location).attr('href').split( '/' );
+	        		newURL 			= pathArray[0]+'//'+pathArray[2]+'/dashboard/';
+	            	window.location = newURL;
+	        	}
+	        	else
+				{
+				}
+	        }
+	    });
+	}
+}

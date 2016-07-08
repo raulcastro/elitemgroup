@@ -46,6 +46,20 @@ $(function(){
 			return false;
 		});
 	}
+	
+	if ( $('.deleteApartment').length ) { 
+		$('.deleteApartment').click(function(){
+			deleteMemberRoom(this);
+			return false;
+		});
+	}
+	
+	if ( $('#deleteRoom').length ) { 
+		$('#deleteRoom').click(function(){
+			deleteRoom();
+			return false;
+		});
+	}
 });
 
 function addRoom()
@@ -110,6 +124,34 @@ function updateRoom()
 	        	if (info != '0')
 	        	{
 	        		alert('Room updated!');
+	        	}
+	        }
+	    });
+	}
+}
+
+function deleteRoom()
+{
+	var roomId 	= $('#roomId').val();
+
+	if (roomId)
+	{
+		$.ajax({
+	    type: "POST",
+	    url: "/ajax/rooms.php",
+	    data: {
+	    	roomId:				roomId,
+	    	opt:				10
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		
+	        		pathArray 		= $(location).attr('href').split( '/' );
+	        		newURL 			= pathArray[0]+'//'+pathArray[2]+'/rooms/';
+	            	window.location = newURL;
 	        	}
 	        }
 	    });
@@ -301,3 +343,60 @@ function addMemberRoom()
 	    });
 	}
 }
+
+function deleteMemberRoom(node)
+{
+	var memberId = $('#memberId').val();
+	var currentRoom = $(node).attr('data-id');
+	
+	if (currentRoom)
+	{
+		$.ajax({
+	    type: "POST",
+	    url: "/ajax/rooms.php",
+	    data: {
+	    	memberId:		memberId,
+	    	roomId: 		currentRoom,
+	    	opt:			'9'
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		pathArray 		= $(location).attr('href').split( '/' );
+	            	newURL 			= pathArray[0]+'//'+pathArray[2]+'/'+pathArray[3]+'/'+pathArray[4]+'/'+pathArray[5]+'-'+Math.floor((Math.random() * 100) + 1)+'/#utilitiesBox';
+	            	window.location = newURL;
+	        	}
+	        	else
+				{
+				}
+	        }
+	    });
+	}
+	
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

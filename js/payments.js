@@ -18,7 +18,74 @@ $(function(){
 			return false;
 		});
 	}
+	
+	if ( $('#deletePayment').length ) { 
+		$('#deletePayment').click(function(){
+			deletePayment();
+			return false;
+		});
+	}
+	
+	if ( $('#addDocument').length ) {
+		
+		$("#addDocument").uploadFile({
+			url:		"/ajax/media.php",
+			fileName:	"myfile",
+			multiple: 	true,
+			doneStr:	"uploaded!",
+			formData: {
+					opt: 2 
+				},
+			onSuccess:function(files, data, xhr)
+			{
+				paymentId 			= $('#singlePaymentIdVal').val();
+				obj					= JSON.parse(data);
+				documentUploaded	= obj.fileName;
+				addDocument(paymentId, documentUploaded);
+				var documentNode = '<tr><td><a href="/uploads/documents/'+documentUploaded+'" target="_blank">'+documentUploaded+'</a></td></tr>';
+				$('#paymentDocuments').append(documentNode);
+			}
+		});
+	}
 });
+
+function addDocument(paymentId, documentUploaded)
+{
+	var memberId 			= $('#memberId').val();
+
+	$.ajax({
+	    type: "POST",
+	    url: "/ajax/payments.php",
+	    data: {
+	    	memberId:		memberId,
+	    	paymentId: 	paymentId,
+	    	documentUploaded:		documentUploaded,
+	    	opt:			7
+	    },
+	    success:
+        function(info)
+        {
+        }
+	});
+}
+
+function getDocuments(paymentId)
+{
+	$.ajax({
+	    type: "POST",
+	    url: "/ajax/payments.php",
+	    data: {
+	    	paymentId: 			paymentId,
+	    	opt:				8
+	    },
+	    success:
+        function(info)
+        {
+	    	$('#paymentDocuments').html("");
+	    	$('#paymentDocuments').html(info);
+        }
+	});
+}
 
 function updatePayment()
 {
@@ -62,6 +129,31 @@ function updatePayment()
 	{
 		$('#singlePayment').modal('hide');
 	}
+}
+
+function deletePayment()
+{
+	paymentId = $('#singlePaymentIdVal').val();
+	$.ajax({
+	    type: "POST",
+	    url: "/ajax/payments.php",
+	    data: {
+	    	paymentId:	paymentId,
+	    	opt:	9
+	    },
+	    success:
+        function(info)
+        {
+	    	if (info !=0 )
+	    	{
+	    		$('#singlePayment').modal('hide');
+	    		var statusP = $('#currentPaymentSelection').val();
+	    		getPayments(statusP);
+        		calculatePayments();
+        		displayAllPayments();
+	    	}
+        }
+	});
 }
 
 function addPayment()
@@ -216,7 +308,7 @@ function getSinglePayment(node)
 	    		
 	    	}
 	    	
-	    	
+	    	getDocuments(paymentId);
 //	    	$('#').html();
         }
 	});

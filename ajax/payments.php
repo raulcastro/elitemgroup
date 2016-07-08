@@ -160,6 +160,8 @@ switch ($_POST['opt'])
 		{
 			foreach ($payments as $payment)
 			{
+				$cancelClass = '';
+				
 				switch ($payment['status'])
 				{
 					case 1:
@@ -175,20 +177,59 @@ switch ($_POST['opt'])
 					case 3:
 						$paymentTotal = '00.00';
 						$status = 'Cancelled';
+						$cancelClass = ' style="text-decoration: line-through;"';
 					break;
 				}
 				?>
-				<tr>
+				<tr <?php echo $cancelClass; ?>>
 					<td id=""><?php echo $payment['payment_id']; ?></td>
 					<td id=""><?php echo $payment['room']; ?></td>
 					<td id=""><?php echo $payment['category']; ?></td>
 					<td id=""><?php echo $payment['description']; ?></td>
 					<td id=""><?php echo Tools::formatMYSQLToFront($payment['due_date']); ?></td>
 					<td id=""><strong><?php echo $status; ?></strong></td>
-					<td id="">$ <?php echo $paymentTotal; ?></td>
+					<td id="">$ <?php echo $payment['amount']; ?></td>
 				</tr>
 				<?php
 			}
+		}
+	break;
+	
+	case 7:
+		if ($model->addDocument($_POST))
+		{
+			echo 1;
+		}
+	break;
+	
+	case 8:
+		if ($documents = $model->getDocumentsByPaymentId($_POST['paymentId']))
+		{
+			foreach ($documents as $document)
+			{
+				?>
+				<tr>
+					<td>
+						<a href="/uploads/documents/<?php echo  $document['document']; ?>" target="_blank"><?php echo $document['document']; ?></a>
+					</td>
+				</tr>
+				<?php
+			}
+		}
+		else 
+		{
+			echo "No documents";	
+		}
+	break;
+	
+	case 9:// Delete payment
+		if ($model->deletePayment($_POST['paymentId']))
+		{
+			echo 1;
+		}
+		else
+		{
+			echo 0;
 		}
 	break;
 	

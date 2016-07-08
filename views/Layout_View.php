@@ -112,7 +112,7 @@ class Layout_View
 			}
 			?>
 		</head>
-		<body id="<?php echo $this->data['section']; ?>" class="hold-transition <?php echo $this->data['template-class']; ?> fixed  skin-blue sidebar-mini">
+		<body id="<?php echo $this->data['section']; ?>" class="hold-transition <?php echo $this->data['template-class']; ?> fixed  skin-black sidebar-mini">
 			<?php 
 			if ($this->data['section'] != 'log-in' && $this->data['section'] != 'log-out')
 			{
@@ -277,7 +277,7 @@ class Layout_View
 	        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 	        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	    <![endif]-->
-	    <link rel="stylesheet" href="/dist/css/skins/skin-blue.min.css">
+	    <link rel="stylesheet" href="/dist/css/skins/skin-black.min.css">
        	<link href="/css/style.css" media="screen" rel="stylesheet" type="text/css" />
     	
        	<?php 
@@ -710,7 +710,7 @@ class Layout_View
 							{
 								?>
 								<td><?php echo $member['address']; ?></td>
-								 <?php 
+								<?php 
 							}
 							?>
 							<td><?php echo Tools::formatMYSQLToFront($member['date']); ?></td>
@@ -1787,7 +1787,6 @@ class Layout_View
 															<input tabindex="8" type="radio" id="optionPaymentPaid" name="minimal-radio">
 															<label for="minimal-radio-2"> Paid</label>
 														</li>
-														
 														<li>
 															<input tabindex="9" type="radio" id="optionPaymentCancelled" name="minimal-radio">
 															<label for="minimal-radio-3"> Cancelled</label>
@@ -1798,16 +1797,16 @@ class Layout_View
 										</div>
 									</div><!-- /.col -->
 									            
-									<!-- <div class="col-xs-6">
+									<div class="col-xs-6">
 										<p class="lead">Documents</p>
 										<div class="table-responsive">
 											<table class="table">
-												<tbody>
-												<tr>
-													<td>Document 1</td>
-												</tr>
+												<tbody id="paymentDocuments">
 												</tbody>
 											</table>
+										</div>
+										<div class="add-document" id="addDocument">
+											Browse
 										</div>
 									</div><!-- /.col -->
 								</div><!-- /.row -->
@@ -1815,7 +1814,8 @@ class Layout_View
 						</div>
 						<div class="modal-footer">
 							<input type="hidden" id="singlePaymentIdVal">
-							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>							
+							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>	
+							<button class="btn btn-danger pull-right" id="deletePayment"><i class="fa fa-remove"></i> Delete</button>						
 							<button class="btn btn-success pull-right" id="updatPayment"><i class="fa fa-credit-card"></i> Submit Payment</button>
 						</div>
 					</div><!-- /.modal-content -->
@@ -1842,9 +1842,9 @@ class Layout_View
 			</div>
 			<div id="collapse<?php echo $room['room_id']; ?>" class="panel-collapse collapse">
 				<div class="box-body">
-				<?php echo $room['description']; ?>
-				<br>
-				<br>
+					<?php echo $room['description']; ?>
+					<br>
+					<br>
 					<div class="row">
 						<div class="col-md-12">
 							<!-- Custom Tabs -->
@@ -1856,6 +1856,10 @@ class Layout_View
 									<li><a href="#tab_3" data-toggle="tab" id="getPaidTab">Paid</a></li>
 									<li><a href="#tab_4" data-toggle="tab" id="getCancelledTab">Cancelled</a></li>
 									<li><a href="#tab_5" data-toggle="tab" id="getDisplayAllPayments">All Payments</a></li>
+									<li>
+									
+										<button type="submit" class="btn btn-danger btn-xs pull-right deleteApartment"  data-id="<?php echo $room['room_id']; ?>">Delete apartment</button>
+									</li>
 									<!-- <li><a href="#tab_3" data-toggle="tab">Galleries</a></li> -->
 								</ul>
 								<div class="tab-content">
@@ -2021,6 +2025,7 @@ class Layout_View
     	$className = '';
     	$classDate = '';
     	$name = '';
+    	$image = '';
 //     	var_dump($message);
     	if ($message['from_user'] == $this->data['memberInfo']['member_id'])
     	{
@@ -2028,12 +2033,21 @@ class Layout_View
     		$className = 'pull-right';
     		$classDate = 'pull-left';
     		$name = $message['member_name'];
+    		if ($message['avatar'])
+    		{
+    			$image = "/images/owners-profile/avatar/".$message['avatar'];
+    		}
+    		else 
+    		{
+    			$image = "/dist/img/default-user.jpg";
+    		}
     	}
     	else 
     	{
     		$className = 'pull-left';
     		$classDate = 'pull-right';
     		$name = $message['user_name'];
+    		$image = "/dist/img/user2-160x160.jpg";
     	}
     	?>
     	<!-- Message to the right -->
@@ -2042,7 +2056,7 @@ class Layout_View
 				<span class="direct-chat-name <?php echo $className; ?>"><?php echo $name; ?></span>
 				<span class="direct-chat-timestamp <?php echo $classDate; ?>"><?php echo $message['date']; ?></span>
 			</div><!-- /.direct-chat-info -->
-			<img class="direct-chat-img" src="/dist/img/user3-128x128.jpg" alt="message user image"><!-- /.direct-chat-img -->
+			<img class="direct-chat-img" src="<?php echo $image; ?>" alt="message user image"><!-- /.direct-chat-img -->
 			<div class="direct-chat-text">
 				<?php echo $message['message']; ?>
 			</div><!-- /.direct-chat-text -->
@@ -2270,6 +2284,8 @@ class Layout_View
 						</div><!-- /.widget-user-image -->
 						<h3 class="widget-user-username"><strong><?php echo $this->data['memberInfo']['name'].' '.$this->data['memberInfo']['last_name']; ?></strong></h3>
 						<h5 class="widget-user-desc"><strong><?php echo $this->data['memberInfo']['condo']; ?></strong></h5>
+						
+						<button type="submit" class="btn btn-danger btn-xs pull-right " id="deleteOwner">Delete owner</button>
 						<button type="submit" class="btn btn-primary btn-xs pull-right" id="showEditUser">Update info</button>
 						<div class="clearfix"></div>
 					</div>
@@ -2689,7 +2705,8 @@ class Layout_View
 			</div><!-- /.box-body -->
 			
 			<div class="box-footer">
-				<button type="submit" class="btn btn-info pull-right" id="updateRoom">Update room</button>
+				<button type="submit" class="btn btn-danger btn-sm pull-right" id="deleteRoom">Delete room</button>
+				<button type="submit" class="btn btn-info btn-sm pull-right" id="updateRoom">Update room</button>
 			</div>
 		</div>
 		
@@ -2743,7 +2760,7 @@ class Layout_View
 			</div><!-- /.box-body -->
 			
 			<div class="box-footer">
-				<button type="submit" class="btn btn-info pull-right" id="addRoomInventory">Add inventory</button>
+				<button type="submit" class="btn btn-info btn-sm pull-right" id="addRoomInventory">Add inventory</button>
 			</div>
 		</div>
 		

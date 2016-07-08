@@ -96,6 +96,20 @@ switch ($_POST['opt'])
 		}
 	break;
 	
+	case 9:
+		if ($model->deleteMemberRoom($_POST))
+		{
+			echo 1;
+		}
+	break;
+	
+	case 10:
+		if ($model->deleteRoom($_POST['roomId']))
+		{
+			echo 1;
+		}
+	break;
+	
 	default:
 	break;
 }

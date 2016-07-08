@@ -134,6 +134,13 @@ switch ($_POST['opt'])
 		}
 	break;
 	
+	case 10:
+		if ($model->deleteOwner($_POST['memberId']))
+		{
+			echo 1;
+		}
+	break;
+	
 	default:
 	break;
 }

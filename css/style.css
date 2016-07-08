@@ -281,3 +281,15 @@
 #paymentOptionsCancelled {
 	color: red;
 }
+
+.deleteApartment {
+	margin-top:7px;
+}
+
+#deleteOwner {
+	margin-left: 10px;
+}
+
+#deleteRoom {
+	margin-left: 10px;
+}
