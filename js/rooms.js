@@ -49,15 +49,25 @@ $(function(){
 	
 	if ( $('.deleteApartment').length ) { 
 		$('.deleteApartment').click(function(){
-			deleteMemberRoom(this);
-			return false;
+			bootbox.confirm("Do you really want to delete this apartment?", function(result) {
+				if (result)
+				{
+					deleteMemberRoom();
+				}
+			}); 
+			//return false;
 		});
 	}
 	
 	if ( $('#deleteRoom').length ) { 
 		$('#deleteRoom').click(function(){
-			deleteRoom();
-			return false;
+			bootbox.confirm("Do you really want to delete this apartment?", function(result) {
+				if (result)
+				{
+					deleteRoom();
+				}
+			}); 
+			//return false;
 		});
 	}
 });
@@ -344,10 +354,10 @@ function addMemberRoom()
 	}
 }
 
-function deleteMemberRoom(node)
+function deleteMemberRoom()
 {
 	var memberId = $('#memberId').val();
-	var currentRoom = $(node).attr('data-id');
+	var currentRoom = $('#currentRoom').val();
 	
 	if (currentRoom)
 	{

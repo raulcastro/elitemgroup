@@ -41,6 +41,20 @@ switch ($_POST['opt'])
 		}
 	break;
 	
+	case 4:
+		if ($model->deleteInventory($_POST['inventoryId']))
+		{
+			echo 1;
+		}
+	break;
+	
+	case 5:
+		if ($model->deleteCategory($_POST['categoryId']))
+		{
+			echo 1;
+		}
+	break;
+	
 	default:
 	break;
 }

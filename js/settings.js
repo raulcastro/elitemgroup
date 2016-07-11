@@ -20,6 +20,29 @@ $(function(){
 			return false;
 		});
 	}
+	
+	if ( $('.deleteInventory').length ) { 
+		$('.deleteInventory').click(function(){
+			var inventoryId = $(this).attr("data-id");
+			bootbox.confirm("Do you really want to delete this inventory?", function(result) {
+				if (result)
+				{
+					deleteInventory(inventoryId);
+				}
+			}); 
+		});
+	}
+	
+	if ( $('#deleteCategory').length ) { 
+		$('#deleteCategory').click(function(){
+			bootbox.confirm("Do you really want to delete this category?", function(result) {
+				if (result)
+				{
+					deleteCategory();
+				}
+			}); 
+		});
+	}
 });
 
 function addCategory()
@@ -91,6 +114,36 @@ function updateCategory()
 	}
 }
 
+function deleteCategory()
+{
+	var categoryId	= $('#categoryId').val();
+	
+	if (categoryId)
+	{
+		$.ajax({
+	    type: "POST",
+	    url: "/ajax/settings.php",
+	    data: {
+	    	categoryId: categoryId,
+	    	opt:		'5'
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		pathArray 		= $(location).attr('href').split( '/' );
+	        		newURL 			= pathArray[0]+'//'+pathArray[2]+'/settings/';
+	            	window.location = newURL
+	        	}
+	        	else
+				{
+				}
+	        }
+	    });
+	}
+}
+
 function addInventory()
 {
 	var categoryId				= $('#categoryId').val();
@@ -113,10 +166,46 @@ function addInventory()
 	        {
 	        	if (info != '0')
 	        	{
-	        		var item = '<li><a href="/edit-inventory-category/'+info+'/">'+inventoryName+'</a></li>'
+	        		var item = '<li id="inventoryId'+info+'"><a href="#">'+inventoryName+' <span class="pull-right badge bg-red"><i class="fa fa-close deleteInventory" data-id="'+info+'"></i></span></a></a></li>'
 	        		$('#inventoryBox').prepend(item);
 	        		$('#inventoryName').val('');
 	        		$('#inventoryDescription').val('');
+	        		
+	        		$('.deleteInventory').click(function(){
+	        			var inventoryId = $(this).attr("data-id");
+	        			bootbox.confirm("Do you really want to delete this inventory?", function(result) {
+	        				if (result)
+	        				{
+	        					deleteInventory(inventoryId);
+	        				}
+	        			}); 
+	        		});
+	        	}
+	        	else
+				{
+				}
+	        }
+	    });
+	}
+}
+
+function deleteInventory(inventoryId)
+{
+	if (inventoryId)
+	{
+		$.ajax({
+	    type: "POST",
+	    url: "/ajax/settings.php",
+	    data: {
+	    	inventoryId: inventoryId,
+	    	opt:	'4'
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		$('#inventoryId'+inventoryId).remove();
 	        	}
 	        	else
 				{

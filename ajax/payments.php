@@ -182,13 +182,11 @@ switch ($_POST['opt'])
 				}
 				?>
 				<tr <?php echo $cancelClass; ?>>
-					<td id=""><?php echo $payment['payment_id']; ?></td>
-					<td id=""><?php echo $payment['room']; ?></td>
-					<td id=""><?php echo $payment['category']; ?></td>
+					<td id=""><?php echo $payment['inventory']; ?></td>
 					<td id=""><?php echo $payment['description']; ?></td>
 					<td id=""><?php echo Tools::formatMYSQLToFront($payment['due_date']); ?></td>
-					<td id=""><strong><?php echo $status; ?></strong></td>
-					<td id="">$ <?php echo $payment['amount']; ?></td>
+					<td id=""><?php if ($payment['status'] == 1 || $payment['status'] == 3){echo "$ ".$payment['amount'];}else{ echo "00.00";}?></td>
+					<td id=""><?php if ($payment['status'] == 2 || $payment['status'] == 3){echo "$ ".$payment['amount'];}else{ echo "00.00";}?></td>
 				</tr>
 				<?php
 			}

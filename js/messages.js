@@ -52,7 +52,7 @@ function addMessage()
 								'		<span class="direct-chat-name pull-left">'+data.user_name+'</span> ' +
 								'		<span class="direct-chat-timestamp pull-right">'+data.date+'</span> ' +
 								'	</div> ' +
-								'	<img class="direct-chat-img" src="/dist/img/user3-128x128.jpg" alt="message user image"> ' +
+								'	<img class="direct-chat-img" src="/dist/img/user2-160x160.jpg" alt="message user image"> ' +
 								'	<div class="direct-chat-text"> ' +
 										data.message +
 								'	</div> ' +

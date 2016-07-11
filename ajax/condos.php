@@ -23,6 +23,13 @@ switch ($_POST['opt'])
 		}
 	break;
 	
+	case 2:
+		if ($model->deleteCondo($_POST['condoId']))
+		{
+			echo 1;
+		}
+	break;
+	
 	default:
 	break;
 }

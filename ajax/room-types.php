@@ -23,6 +23,13 @@ switch ($_POST['opt'])
 		}
 	break;
 	
+	case 2:
+		if ($model->deleteType($_POST['typeId']))
+		{
+			echo 1;
+		}
+	break;
+	
 	default:
 	break;
 }

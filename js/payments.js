@@ -21,7 +21,14 @@ $(function(){
 	
 	if ( $('#deletePayment').length ) { 
 		$('#deletePayment').click(function(){
-			deletePayment();
+			bootbox.confirm("Do you really want to delete this owner?", function(result) {
+				alert(result);
+				if (result)
+				{
+					deletePayment();
+				}
+			})
+			
 			return false;
 		});
 	}

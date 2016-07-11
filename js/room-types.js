@@ -6,6 +6,19 @@ $(function(){
 			return false;
 		});
 	}
+	
+	if ( $('.deleteType').length ) { 
+		$('.deleteType').click(function(){
+			var typeId = $(this).attr("data-id");
+			bootbox.confirm("Do you really want to delete this room type?", function(result) {
+				if (result)
+				{
+					deleteType(typeId);
+				}
+			}); 
+			return false;
+		});
+	}
 });
 
 function addRoomType()
@@ -28,10 +41,47 @@ function addRoomType()
 	        {
 	        	if (info != '0')
 	        	{
-	        		var item = '<li><a href="#">'+roomTypeName+'</a></li>'
+	        		var item = '<li id="typeId'+info+'"><a href="#">'+roomTypeName+' <span class="pull-right badge bg-red"><i class="fa fa-close deleteType" data-id="'+info+'"></i></span></a></li>'
 	        		$('#roomTypesBox').prepend(item);
 	        		$('#roomTypeName').val('');
 	        		$('#roomTypeDescription').val('');
+	        		
+	        		$('.deleteType').click(function(){
+	        			var typeId = $(this).attr("data-id");
+	        			bootbox.confirm("Do you really want to delete this room type?", function(result) {
+	        				if (result)
+	        				{
+	        					deleteType(typeId);
+	        				}
+	        			}); 
+	        			return false;
+	        		});
+	        	}
+	        	else
+				{
+				}
+	        }
+	    });
+	}
+}
+
+function deleteType(typeId)
+{
+	if (typeId)
+	{
+		$.ajax({
+	    type: "POST",
+	    url: "/ajax/room-types.php",
+	    data: {
+	    	typeId: typeId,
+	    	opt:	'2'
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		$('#typeId'+typeId).remove();
 	        	}
 	        	else
 				{

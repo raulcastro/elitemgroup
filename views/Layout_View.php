@@ -303,6 +303,7 @@ class Layout_View
     	<script src="/dist/js/app.min.js"></script>
     	<!-- SlimScroll -->
     	<script src="/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    	<script src="/js/bootbox.js"></script>
        	<?php 
        	$documents = ob_get_contents();
        	ob_end_clean();
@@ -1200,7 +1201,7 @@ class Layout_View
 								foreach ($this->data['condos'] as $condo)
 								{
 									?>
-							<li><a href="#"><?php echo $condo['condo']; ?></a></li>
+							<li id="condoId<?php echo $condo['condo_id']; ?>"><a href="#"><?php echo $condo['condo']; ?><span class="pull-right badge bg-red"><i class="fa fa-close deleteCondo" data-id="<?php echo $condo['condo_id']; ?>"></i></span></a></li>
 									<?php
 								}
 							}
@@ -1295,7 +1296,7 @@ class Layout_View
 								foreach ($this->data['types'] as $type)
 								{
 									?>
-							<li><a href="#"><?php echo $type['room_type']; ?></a></li>
+							<li id="typeId<?php echo $type['room_type_id']; ?>"><a href="#"><?php echo $type['room_type']; ?><span class="pull-right badge bg-red"><i class="fa fa-close deleteType" data-id="<?php echo $type['room_type_id']; ?>"></i></span></a></li>
 									<?php
 								}
 							}
@@ -1367,6 +1368,7 @@ class Layout_View
 								</div>
 							</div><!-- /.box-body -->
 							<div class="box-footer">
+								<button type="submit" class="btn btn-danger btn-xs pull-right" id="deleteCategory">Delete category</button>
 								<button type="submit" class="btn btn-info btn-xs pull-right" id="updateCategory">Update</button>
 							</div><!-- /.box-footer -->
 						</form>
@@ -1410,7 +1412,7 @@ class Layout_View
 								foreach ($this->data['inventoryArray'] as $inventory)
 								{
 									?>
-							<li><a href="/edit-inventory-category/<?php echo $inventory['category_id']; ?>/"><?php echo $inventory['inventory']; ?></a></li>
+							<li><a href="#" id="inventoryId<?php echo $inventory['inventory_id']; ?>"><?php echo $inventory['inventory']; ?><span class="pull-right badge bg-red"><i class="fa fa-close deleteInventory" data-id="<?php echo $inventory['inventory_id']; ?>"></i></span></a></li>
 									<?php
 								}
 							}
@@ -1978,13 +1980,11 @@ class Layout_View
 													<table class="table table-striped">
 														<thead>
 															<tr>
-																<th>Order</th>
-																<th>Room</th>
 																<th>Category</th>
 																<th>Description</th>
 																<th>Payment due</th>
-																<th>Status</th>
-																<th>Sub total</th>
+																<th>Pending</th>
+																<th>Paid</th>
 															</tr>
 														</thead>
 														<tbody id="allPaymentsContent">
@@ -2183,6 +2183,7 @@ class Layout_View
     		$img = "/images/owners-profile/avatar/".$this->data['memberInfo']['avatar'];
     	}
     	?>
+    	
     	<!-- Modal  -->
 		<div class="example-modal" >
 			<div class="modal" id="avatarModal">

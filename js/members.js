@@ -76,7 +76,12 @@ $(function(){
 	
 	if ( $('#deleteOwner').length ) { 
 		$('#deleteOwner').click(function(){
-			deleteOwner();
+			bootbox.confirm("Do you really want to delete this owner?", function(result) {
+				if (result)
+				{
+					deleteOwner();
+				}
+			}); 
 		});
 	}
 	

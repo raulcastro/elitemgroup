@@ -692,6 +692,17 @@ class Layout_Model
 		}
 	}
 	
+	public function deleteInventory($inventoryId)
+	{
+		try {
+			$inventoryId = (int) $inventoryId;
+			$query = 'DELETE FROM inventory WHERE inventory_id = '.$inventoryId;
+			return $this->db->run($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
 	public function updateInventoryCategory($data)
 	{
 		try {
@@ -730,6 +741,18 @@ class Layout_Model
 			{
 				printf("Errormessage: %s\n", $prep->error);
 			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function deleteCategory($categoryId)
+	{
+		try {
+			$categoryId = (int) $categoryId;
+			
+			$query = 'DELETE FROM inventory_categories WHERE category_id = '.$categoryId;
+			return $this->db->run($query);
 		} catch (Exception $e) {
 			return false;
 		}
@@ -1164,6 +1187,17 @@ class Layout_Model
 		}
 	}
 	
+	public function deleteType($typeId)
+	{
+		try {
+			$typeId = (int) $typeId;
+			$query = 'DELETE FROM room_types WHERE room_type_id = '.$typeId;
+			return $this->db->run($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
 	public function getRoomTypes()
 	{
 		try {
@@ -1190,6 +1224,17 @@ class Layout_Model
 			{
 				printf("Errormessage: %s\n", $prep->error);
 			}
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function deleteCondo($condoId)
+	{
+		try {
+			$condoId = (int) $condoId;
+			$query = 'DELETE FROM condos WHERE condo_id = '.$condoId;
+			return $this->db->run($query);
 		} catch (Exception $e) {
 			return false;
 		}
