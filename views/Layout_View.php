@@ -19,8 +19,8 @@ require_once $root.'/Framework/Tools.php';
  * 
  * Is the main class, almost everything is printed from here
  * 
- * @package 	Reservation System
- * @subpackage 	Tropical Casa Blanca Hotel
+ * @package 	Elite M Group
+ * @subpackage 	Elite M Group - Admin section
  * @author 		Raul Castro <rd.castro.silva@gmail.com>
  * 
  */
@@ -75,7 +75,7 @@ class Layout_View
 			switch ($this->data['section']) 
 			{
 				case 'log-in':
- 					echo self :: getLogInHead();
+ 					echo self::getLogInHead();
 				break;
 
 				case 'dashboard':
@@ -83,7 +83,7 @@ class Layout_View
 				break;
 				
 				case 'settings':
-					echo self :: getSettingsHead();
+					echo self::getSettingsHead();
 				break;
 				
 				case 'inventory-category':
@@ -1859,7 +1859,6 @@ class Layout_View
 									<li><a href="#tab_4" data-toggle="tab" id="getCancelledTab">Cancelled</a></li>
 									<li><a href="#tab_5" data-toggle="tab" id="getDisplayAllPayments">All Payments</a></li>
 									<li>
-									
 										<button type="submit" class="btn btn-danger btn-xs pull-right deleteApartment"  data-id="<?php echo $room['room_id']; ?>">Delete apartment</button>
 									</li>
 									<!-- <li><a href="#tab_3" data-toggle="tab">Galleries</a></li> -->
