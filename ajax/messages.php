@@ -23,6 +23,13 @@ switch ($_POST['opt'])
 		}
 	break;
 	
+	case 2:
+		if ($model->markMessagesAsReadByMemberId($_POST['memberId']))
+		{
+			echo 1;
+		}
+	break;
+	
 	default:
 	break;
 }

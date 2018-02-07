@@ -297,3 +297,11 @@
 #deleteCategory {
 	margin-left: 10px;
 }
+
+#sendOwnerInfo {
+	margin-right: 10px!important;
+}
+
+#sendEmailButton {
+	margin-bottom: 10px!important;
+}

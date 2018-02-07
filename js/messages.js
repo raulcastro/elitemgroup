@@ -17,6 +17,28 @@ $(function(){
 			scrollToBottom();
 		});
 	}
+	
+	if ($('#markAllAsRead').length){
+		$('#markAllAsRead').click(function(){
+			bootbox.confirm("Do you want to mark all the messages as read?", function(result) {
+				if (result)
+				{
+					markAllAsRead();
+				}
+			});
+		});
+	};
+	
+	if ($('#sendEmailNotification').length){
+		$('#sendEmailNotification').click(function(){
+			bootbox.confirm("You are about to send an e-mail notifying about unread messages", function(result) {
+				if (result)
+				{
+					sendEmailNotification();
+				}
+			});
+		});
+	};
 });
 
 function scrollToBottom()
@@ -65,6 +87,53 @@ function addMessage()
 	        	else
 				{
 				}
+	        }
+	    });
+	}
+}
+
+function markAllAsRead()
+{
+	var memberId 	= $('#memberId').val();
+	
+	$.ajax({
+	    type: "POST",
+	    url: "/ajax/messages.php",
+	    data: {
+	    	memberId: 	memberId,
+	    	opt:			'2'
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		$('#messageNumberBadge').html(0);
+	        		$('.direct-chat-text').css('font-weight', 'normal');
+	        	}
+	        }
+	    });
+}
+
+function sendEmailNotification()
+{
+	var memberId = $('#memberId').val();
+	
+	if (memberId)
+	{
+		$.ajax({
+	    type: "POST",
+	    url: "/email/send-email-notification.php",
+	    data: {
+	    	memberId:		memberId,
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		bootbox.confirm("The email has been sent", function(result) {}); 
+	        	}
 	        }
 	    });
 	}

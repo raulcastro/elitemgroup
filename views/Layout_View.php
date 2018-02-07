@@ -180,6 +180,10 @@ class Layout_View
 								echo self :: getAllTasks();
 							break;
 
+							case 'messages':
+								echo self::getAllUnreadMessages();
+							break;
+							
 							default :
 								# code...
 							break;
@@ -544,9 +548,9 @@ class Layout_View
                     <li class="header">MAIN NAVIGATION</li>
                     <li class="active"><a href="/dashboard/"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
                     <li>
-						<a href="">
+						<a href="/messages/">
 							<i class="fa fa-envelope"></i> <span>Messages</span>
-							<!-- <small class="label pull-right bg-yellow">12</small> -->
+							<small class="label pull-right bg-yellow"><?php echo $this->data['unreadMessagesTotal']; ?></small>
 						</a>
 					</li>
                     <li><a href="/tasks/"><i class="fa fa-tasks"></i> <span>Tasks</span></a></li>
@@ -599,7 +603,7 @@ class Layout_View
                 	<span class="info-box-icon bg-aqua"><i class="fa fa-users"></i></span>
                 	<div class="info-box-content">
 						<span class="info-box-text">Owners</span>
-						<span class="info-box-number"><?php echo $this->data['totalMembers']; ?></span>
+						<span class="info-box-number"><a href="/dashboard/"><?php echo $this->data['totalMembers']; ?></a></span>
 					</div><!-- /.info-box-content -->
 				</div><!-- /.info-box -->
 			</div><!-- /.col -->
@@ -609,7 +613,7 @@ class Layout_View
                 	<span class="info-box-icon bg-green"><i class="fa fa-tasks"></i></span>
                 	<div class="info-box-content">
 						<span class="info-box-text">Tasks</span>
-						<span class="info-box-number"><?php echo $this->data['taskInfo']['today']; ?></span>
+						<span class="info-box-number"><a href="/tasks/"><?php echo $this->data['taskInfo']['today']; ?></a></span>
 						<span class="progress-description"><?php echo $this->data['taskInfo']['pending']; ?> pending</span>
 					</div><!-- /.info-box-content -->
 				</div><!-- /.info-box -->
@@ -620,19 +624,19 @@ class Layout_View
                 	<span class="info-box-icon bg-yellow"><i class="fa fa-envelope-o"></i></span>
                 	<div class="info-box-content">
 						<span class="info-box-text">Messages</span>
-						<span class="info-box-number">4</span>
+						<span class="info-box-number"><a href="/messages/"><?php echo $this->data['unreadMessagesTotal']; ?></a></span>
 					</div><!-- /.info-box-content -->
 				</div><!-- /.info-box -->
 			</div><!-- /.col -->
-			
+			<!-- 
 			<div class="col-md-3 col-sm-6 col-xs-12">
 				<div class="info-box">
                 	<span class="info-box-icon bg-red"><i class="fa fa-money"></i></span>
                 	<div class="info-box-content">
 						<span class="info-box-text">Payments</span>
 						<span class="info-box-number">2</span>
-					</div><!-- /.info-box-content -->
-				</div><!-- /.info-box -->
+					</div>
+				</div>
 			</div><!-- /.col -->
 		</div>
           <!-- =========================================================== -->
@@ -1994,12 +1998,16 @@ class Layout_View
 											</div><!-- /.row -->
 											<div class="row">
 												<!-- accepted payments column -->
-												<div class="col-xs-6">
-													
+												<div class="col-xs-12">
 													<div id="paymentOptionsBox">
 														<h3>Total: $<span id="totalViewAllPayments"></span></h3>
 													</div>
 												</div><!-- /.col -->
+											</div><!-- /.row -->
+											<div class="row">
+												<div class="col-xs-12">
+													<button data-target="#payment-modal" type="submit" class="btn btn-info pull-left btn-md" data-toggle="modal" >Send via e-mail</button>
+												</div>
 											</div><!-- /.row -->
 										</section>
 									</div><!-- /.tab-pane -->
@@ -2056,9 +2064,21 @@ class Layout_View
 				<span class="direct-chat-timestamp <?php echo $classDate; ?>"><?php echo $message['date']; ?></span>
 			</div><!-- /.direct-chat-info -->
 			<img class="direct-chat-img" src="<?php echo $image; ?>" alt="message user image"><!-- /.direct-chat-img -->
-			<div class="direct-chat-text">
+			<?php if ($message['status'] == 0) 
+			{
+			?>
+			<div class="direct-chat-text" style="font-weight: bold;">
 				<?php echo $message['message']; ?>
 			</div><!-- /.direct-chat-text -->
+			<?php 
+			} else { 
+				?>
+			<div class="direct-chat-text">
+				<?php echo $message['message']; ?>
+			</div><!-- /.direct-chat-text -->	
+				<?php 
+			}
+			?>
 		</div><!-- /.direct-chat-msg -->
     	<?php
     	$content = ob_get_contents();
@@ -2075,7 +2095,13 @@ class Layout_View
 			<div class="box-header">
 				<h3 class="box-title">Direct Chat</h3>
 				<div class="box-tools pull-right">
-					<span data-toggle="tooltip" title="3 New Messages" class="badge bg-light-blue">3</span>
+					<span  class="">
+						<a href="#" id="markAllAsRead" class="text-green"><b>Mark all as read</b></a>
+					</span>
+					/
+					<span  class="">
+						<a href="#" id="sendEmailNotification" class="text-blue"><b>Send e-mail notification</b></a>
+					</span>
 				</div>
 			</div><!-- /.box-header -->
 			<div class="box-body" id="">
@@ -2093,12 +2119,12 @@ class Layout_View
 				</div><!--/.direct-chat-messages-->
 			</div><!-- /.box-body -->
 			<div class="box-footer">
-					<div class="input-group">
-						<input type="text" name="message" placeholder="Type Message ..." class="form-control" id="chatMessage">
-						<span class="input-group-btn">
-							<button type="button" class="btn btn-primary btn-flat" id="addChatMessage">Send</button>
-						</span>
-					</div>
+				<div class="input-group">
+					<input type="text" name="message" placeholder="Type Message ..." class="form-control" id="chatMessage">
+					<span class="input-group-btn">
+						<button type="button" class="btn btn-primary btn-flat" id="addChatMessage">Send</button>
+					</span>
+				</div>
 			</div><!-- /.box-footer-->
 		</div><!--/.direct-chat -->
     	<?php
@@ -2149,6 +2175,7 @@ class Layout_View
                 increaseArea: '20%' // optional
             });
 
+          	scrollToBottom();
             
     	});
     	$(function () {
@@ -2286,7 +2313,8 @@ class Layout_View
 						<h5 class="widget-user-desc"><strong><?php echo $this->data['memberInfo']['condo']; ?></strong></h5>
 						
 						<button type="submit" class="btn btn-danger btn-xs pull-right " id="deleteOwner">Delete owner</button>
-						<button type="submit" class="btn btn-primary btn-xs pull-right" id="showEditUser">Update info</button>
+						<button type="submit" class="btn btn-primary btn-xs pull-right" id="showEditUser">Update</button>
+						<button type="submit" class="btn btn-success btn-xs pull-right" id="sendOwnerInfo">Send info</button>
 						<div class="clearfix"></div>
 					</div>
 					<div class="box-footer">
@@ -2331,7 +2359,7 @@ class Layout_View
 							<li><span><i class="fa fa-fw fa-pie-chart"></i>Percentage <?php echo $this->data['memberInfo']['condo']; ?></span></li>
 							<?php } ?>
 							<li><span><i class="fa fa-fw fa-sticky-note"></i><strong> <?php echo $this->data['memberInfo']['notes']; ?></strong></span></li>
-							<li><span> <button data-target="#sendEmail" type="submit" class="btn btn-info pull-left btn-sm" data-toggle="modal">Send E-Mail</button></span></li>
+							<li><span> <button data-target="#sendEmail" type="submit" class="btn btn-info pull-left btn-sm" data-toggle="modal" id="sendEmailButton">Send E-Mail</button></span></li>
 						</ul>
 					</div>
 				</div><!-- /.widget-user -->
@@ -2438,31 +2466,23 @@ class Layout_View
 			</div>
 		</div>
 		
-		<div class="row">
+		<div class="row" id="tabPanel">
 			<div class="col-md-12">
 				<!-- Custom Tabs (Pulled to the right) -->
 				<div class="nav-tabs-custom">
 					<ul class="nav nav-tabs pull-right">
-						<!-- <li class="dropdown">
-							<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-								Dropdown <span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-								<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-							</ul>
-						</li> -->
 						<li><a href="#tab_1-1" data-toggle="tab">Tasks</a></li>
 						<li><a href="#tab_2-2" data-toggle="tab">History</a></li>
-						<li><a href="#tab_3-3" data-toggle="tab" id="tabMessageSender" onclick="scrollToBottom();">Messages</a></li>
-						<li class="active"><a href="#tab_3-2" data-toggle="tab">Apartments</a></li>
+						<li class="<?php if ($_GET['message']){ echo "active"; }?>"><a href="#tab_3-3" data-toggle="tab" id="tabMessageSender" onclick="scrollToBottom();">Messages <span data-toggle="tooltip" title="New Messages" class="badge bg-light-blue" id="messageNumberBadge"><?php echo $this->data['unreadMessagesMember']; ?></span></a></li>
+						<li class="<?php if (!$_GET['message']){ echo "active"; }?>"><a href="#tab_3-2" data-toggle="tab">Apartments</a></li>
 						<li class="pull-left header"><i class="fa fa-th"></i>Admin Owner</li>
 					</ul>
 					<div class="tab-content">
-						<div class="tab-pane active" id="tab_3-2">
+						<div class="tab-pane <?php if (!$_GET['message']){ echo "active"; }?>" id="tab_3-2">
 							<?php echo $this->getRoomPanel(); ?>
 						</div><!-- /.tab-pane -->
 						
-						<div class="tab-pane" id="tab_3-3">
+						<div class="tab-pane <?php if ($_GET['message']){ echo "active"; }?>" id="tab_3-3">
 							<?php echo $this->getMessagesPanel(); ?>
 						</div><!-- /.tab-pane -->
 						
@@ -2851,7 +2871,69 @@ class Layout_View
    	   	$membersRecent = ob_get_contents();
    	   	ob_end_clean();
    	   	return $membersRecent;
-   	}    
+   	}
+   	
+   	/**
+   	 * The whole list of members
+   	 *
+   	 * @return string
+   	 */
+   	public function getAllUnreadMessages()
+   	{
+   		ob_start();
+   		?>
+   		<div class="row">
+			<div class="col-xs-12">
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title">Recent messages</h3>
+					</div><!-- /.box-header -->
+					<div class="box-body table-responsive no-padding">
+	                  <table class="table table-hover">
+	                    <tr>
+	                      <th>Member ID</th>
+							<th>Name</th>
+							<th>Message</th>
+							<th>Unread</th>
+							<th>Last Message</th>
+	                    </tr>
+	                    <?php 
+						foreach ($this->data['messages'] as $message)
+						{
+							?>
+						<tr>
+							<td>
+								<a href="/owner/<?php echo $message['from_user']; ?>/<?php echo Tools::slugify($message['name']); ?>/message/">
+									<?php echo $message['from_user']; ?>
+								</a>
+							</td>
+							<td>
+								<a href="/owner/<?php echo $message['from_user']; ?>/<?php echo Tools::slugify($message['name']); ?>/message/">
+									<?php echo $message['name']; ?>
+								</a>
+							</td>
+							<td>
+								<a href="/owner/<?php echo $message['from_user']; ?>/<?php echo Tools::slugify($message['name']); ?>/message/">
+									<?php echo $message['message']; ?>
+								</a>
+							</td>
+							<td><?php echo $message['total']; ?></td>
+							<td><?php echo $message['date']; ?></td>
+						</tr>
+							<?php
+						}
+						?>
+	                  </table>
+                	</div><!-- /.box-body -->
+				</div><!-- /.box -->
+			</div>
+		</div>
+   		
+   	   	<?php
+   	   	$membersRecent = ob_get_contents();
+   	   	ob_end_clean();
+   	   	return $membersRecent;
+   	}  
     
     public function getSectionHead()
     {
@@ -2907,7 +2989,7 @@ class Layout_View
                 Property Managements
             </div>
             <!-- Default to the left -->
-            <strong>Copyright &copy; 2016 <a href="#"><?php echo $this->data['appInfo']['siteName']; ?></a>.</strong> All rights reserved.
+            <strong>Copyright &copy; 2018 <a href="#"><?php echo $this->data['appInfo']['siteName']; ?></a>.</strong> All rights reserved.
         </footer>
     	<?php
     	$footer = ob_get_contents();

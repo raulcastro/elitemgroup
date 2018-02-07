@@ -34,6 +34,13 @@ $(function(){
 		});
 	}
 	
+	if ( $('#sendEmailOwner').length ) { 
+		$('#sendEmailOwner').click(function(){
+			sendGeneralEmail();
+			return false;
+		});
+	}
+	
 	var memberId = 0;
 	
 	if ( $('#memberId').length ) { 
@@ -82,6 +89,12 @@ $(function(){
 					deleteOwner();
 				}
 			}); 
+		});
+	}
+	
+	if ( $('#sendOwnerInfo').length ) { 
+		$('#sendOwnerInfo').click(function(){
+			sendOwnerInfo();
 		});
 	}
 	
@@ -311,6 +324,154 @@ function deleteOwner()
 	        		pathArray 		= $(location).attr('href').split( '/' );
 	        		newURL 			= pathArray[0]+'//'+pathArray[2]+'/dashboard/';
 	            	window.location = newURL;
+	        	}
+	        	else
+				{
+				}
+	        }
+	    });
+	}
+}
+
+function sendGeneralEmail()
+{
+	var sendEmailTo		 = $('#sendEmailTo').val();
+	var sendEmailSubject = $('#sendEmailSubject').val();
+	var sendEmailContent = $('#sendEmailContent').val();
+
+	if (sendEmailTo)
+	{
+		$.ajax({
+	    type: "POST",
+	    url: "/email/send-email.php",
+	    data: {
+	    	sendEmailTo: 		sendEmailTo,
+	    	sendEmailSubject: 	sendEmailSubject,
+	    	sendEmailContent: 	sendEmailContent,
+	    	option:				1
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info == 'success')
+	        	{
+	        		alert("Your message has been sent");
+	        		$('#sendEmailSubject').val('');
+	        		$('#sendEmailContent').val('');
+	        	}
+	        }
+	    });
+	}
+}
+
+function sendOwnerInfo()
+{
+	var memberId = $('#memberId').val();
+	var email = $('#emailOne').val();
+	
+	// Check if the owner has an account
+	if (memberId)
+	{
+		$.ajax({
+		    type: "POST",
+		    url: "/ajax/members.php",
+		    data: {
+		    	memberId: 	memberId,
+		    	opt:		12
+		    },
+		    success:
+		        function(info)
+		        {
+		        	if (info == '1')
+		        	{
+		        		$.ajax({
+		        		    type: "POST",
+		        		    url: "/ajax/members.php",
+		        		    data: {
+		        		    	memberId:		memberId,
+		        		    	opt:			11
+		        		    },
+		        		    success:
+		        		        function(info)
+		        		        {
+		        		        	if (info == '1')
+		        		        	{
+		        		        		bootbox.confirm("This action will change the password of the owner", function(result) {
+		        		        			if (result)
+		        		        			{
+		        		        				updateOwnerAccount();
+		        		        			}
+		        		        		}); 
+		        		        	}
+		        		        	else
+		        					{
+		        		        		bootbox.confirm("An email will be send to "+email+ " the owner with the username and password", function(result) {
+		        		        			if (result)
+		        		        			{
+		        		        				createOwnerAccount();
+		        		        			}
+		        		        		});
+		        					}
+		        		        }
+		        		    });
+		        	}
+		        	else
+		        	{
+		        		bootbox.confirm("This owner doesn't has an email", function(result) {}); 
+		        		return false;
+		        		
+		        	}
+		        }
+		    });
+	}
+}
+	
+
+function createOwnerAccount()
+{
+	var memberId = $('#memberId').val();
+	
+	if (memberId)
+	{
+		$.ajax({
+	    type: "POST",
+	    url: "/email/send-owner-account.php",
+	    data: {
+	    	memberId:		memberId,
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		bootbox.confirm("An e-mail with the access credentials has been sent to the owner", function(result) {}); 
+	        	}
+	        	else
+				{
+				}
+	        }
+	    });
+	}
+}
+
+function updateOwnerAccount()
+{
+	var memberId = $('#memberId').val();
+	
+	if (memberId)
+	{
+		$.ajax({
+	    type: "POST",
+	    url: "/email/update-owner-account.php",
+	    data: {
+	    	memberId:		memberId,
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		bootbox.confirm("The new password has been sent", function(result) {}); 
 	        	}
 	        	else
 				{

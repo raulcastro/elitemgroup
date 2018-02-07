@@ -43,3 +43,6 @@ RewriteRule ^edit-inventory-category/([0-9]+)/$ 		/edit-inventory-category.php?c
 RewriteRule ^rooms/$ 						/rooms.php?section=6
 RewriteRule ^edit-room/([0-9]+)/$ 			/room.php?roomId=$1&section=6
 RewriteRule ^condo/([0-9]+)/([A-Za-z0-9-]+)/$ 	/condo.php?condo=$1&section=13
+RewriteRule ^owner/([0-9]+)/([A-Za-z0-9-]+)/message/$ 	/member.php?memberId=$1&section=6&message=1
+
+RewriteRule ^messages/$ 	/messages.php

@@ -507,15 +507,17 @@ class Tools
      */
     public static function validateText($string, $max = 2000, $min = 0)
     {
-    	$pattern = "/^[áéíóúÁÉÍÓÚñÑ-\w\s\.\,\?\¿\!\¡\:\;\@]{".$min.",".$max."}$/";
-    	if(preg_match($pattern, $string))
-    	{
-    		return true;
-    	}
-    	else
-    	{
-    		return false;
-    	}
+//     	$pattern = "/^[áéíóúÁÉÍÓÚñÑ-\w\s\.\,\?\¿\!\¡\:\;\@]{".$min.",".$max."}$/";
+//     	if(preg_match($pattern, $string))
+//     	{
+//     		return true;
+//     	}
+//     	else
+//     	{
+//     		return false;
+//     	}
+
+		return true;
     }
     
     /**
@@ -556,6 +558,12 @@ class Tools
 		$end_ts = strtotime($end_date);
 		$user_ts = strtotime($evaluame);
 		return (($user_ts >= $start_ts) && ($user_ts <= $end_ts));
+	}
+	
+	function random_password( $length = 8 ) {
+		$chars 		= "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@";
+		$password	= substr( str_shuffle( $chars ), 0, $length );
+		return $password;
 	}
 }
 ?>

@@ -136,22 +136,40 @@ class Layout_Model
 		}
 	}
 	
-	public function addUser($data, $member_id)
+	public function addUser($data, $password)
 	{
 		try {
-			$query = 'INSERT INTO users(user, password, type, active) VALUES(?, SHA1("password"), 1, 1)';
+			$name = $data['name'].' '.$data['last_name'];
+			$query = 'INSERT INTO users(user, password, type, active, third_user) VALUES(?, SHA1(?), 1, 1, 1)';
 			$prep = $this->db->prepare($query);
-			$prep->bind_param('s',$data['emailOne']);
+			$prep->bind_param('ss', $data['email_one'], $password);
 			
 			if ($prep->execute())
 			{
 				$lastId =  $prep->insert_id;
-				$query = 'INSERT INTO user_detail(user_id, name, member_id) VALUES(?, ?, ?)';
-				$prep = $this->db->prepare($query);
-				$prep->bind_param('isi', $lastId, $data['memberFirst'], $member_id);
-				$prep->execute();
+				
+				$queryTwo 	= 'INSERT INTO user_detail(user_id, name, member_id) VALUES(?, ?, ?)';
+				
+				$prep 	= $this->db->prepare($queryTwo);
+				
+				$prep->bind_param('isi', $lastId, $name, $data['member_id']);
+				if (!$prep->execute())
+					echo $prep->error;
 			}
 			
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function updateUser($memberId, $password)
+	{
+		try {
+			$query = 'SELECT user_id FROM user_detail WHERE member_id = '.$memberId;
+			$userId = $this->db->getValue($query);
+			
+			$query = 'UPDATE users SET password = SHA1("'.$password.'") WHERE user_id = '.$userId;
+			return $this->db->run($query);
 		} catch (Exception $e) {
 			return false;
 		}
@@ -1250,6 +1268,48 @@ class Layout_Model
 		}
 	}
 	
+	public function countAllUnreadMessages()
+	{
+		try {
+			$query = 'SELECT COUNT(*) FROM messages WHERE to_user = '.$_SESSION['userId'].' AND status = 0';
+			return $this->db->getValue($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function getAllUnreadMessages()
+	{
+		try {
+			$query = 'SELECT m.from_user, ud.name 
+				FROM messages m
+				LEFT JOIN user_detail ud ON ud.member_id = m.from_user
+				WHERE m.to_user = '.$_SESSION['userId'].' AND m.status = 0 
+				GROUP BY m.from_user;';
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function countMessageByMemberId($memberId)
+	{
+		$query = 'SELECT COUNT(*) FROM messages m WHERE m.to_user = '.$_SESSION['userId'].' AND m.status = 0 AND m.from_user = '.$memberId;
+		return $this->db->getValue($query);
+	}
+	
+	public function getLastMessageByMemberId($memberId)
+	{
+		$query = 'SELECT message FROM messages m WHERE m.to_user = '.$_SESSION['userId'].' AND m.status = 0 AND m.from_user = '.$memberId.' ORDER BY m.date DESC';
+		return $this->db->getValue($query);
+	}
+	
+	public function getLastDateMessageByMemberId($memberId)
+	{
+		$query = 'SELECT DATE_FORMAT(m.date, "%e %b %l:%i %p") as date FROM messages m WHERE m.to_user = '.$_SESSION['userId'].' AND m.status = 0 AND m.from_user = '.$memberId.' ORDER BY m.date DESC';
+		return $this->db->getValue($query);
+	}
+	
 	public function getMessagesByMember($member_id)
 	{
 		try {
@@ -1321,6 +1381,16 @@ class Layout_Model
 		}
 	}
 	
+	public function markMessagesAsReadByMemberId($member_id)
+	{
+		try {
+			$query = 'UPDATE messages SET status = 1 WHERE from_user = '.$member_id;
+			return $this->db->run($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
 	public function addDocument($data)
 	{
 		try {
@@ -1365,6 +1435,38 @@ class Layout_Model
 		try {
 			$query = 'DELETE FROM payments WHERE payment_id = '.$paymentId;
 			return $this->db->run($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function hasAccount($memberId)
+	{
+		try {
+			$query = 'SELECT user_id FROM user_detail WHERE member_id = '.$memberId;
+			return $this->db->getValue($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function hasMainEmail($memberId)
+	{
+		try {
+			$query = 'SELECT email_one FROM members WHERE member_id = '.$memberId;
+			return $this->db->getValue($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function numberOfMessagesFromAdmin($memberId)
+	{
+		try {
+			$query = 'SELECT COUNT(*)
+				FROM messages m
+				WHERE m.to_user = '.$memberId.' AND m.status = 0 ';
+			return $this->db->getValue($query);
 		} catch (Exception $e) {
 			return false;
 		}

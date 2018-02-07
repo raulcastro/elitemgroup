@@ -6,16 +6,15 @@ require_once $root.'/backends/admin-backend.php';
 require_once $root.'/Framework/Tools.php';
 $model	= new Layout_Model();
 
-
 $memberId = (int) $_POST['memberId'];
 
 switch ($_POST['opt'])
 {
+	/* Add member */
 	case 1:	 
-		
 		if ($newMember = $model->addMember($_POST))
 		{
-			$model->addUser($_POST, $newMember);	
+// 			$model->addUser($_POST, $newMember);	
 			echo str_pad($newMember, 4, 0, STR_PAD_LEFT);
 		}
 		else
@@ -91,7 +90,6 @@ switch ($_POST['opt'])
 	break;
 	
 	case 8:
-		
 		if ($categoryArray = $model->getCategoriesInventoryByRoom($_POST['roomId']))
 		{
 			?>
@@ -113,7 +111,6 @@ switch ($_POST['opt'])
 	break;
 	
 	case 9:
-		
 		if ($inventoryArray = $model->getInventoryByCategoryRoom($_POST['roomId'], $_POST['categoryId']))
 		{
 			?>
@@ -140,6 +137,30 @@ switch ($_POST['opt'])
 			echo 1;
 		}
 	break;
+	
+	// Does the owner has account?
+	case 11:
+		if ($model->hasAccount($_POST['memberId']))
+		{
+			echo 1;
+		}
+	break;
+	
+	// Does the owner has a main email?
+	case 12:
+		if ($model->hasMainEmail($_POST['memberId']))
+		{
+			echo 1;
+		}
+	break;
+	
+	
+// 	case 11:
+// 		if ($model->addUser($_POST, $newMember))
+// 		{
+// 			echo 1;
+// 		}
+// 	break;
 	
 	default:
 	break;

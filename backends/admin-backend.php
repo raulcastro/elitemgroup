@@ -66,6 +66,8 @@ class generalBackend
 		
 		$data['appInfo'] = $appInfo;
 
+		$data['unreadMessagesTotal'] = $this->model->countAllUnreadMessages();
+		
 		// Active Users
 		$usersActiveArray 			= $this->model->getActiveUsers();
 		$data['usersActive'] 		= $usersActiveArray;
@@ -171,8 +173,9 @@ class generalBackend
 				$memberRooms 			= $this->model->getRoomsByMember($memberId);
 				$data['memberRooms'] 	= $memberRooms;
 				
-				$data['messages'] 	= $this->model->getMessagesByMember($memberId);
+				$data['messages'] 		= $this->model->getMessagesByMember($memberId);
 				
+				$data['unreadMessagesMember'] = $this->model->countMessageByMemberId($memberId);
 				
 			break;
 			
@@ -202,6 +205,18 @@ class generalBackend
 				
 				$reservationsArray = $this->model->getReservationsByRange($start, $end);
 				$data['reservations'] = $reservationsArray; 
+			break;
+			
+			case 'messages':
+				$data['messages'] = $this->model->getAllUnreadMessages();
+				$i = 0;
+				foreach ($data['messages'] as $message)
+				{
+					$data['messages'][$i]['total'] = $this->model->countMessageByMemberId($data['messages'][$i]['from_user']);
+					$data['messages'][$i]['message'] = $this->model->getLastMessageByMemberId($data['messages'][$i]['from_user']);
+					$data['messages'][$i]['date'] = $this->model->getLastDateMessageByMemberId($data['messages'][$i]['from_user']);
+					$i++;
+				}
 			break;
 			
 			default:
