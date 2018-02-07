@@ -90,7 +90,9 @@ switch ($_POST['opt'])
 	break;
 	
 	case 8:
-		if ($categoryArray = $model->getCategoriesInventoryByRoom($_POST['roomId']))
+// 		We got the categories form the inventory room. Now we get everything
+// 		if ($categoryArray = $model->getCategoriesInventoryByRoom($_POST['roomId']))
+		if ($categoryArray = $model->getAllInventoryCategories($_POST['roomId']))
 		{
 			?>
 			<option value="0">Category</option>
@@ -111,7 +113,8 @@ switch ($_POST['opt'])
 	break;
 	
 	case 9:
-		if ($inventoryArray = $model->getInventoryByCategoryRoom($_POST['roomId'], $_POST['categoryId']))
+		//if ($inventoryArray = $model->getInventoryByCategoryRoom($_POST['roomId'], $_POST['categoryId']))
+		if ($inventoryArray = $model->getInventoryByCategory($_POST['categoryId']))
 		{
 			?>
 			<option value="0">Inventory</option>

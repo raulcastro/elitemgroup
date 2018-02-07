@@ -305,3 +305,10 @@
 #sendEmailButton {
 	margin-bottom: 10px!important;
 }
+.top-30 {
+	margin-top: 30px!important;
+}
+
+#showAddInventory, #newInventoryInput, #newInventoryButton {
+	display: none;
+}

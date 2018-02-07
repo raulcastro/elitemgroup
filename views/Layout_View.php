@@ -1651,16 +1651,29 @@ class Layout_View
 						</div>
 						<div class="modal-body">
 							<div class="row segment-user-payment">
-								<div class="col-sm-6">
+								<div class="col-sm-12">
 									<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="categoryRoomList">
 										<option>Category</option>
 									</select>
 								</div>
 								
-								<div class="col-sm-6">
-									<select class="form-control select2 select2-hidden-accessible" style="width: 100%;" tabindex="-1" aria-hidden="true" id="inventoryRoomList">
+								<div class="col-sm-12">
+									<select class="form-control select2 select2-hidden-accessible top-30" style="width: 100%;" tabindex="-1" aria-hidden="true" id="inventoryRoomList">
 										<option>Inventory</option>
 									</select>
+								</div>
+								
+								<div class="col-sm-12">
+									<a href="#" id="showAddInventory">Add Inventory</a>
+								</div>
+								
+								<div class="col-sm-12">
+									<div class="col-sm-10">
+										<input type="text" class="form-control" placeholder="New inventory" id="newInventoryInput">
+									</div>
+									<div class="col-sm-2">
+										<a href="#" class="btn btn-info btn-sm" id="newInventoryButton">Add</a>
+									</div>
 								</div>
 							</div>
 							

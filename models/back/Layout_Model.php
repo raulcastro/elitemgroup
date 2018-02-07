@@ -769,7 +769,7 @@ class Layout_Model
 		try {
 			$categoryId = (int) $categoryId;
 			
-			$query = 'DELETE FROM inventory_categories WHERE category_id = '.$categoryId;
+			$query = 'DELETE FROM inventory_categories WHERE category_id = '.$categoryId. ' ORDER BY category_id ASC';
 			return $this->db->run($query);
 		} catch (Exception $e) {
 			return false;

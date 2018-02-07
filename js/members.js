@@ -41,6 +41,22 @@ $(function(){
 		});
 	}
 	
+	if ( $('#showAddInventory').length ) { 
+		$('#showAddInventory').click(function(){
+			$('#newInventoryInput').show();
+			$('#newInventoryButton').show();
+			$('#newInventoryInput').focus();
+			return false;
+		});
+	}
+	
+	if ( $('#newInventoryButton').length ) { 
+		$('#newInventoryButton').click(function(){
+			addInventoryFront();
+			return false;
+		});
+	}
+	
 	var memberId = 0;
 	
 	if ( $('#memberId').length ) { 
@@ -259,6 +275,7 @@ function getCategories()
         		$('#categoryRoomList').on("change", function(){
         			var categoryId = $('#categoryRoomList').val();
         			$('#currentCategory').val(categoryId);
+        			$('#showAddInventory').show();
         			updateInventoryOptionsRooms(categoryId);
         		});
         	}
@@ -476,6 +493,39 @@ function updateOwnerAccount()
 	        	else
 				{
 				}
+	        }
+	    });
+	}
+}
+
+function addInventoryFront(){
+	var categoryId				= $('#currentCategory').val();
+	var inventoryName 			= $('#newInventoryInput').val();
+	var inventoryDescription 	= "";
+	
+	if (inventoryName)
+	{
+		$.ajax({
+	    type: "POST",
+	    url: "/ajax/settings.php",
+	    data: {
+	    	categoryId:				categoryId,
+	    	inventoryName: 			inventoryName,
+	    	inventoryDescription: 	inventoryDescription, 
+	    	opt:					'3'
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		updateInventoryOptionsRooms(categoryId);
+	        		$('#showAddInventory').hide();
+	        		$('#newInventoryInput').val('');
+	        		$('#newInventoryInput').hide();
+	        		$('#newInventoryButton').hide();
+	        		bootbox.confirm(inventoryName+" has been added, choose it from the dropdown", function(result) {}); 
+	        	}
 	        }
 	    });
 	}

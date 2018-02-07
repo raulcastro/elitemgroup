@@ -329,7 +329,6 @@ function displayAllPayments()
 	
 	$('#allPaymentsContent').html();
 	
-	
 	$.ajax({
 	    type: "POST",
 	    url: "/ajax/payments.php",
