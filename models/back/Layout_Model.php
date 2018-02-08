@@ -1394,7 +1394,7 @@ class Layout_Model
 	public function addDocument($data)
 	{
 		try {
-			$query = 'INSERT INTO documents(member_id, payment_id, document) VALUES(?, ?, ?)';
+			$query = 'INSERT INTO documents(member_id, payment_id, document, by_admin) VALUES(?, ?, ?, 1)';
 			$prep = $this->db->prepare($query);
 			$prep->bind_param('iis', $data['memberId'], $data['paymentId'], $data['documentUploaded']);
 			if ($prep->execute())
@@ -1413,7 +1413,17 @@ class Layout_Model
 	public function getDocumentsByPaymentId($paymentId)
 	{
 		try {
-			$query = 'SELECT * FROM documents WHERE payment_id = '.$paymentId;
+			$query = 'SELECT * FROM documents WHERE payment_id = '.$paymentId. ' AND by_admin = 1';
+			return $this->db->getArray($query);
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+	
+	public function getOwnerDocumentsByPaymentId($paymentId)
+	{
+		try {
+			$query = 'SELECT * FROM documents WHERE payment_id = '.$paymentId. ' AND by_admin = 0';
 			return $this->db->getArray($query);
 		} catch (Exception $e) {
 			return false;

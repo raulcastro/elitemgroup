@@ -64,16 +64,18 @@ function addDocument(paymentId, documentUploaded)
 	    type: "POST",
 	    url: "/ajax/payments.php",
 	    data: {
-	    	memberId:		memberId,
-	    	paymentId: 	paymentId,
-	    	documentUploaded:		documentUploaded,
-	    	opt:			7
+	    	memberId:			memberId,
+	    	paymentId: 			paymentId,
+	    	documentUploaded:	documentUploaded,
+	    	opt:				7
 	    },
 	    success:
         function(info)
         {
         }
 	});
+	
+	documentNotification(paymentId);
 }
 
 function getDocuments(paymentId)
@@ -90,6 +92,24 @@ function getDocuments(paymentId)
         {
 	    	$('#paymentDocuments').html("");
 	    	$('#paymentDocuments').html(info);
+        }
+	});
+}
+
+function getOwnerDocuments(paymentId)
+{
+	$.ajax({
+	    type: "POST",
+	    url: "/ajax/payments.php",
+	    data: {
+	    	paymentId: 			paymentId,
+	    	opt:				10
+	    },
+	    success:
+        function(info)
+        {
+	    	$('#paymentDocumentsOwner').html("");
+	    	$('#paymentDocumentsOwner').html(info);
         }
 	});
 }
@@ -316,6 +336,7 @@ function getSinglePayment(node)
 	    	}
 	    	
 	    	getDocuments(paymentId);
+	    	getOwnerDocuments(paymentId);
 //	    	$('#').html();
         }
 	});
@@ -344,4 +365,32 @@ function displayAllPayments()
         }
 	});
 	
+}
+
+function documentNotification(paymentId)
+{
+	var memberId = $('#memberId').val();
+	
+	if (paymentId)
+	{
+		$.ajax({
+	    type: "POST",
+	    url: "/email/document-notification.php",
+	    data: {
+	    	memberId:	memberId,
+	    	paymentId:	paymentId
+	    },
+	    success:
+	        function(info)
+	        {
+	        	if (info != '0')
+	        	{
+	        		bootbox.confirm("An e-mail has been sent to the owner notifying about the new document", function(result) {}); 
+	        	}
+	        	else
+				{
+				}
+	        }
+	    });
+	}
 }

@@ -1784,7 +1784,7 @@ class Layout_View
 								
 								<div class="row">
 									<!-- accepted payments column -->
-									<div class="col-xs-6">
+									<div class="col-xs-3">
 										<div id="paymentOptionsPaid">
 											<h3>PAID</h3>
 										</div>
@@ -1816,16 +1816,29 @@ class Layout_View
 										</div>
 									</div><!-- /.col -->
 									            
-									<div class="col-xs-6">
-										<p class="lead">Documents</p>
-										<div class="table-responsive">
-											<table class="table">
-												<tbody id="paymentDocuments">
-												</tbody>
-											</table>
-										</div>
-										<div class="add-document" id="addDocument">
-											Browse
+									<div class="col-xs-9">
+										<div class="row">
+											<div class="col-xs-6">
+												<p class="lead">Uploaded by the Admin</p>
+												<div class="table-responsive">
+													<table class="table">
+														<tbody id="paymentDocuments">
+														</tbody>
+													</table>
+												</div>
+												<div class="add-document" id="addDocument">
+													Browse
+												</div>
+											</div>
+											<div class="col-xs-6">
+												<p class="lead">Uploaded by the Owner</p>
+												<div class="table-responsive">
+													<table class="table">
+														<tbody id="paymentDocumentsOwner">
+														</tbody>
+													</table>
+												</div>
+											</div>
 										</div>
 									</div><!-- /.col -->
 								</div><!-- /.row -->
@@ -1835,7 +1848,7 @@ class Layout_View
 							<input type="hidden" id="singlePaymentIdVal">
 							<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>	
 							<button class="btn btn-danger pull-right" id="deletePayment"><i class="fa fa-remove"></i> Delete</button>						
-							<button class="btn btn-success pull-right" id="updatPayment"><i class="fa fa-credit-card"></i> Submit Payment</button>
+							<button class="btn btn-success pull-right" id="updatPayment"><i class="fa fa-credit-card"></i> Save Payment</button>
 						</div>
 					</div><!-- /.modal-content -->
 				</div><!-- /.modal-dialog -->

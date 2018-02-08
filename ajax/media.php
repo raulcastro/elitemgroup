@@ -61,7 +61,6 @@ switch ($_POST['opt'])
 		
 		if ($result = $uploader->handleUpload($savePath, $pre))
 		{
-			
 			$data = array('success'=>true, 'fileName'=>$result['fileName']);
 		}
 		

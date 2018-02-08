@@ -231,6 +231,26 @@ switch ($_POST['opt'])
 		}
 	break;
 	
+	case 10:
+		if ($documents = $model->getOwnerDocumentsByPaymentId($_POST['paymentId']))
+		{
+			foreach ($documents as $document)
+			{
+				?>
+				<tr>
+					<td>
+						<a href="/uploads/documents/<?php echo  $document['document']; ?>" target="_blank"><?php echo $document['document']; ?></a>
+					</td>
+				</tr>
+				<?php
+			}
+		}
+		else 
+		{
+			echo "No documents";	
+		}
+	break;
+	
 	default:
 	break;
 }
